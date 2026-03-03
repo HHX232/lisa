@@ -1,7 +1,7 @@
+import CardPageComponent from "@/_pages/CardPage/CardPage";
 import productService from "@/api/services/productService.service";
 import Footer from "@/components/Main/Footer/Footer";
 import Header from "@/components/Main/Header/Header";
-import CardPageComponent from "@/pages/CardPage/CardPage";
 
 export const cardPageMock = {
   title: "Серебряные серьги с корундами и фианитами",

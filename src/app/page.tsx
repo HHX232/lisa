@@ -1,6 +1,7 @@
+import HomePage from "@/_pages/HomePage/HomePage";
 import advertisementService from "@/api/services/add.service";
 import productService from "@/api/services/productService.service";
-import HomePage from "@/pages/HomePage/HomePage";
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const {data} = await advertisementService.getAdvertisements()

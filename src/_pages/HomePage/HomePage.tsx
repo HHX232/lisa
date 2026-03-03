@@ -1,3 +1,4 @@
+
 import ComplectsPreview from "@/components/HomePage/ComplectsPreview/ComplectsPreview";
 import GiftInfoBlock from "@/components/HomePage/GiftInfoBlock/GiftInfoBlock";
 import MainSlider from "@/components/HomePage/MainSlider/MainSlider";
@@ -56,23 +57,23 @@ function HomePage({mainSlides, decorSlides}:{mainSlides: Advertisement[], decorS
   return (
     <>
       <Header />
-      <MainSlider slides={mainSlides} />
-       <SliderLittleGrid title="Каталог украшений" slides={decorSlides.map((slide) => ({
+      <MainSlider slides={mainSlides || []} />
+       <SliderLittleGrid title="Каталог украшений" slides={(decorSlides || []).map((slide) => ({
          image: slide.imageUrl,
          title: slide.title
        }))} />
         <SliderBigGrid 
       title="Наши коллекции" 
-      slides={decorSlides.map(el=>({image:el.imageUrl, title:el.title}))} 
+      slides={(decorSlides || []).map(el=>({image:el.imageUrl, title:el.title}))} 
     />
         <SliderBigGrid 
       title="Наши товары" 
       useFillImage
       isCardSlider
-      slides={decorSlides.map(el=>({image:el.imageUrl, title:el.title}))}
-      cards={decorSlides.map(el => ({ ...el, useFillImage: true }))}
+      slides={(decorSlides || []).map(el=>({image:el.imageUrl, title:el.title}))}
+      cards={(decorSlides || []).map(el => ({ ...el, useFillImage: true }))}
     />
-       <ComplectsPreview previews={decorSlides.map(el=>{
+       <ComplectsPreview previews={(decorSlides || []).map(el=>{
         return {id: el.id, image:el.imageUrl, description:el.description, title:el.title}
        })} />
        <GiftInfoBlock/>

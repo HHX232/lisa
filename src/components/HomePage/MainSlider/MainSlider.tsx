@@ -6,10 +6,10 @@ import { EffectFade } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import styles from './MainSlider.module.scss'
 
+import { Advertisement } from '@/types/Advertisement.types'
 import Image from 'next/image'
 import 'swiper/css'
 import 'swiper/css/effect-fade'
-import { Advertisement } from '@/types/Advertisement.types'
 const arrowAccent = '/arrow-accent.svg'
 
 
@@ -77,7 +77,7 @@ function MainSlider({ slides }: TMainSliderProps) {
         className={styles.mainSlider}
       >
        
-        {slides.map((slide, index) => (
+        {(slides || []).map((slide, index) => (
           <SwiperSlide key={index}>
             
             <div className={styles.slideWrapper}>
@@ -112,7 +112,7 @@ function MainSlider({ slides }: TMainSliderProps) {
       </Swiper>
 
       <div className={cn(styles.navigation, 'container')}>
-        {slides.map((_, index) => (
+        {(slides || []).map((_, index) => (
           <button
             key={index}
             className={cn(styles.navLine, {

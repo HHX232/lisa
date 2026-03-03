@@ -1,0 +1,354 @@
+.margins {
+   margin-top: 60px;
+}
+
+.bred_extra {
+   margin-bottom: 30px;
+}
+
+.top_container {
+   display: flex;
+   gap: 40px;
+   align-items: flex-start;
+}
+
+.right {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   flex: 1;
+}
+
+.extra__char__box {
+   max-width: 420px;
+
+   &>ul>li {
+      justify-content: space-between !important;
+
+      &>span {
+         width: 44%;
+         text-align: left;
+      }
+   }
+}
+
+.title {
+   font-weight: 500;
+   font-size: 32px;
+   margin: 0;
+}
+
+.prices_box {
+   display: flex;
+   align-items: baseline;
+   gap: 20px;
+}
+
+.current_price {
+   font-size: 48px;
+   margin: 0;
+   font-family: var(--font-philosopher);
+}
+
+.original_price {
+   font-size: 32px;
+   color: #7C7D7E;
+   text-decoration: line-through;
+   margin: 0;
+   font-family: var(--font-philosopher);
+}
+
+.sale {
+   font-size: 32px;
+   color: #af0e0e;
+   margin: 0;
+   margin-left: auto;
+   font-family: var(--font-philosopher);
+}
+
+.button_box {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.top {
+   display: flex;
+   gap: 20px;
+}
+
+.basket {
+   width: 100%;
+}
+
+.favorite {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.basket,
+.favorite {
+   border: 2px solid #072761;
+   background: transparent;
+   padding: 20px;
+   font-size: 24px;
+   cursor: pointer;
+   color: #072761;
+   transition: background 0.2s, color 0.2s;
+
+   &:hover {
+      background: #072761;
+      color: #fff;
+   }
+}
+
+.show_complect {
+   border: 2px solid rgba(7, 39, 97, 0.6);
+   background: transparent;
+   padding: 20px;
+   font-size: 24px;
+   cursor: pointer;
+   color: rgba(7, 39, 97, 0.6);
+   transition: background 0.2s, color 0.2s;
+
+   &:hover {
+      background: rgba(7, 39, 97, 0.6);
+      color: #fff;
+   }
+}
+
+.dostavka_from {
+   font-size: 20px;
+   color: rgba(0, 0, 0, 0.5);
+}
+
+.have_box {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.have_title {
+   font-size: 24px;
+   font-weight: 500;
+   margin: 0;
+}
+
+.stores_list {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+   display: flex;
+   flex-direction: row;
+   gap: 20px;
+
+   li {
+      font-size: 20px;
+      font-weight: 500;
+      color: #072761;
+   }
+}
+
+.character {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+
+   p {
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0;
+   }
+}
+
+.description {
+   font-size: 24px;
+   margin-top: 40px;
+   line-height: 1.6;
+}
+
+.have_title_box {
+   display: flex;
+   gap: 10px;
+   align-items: center;
+   font-size: 20px;
+}
+
+.second_title {
+   margin-top: 100px;
+   margin-bottom: 30px;
+   font-size: 64px;
+   text-align: center;
+}
+
+/* ─── Планшет ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+   .margins {
+      margin-top: 40px;
+   }
+
+   .top_container {
+      gap: 24px;
+   }
+
+   .title {
+      font-size: 26px;
+   }
+
+   .current_price {
+      font-size: 38px;
+   }
+
+   .original_price,
+   .sale {
+      font-size: 26px;
+   }
+
+   .basket,
+   .favorite,
+   .show_complect {
+      padding: 14px;
+      font-size: 20px;
+   }
+
+   .second_title {
+      font-size: 48px;
+      margin-top: 70px;
+   }
+
+   .extra__char__box {
+      max-width: 100%;
+   }
+}
+
+@media (max-width: 1050px) {
+   .margins {
+      margin-top: 24px;
+   }
+   .extraSlider{
+      margin: 0 auto !important;
+   }
+
+   .bred_extra {
+      margin-bottom: 16px;
+   }
+
+   .top_container {
+      flex-direction: column;
+      gap: 20px;
+   }
+
+   .right {
+      gap: 16px;
+      width: 100%;
+   }
+
+   .title {
+      font-size: 22px;
+   }
+
+   .prices_box {
+      flex-wrap: wrap;
+      gap: 10px;
+   }
+
+   .current_price {
+      font-size: 32px;
+   }
+
+   .original_price,
+   .sale {
+      font-size: 22px;
+   }
+
+   .sale {
+      margin-left: 0;
+   }
+
+   .button_box {
+      gap: 12px;
+   }
+
+   .top {
+      gap: 12px;
+   }
+
+   .basket,
+   .favorite,
+   .show_complect {
+      padding: 12px 16px;
+      font-size: 18px;
+   }
+
+   .dostavka_from {
+      font-size: 16px;
+   }
+
+   .have_title {
+      font-size: 20px;
+   }
+
+   .stores_list {
+      flex-wrap: wrap;
+      gap: 10px;
+
+      li {
+         font-size: 16px;
+      }
+   }
+
+   .have_title_box {
+      font-size: 16px;
+   }
+
+   .character p {
+      font-size: 20px;
+   }
+
+   .extra__char__box {
+      max-width: 100%;
+
+      &>ul>li>span {
+         width: 50%;
+      }
+   }
+
+   .description {
+      font-size: 18px;
+      margin-top: 24px;
+   }
+
+   .second_title {
+      font-size: 36px;
+      margin-top: 50px;
+      margin-bottom: 20px;
+   }
+}
+
+
+@media (max-width: 480px) {
+   .title {
+      font-size: 20px;
+   }
+
+   .current_price {
+      font-size: 28px;
+   }
+
+   .original_price,
+   .sale {
+      font-size: 20px;
+   }
+
+   .basket,
+   .favorite,
+   .show_complect {
+      padding: 10px 12px;
+      font-size: 16px;
+   }
+
+   .second_title {
+      font-size: 28px;
+   }
+}

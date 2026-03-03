@@ -1,0 +1,27 @@
+.priceCurrencyTab {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+
+}
+
+.currencyButton {
+   color: rgba(0, 0, 0, 0.8);
+   font-size: 16px;
+
+   cursor: pointer;
+   @media(max-width:640px){
+      font-size: 14px;
+   }
+}
+
+.currencyButtonActive {
+   color: #072761;
+   font-weight: 500;
+}
+
+.line {
+   height: 20px;
+   width: 1px;
+   background-color: #072761;
+}

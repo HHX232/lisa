@@ -1,0 +1,139 @@
+$thumb-size: 150px;
+$thumb-size-mobile: 119px;
+$thumb-gap: 30px;
+$thumb-gap-mobile: 20px;
+$thumbs-visible: 3;
+
+$thumb-column-height: calc(
+  #{$thumbs-visible} * #{$thumb-size} + #{$thumbs-visible - 1} * #{$thumb-gap} +
+    #{$thumb-size * 0.7}
+);
+
+/* ─── Wrapper ──────────────────────────────────────────────── */
+
+.mainCardSlider {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: $thumb-gap;
+  max-width: 700px;
+  width: 100%;
+}
+
+/* ─── Мобильный layout ─────────────────────────────────────── */
+
+.layoutMobile {
+  flex-direction: column;
+  max-width: 100%;
+  gap: $thumb-gap-mobile;
+
+  // Превью уходит под главный слайдер
+  .thumbSwiper {
+    order: 2;
+    // Ширина и высота будут выставлены ниже в блоке .layoutMobile .thumbSwiper
+  }
+
+  .mainWrap {
+    order: 1;
+    width: 100%;
+    flex: none;
+  }
+
+  .mainSwiper {
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+  }
+
+  .complectLabel {
+    padding: 8px 12px;
+    bottom: 12px;
+    right: 12px;
+    font-size: 11px;
+  }
+}
+
+.layoutMobile .thumbSwiper {
+  width: 100%;
+  height: $thumb-size-mobile;
+}
+
+.layoutMobile .thumbSlide {
+  width: $thumb-size-mobile !important;
+  height: $thumb-size-mobile !important;
+  flex-shrink: 0;
+}
+
+/* ─── Thumb swiper (десктоп) ───────────────────────────────── */
+
+.thumbSwiper {
+  flex-shrink: 0;
+  width: $thumb-size;
+  height: $thumb-column-height;
+
+  :global(.swiper-slide-thumb-active) .thumb {
+    border-color: rgba(7, 39, 97, 0.3);
+  }
+}
+
+.thumbSlide {
+  cursor: pointer;
+  background-color: #fff;
+  height: $thumb-size !important;
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+/* ─── Main swiper ──────────────────────────────────────────── */
+
+.mainWrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.mainSwiper {
+  width: 100%;
+  height: $thumb-column-height;
+}
+
+.mainSlide {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
+.mainSlideInner {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ─── Complect label ───────────────────────────────────────── */
+
+.complectLabel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 20px;
+  background-color: #f8f9fb;
+  bottom: 25px;
+  right: 30px;
+  font-size: 13px;
+  color: #072761;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+}

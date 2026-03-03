@@ -1,0 +1,343 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  background: #F8F9FB; 
+  z-index: 10000; 
+  padding-bottom: 10px;
+  @media (max-width: 1070px) {
+    gap: 20px;
+  }
+}
+
+.mainNav {
+   display: flex;
+   gap: 30px;
+
+   @media (max-width: 1280px) {
+      gap: 20px;
+      font-size: 15px;
+   }
+
+   @media (max-width: 1070px) {
+      display: none;
+   }
+}
+
+.main {
+   width: 100%;
+   padding-top: 30px;
+   align-items: end;
+   display: flex;
+   justify-content: space-between;
+   position: relative;
+
+   @media (max-width: 1280px) {
+      padding-top: 20px;
+   }
+
+   @media (max-width: 1070px) {
+      padding-top: 15px;
+      align-items: center;
+   }
+}
+
+.logo {
+   margin-left: 50px;
+
+   @media (max-width: 1280px) {
+      margin-left: 30px;
+      width: 103px;
+      height: 80px;
+   }
+
+   @media (max-width: 570px) {
+      margin-left: 20px;
+      width: 73px;
+      height: 57px;
+   }
+}
+
+.contactInfo {
+   font-size: 16px;
+
+   &:last-child {
+      margin-left: 5px;
+   }
+
+   @media (max-width: 1280px) {
+      font-size: 15px;
+   }
+
+   @media (max-width: 1070px) {
+      font-size: 14px;
+   }
+
+   @media (max-width: 768px) {
+      display: none;
+   }
+}
+
+.contact_info_box {
+   display: flex;
+   gap: 5px;
+   align-items: center;
+
+   @media (max-width: 1070px) {
+      display: none;
+   }
+}
+
+.header_buttons {
+   display: flex;
+   gap: 30px;
+   align-items: end;
+
+   @media (max-width: 1280px) {
+      gap: 20px;
+   }
+
+   @media (max-width: 1070px) {
+      gap: 15px;
+   }
+
+   @media (max-width: 768px) {
+      gap: 12px;
+   }
+}
+
+.icons_group {
+   display: flex;
+   gap: 20px;
+   align-items: center;
+  
+
+   @media (max-width: 1280px) {
+      gap: 15px;
+   }
+
+   @media (max-width: 1070px) {
+      gap: 12px;
+   }
+
+   @media (max-width: 768px) {
+      gap: 10px;
+   }
+
+   img {
+      @media (max-width: 768px) {
+         width: 20px;
+         height: 20px;
+      }
+   }
+}
+
+.cursorPointer{
+   cursor: pointer !important;
+}
+.price_and_icon{
+   display: flex;
+   flex-direction: column;
+   align-items: end;
+   gap: 20px;
+   @media(max-width:640px){
+      gap: 10px;
+   }
+}
+.categories_box {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 0 20px;
+   flex-wrap: wrap;
+
+   @media (max-width: 1370px) {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px 20px;
+   }
+
+   @media (max-width: 1070px) {
+      display: none;
+   }
+}
+
+.categories_box_item {
+   font-size: 20px;
+
+   @media (max-width: 1370px) {
+      font-size: 18px;
+   }
+
+   @media (max-width: 1280px) {
+      font-size: 16px;
+   }
+
+   @media (max-width: 1070px) {
+      font-size: 14px;
+   }
+}
+
+// Left section with burger and search
+.leftSection {
+   display: none;
+   gap: 15px;
+   align-items: center;
+
+   @media (max-width: 1070px) {
+      display: flex;
+   }
+
+   @media (max-width: 768px) {
+      gap: 12px;
+   }
+}
+
+// Burger button
+.burgerButton {
+   display: none;
+   flex-direction: column;
+   gap: 5px;
+   background: transparent;
+   border: none;
+   cursor: pointer;
+   padding: 5px;
+   z-index: 1001;
+
+   @media (max-width: 1070px) {
+      display: flex;
+   }
+
+   span {
+      width: 20px;
+      height: 1px;
+      background-color: #072761;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      transform-origin: center;
+   }
+
+   &.open {
+      span:nth-child(1) {
+         transform: translateY(6px) rotate(45deg);
+      }
+
+      span:nth-child(2) {
+         opacity: 0;
+      }
+
+      span:nth-child(3) {
+         transform: translateY(-6px) rotate(-45deg);
+      }
+   }
+}
+
+// Search icon visibility
+.mobileSearchIcon {
+   display: none;
+
+   @media (max-width: 1070px) {
+      display: block;
+   }
+
+   img {
+      @media (max-width: 768px) {
+         width: 20px;
+         height: 20px;
+      }
+   }
+}
+
+.desktopSearchIcon {
+   display: flex;
+   max-height: fit-content;
+
+   @media (max-width: 1070px) {
+      display: none;
+   }
+}
+
+// Mobile menu
+.mobileMenu {
+   position: fixed;
+   top: 0;
+   left: -100%;
+   width: 80%;
+   max-width: 360px;
+   height: 100vh;
+   background: white;
+   z-index: 1000;
+   transition: left 0.3s ease;
+   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+
+   @media (max-width: 768px) {
+      max-width: 320px;
+   }
+
+   @media (max-width: 480px) {
+      width: 85%;
+      max-width: 280px;
+   }
+
+   &.open {
+      left: 0;
+   }
+}
+
+.mobileMenuContent {
+   padding: 80px 20px 20px;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+
+   @media (max-width: 768px) {
+      padding: 70px 15px 20px;
+      gap: 15px;
+   }
+}
+
+.mobileMenuItem {
+   font-size: 18px;
+   padding: 12px 0;
+   border-bottom: 1px solid #f0f0f0;
+   color: #072761;
+   transition: color 0.2s ease;
+
+   @media (max-width: 768px) {
+      font-size: 16px;
+      padding: 10px 0;
+   }
+
+   &:hover {
+      color: #0a3d8f;
+   }
+
+   &:last-child {
+      border-bottom: none;
+   }
+}
+
+// Overlay
+.overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100vh;
+   background: rgba(0, 0, 0, 0.5);
+   z-index: 999;
+   animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+   }
+
+   to {
+      opacity: 1;
+   }
+}

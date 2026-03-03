@@ -1,0 +1,74 @@
+.giftInfoBlock{
+   display: flex;
+   justify-content: space-between;
+   background-color: #fff;
+   padding: 40px;
+   gap: 26px;
+}
+.accent_title{
+   font-size: 36px;
+   color: #072761;
+}
+.box{
+   display: flex;
+   flex-direction: column;
+   gap: 30px;
+   justify-content: center;
+   align-items: start;
+}
+.description{
+   font-weight: 500;
+   font-size: 24px;
+}
+.mobile_title{
+   display: none;
+}
+.image{
+   width: 100%;
+   max-width: 435px;
+   aspect-ratio: 435/335;
+}
+.button{
+   padding: 12px 20px;
+   font-size: 24px;
+   color: #072761;
+   border: 1px solid #072761;
+}
+@media(max-width:1100px){
+   .mobile_title{
+      display: block;
+   }
+   .accent_title{
+      text-align: center;
+   }
+   .desktop_title{
+      display: none;
+   }
+   .giftInfoBlock{
+      flex-direction: column;
+      align-items: center;
+   }
+   .box{
+      align-items: center;
+      text-align: center;
+   }
+}
+@media(max-width:700px){
+   .mobile_title{
+      font-size: 20px;
+      display: block;
+   }
+   .accent_title{
+      text-align: center;
+   }
+   .desktop_title{
+      display: none;
+   }
+   .description{
+      font-size: 13px;
+   }
+   .button{
+      padding: 9px 17px;
+      font-size: 15px;
+   }
+}

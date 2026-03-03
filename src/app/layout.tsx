@@ -1,16 +1,35 @@
+import '@/scss/config/base.scss';
+import '@/scss/config/fonts.scss';
+import '@/scss/config/functions.scss';
+import '@/scss/config/keyframes.scss';
+import '@/scss/config/mixins.scss';
+import '@/scss/config/placeholders.scss';
+import '@/scss/config/reset.scss';
+import '@/scss/config/root.scss';
+import '@/scss/config/typography.scss';
+import '@/scss/main.scss';
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import '../scss/config/fonts.scss';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+
+import 'swiper/css'
+import 'swiper/css/navigation'
+
+import { Montserrat, Philosopher } from 'next/font/google';
+
+const philosopher = Philosopher({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '700'],
+  display: 'swap',
+  variable: '--font-philosopher', 
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const montserrat = Montserrat({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '700', '500', '300', '600'],
+  display: 'swap',
+  variable: '--font-montserrat', 
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,11 +42,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html className={`${philosopher.variable} ${montserrat.variable}`} lang="ru">
+      <body>
+        <div >
         {children}
+        </div>
       </body>
     </html>
   );

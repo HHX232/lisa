@@ -1,0 +1,43 @@
+.complectsPreview {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   h1 {
+      font-size: 64px;
+      text-align: center;
+      margin-top: 70px;
+      margin-bottom: 30px;
+   }
+}
+
+.button_show_all {
+   padding: 12px 20px;
+   color: #072761;
+   border: 2px solid #072761;
+
+   font-size: 24px;
+   transition: all .3s;
+   margin: 30px auto 0 auto;
+
+   &:hover {
+      transform: scale(1.01);
+   }
+}
+
+.complectPreview {
+   padding: 22px;
+   width: 100%;
+   display: flex;
+   aspect-ratio: 1/1;
+   background-color: #fff;
+
+   &>img {
+      width: 100%;
+   }
+}
+
+.items_box {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 30px;
+}

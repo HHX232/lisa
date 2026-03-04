@@ -32,7 +32,7 @@ export const cardPageMock = {
 async function CardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { data } = await productService.getProductById(id);
-
+console.log('dataProduct', data)
   if (!data) return <div>Товар не найден</div>;
 
   return (
@@ -46,7 +46,7 @@ async function CardPage({ params }: { params: Promise<{ id: string }> }) {
         isComplect={data.isComplect}
         description={data.description}
         fullDescription={data.fullDescription}
-        images={data.images}
+        images={data.images.map(el=>el.url)}
         stores={data.inShops}
         characteristics={data.characteristics}
       />

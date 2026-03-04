@@ -1,9 +1,9 @@
 'use client'
+import { Product } from '@/types/Product.types'
 import cn from 'clsx'
 import Image from 'next/image'
-import styles from './Card.module.scss'
 import Link from 'next/link'
-import { Product } from '@/types/Product.types'
+import styles from './Card.module.scss'
 
 
 
@@ -17,7 +17,8 @@ function Card({
   description,
   imageUrl,
   useFillImage = false,
-  isSouvenir
+  isSouvenir,
+  showCardTitle = true
 }: Product) {
   return (
     <div className={styles.card}>
@@ -36,7 +37,7 @@ function Card({
       </div>
 
       <div className={styles.content}>
-        <h3 className={styles.title}>{title}</h3>
+       {showCardTitle && <h3 className={styles.title}>{title}</h3>}
 
         <div className={styles.priceRow}>
           <div className={styles.priceGroup}>

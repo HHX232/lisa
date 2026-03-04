@@ -1,37 +1,43 @@
-'use client'
-import Card from '@/components/Products/Card/Card'
-import { Product } from '@/types/Product.types'
-import cn from 'clsx'
-import Image from 'next/image'
-import { useRef, useState } from 'react'
-import type { Swiper as SwiperType } from 'swiper'
-import { Navigation } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import styles from './SliderBigGrid.module.scss'
-
-
+"use client";
+import Card from "@/components/Products/Card/Card";
+import { Product } from "@/types/Product.types";
+import cn from "clsx";
+import Image from "next/image";
+import { useRef, useState } from "react";
+import type { Swiper as SwiperType } from "swiper";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import styles from "./SliderBigGrid.module.scss";
 
 type Props = {
-  title?: string
+  showCardTitle?: boolean;
+  title?: string;
   slides: {
-    image: string
-    title?: string
-  }[]
-  useFillImage?: boolean
-  isCardSlider?: boolean
-  cards?: Product[]
-}
+    image: string;
+    title?: string;
+  }[];
+  useFillImage?: boolean;
+  isCardSlider?: boolean;
+  cards?: Product[];
+};
 
-function SliderBigGrid({ title, slides, useFillImage = false, isCardSlider = false, cards }: Props) {
-  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null)
-  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null)
-  const swiperRef = useRef<SwiperType | null>(null)
+function SliderBigGrid({
+  title,
+  slides,
+  useFillImage = false,
+  isCardSlider = false,
+  cards,
+  showCardTitle = false,
+}: Props) {
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   return (
     <div className={styles.sliderContainer}>
       {title && <h2 className={styles.sectionTitle}>{title}</h2>}
 
-      <div className={cn(styles.sliderWrapper, 'container')}>
+      <div className={cn(styles.sliderWrapper, "container")}>
         {/* Левая стрелка */}
         <button
           ref={setPrevEl}
@@ -66,7 +72,7 @@ function SliderBigGrid({ title, slides, useFillImage = false, isCardSlider = fal
               nextEl,
             }}
             onSwiper={(swiper) => {
-              swiperRef.current = swiper
+              swiperRef.current = swiper;
             }}
             breakpoints={{
               320: {
@@ -87,34 +93,40 @@ function SliderBigGrid({ title, slides, useFillImage = false, isCardSlider = fal
             }}
             className={styles.swiper}
           >
-            {isCardSlider ? (
-              cards?.map((card) => (
-                <SwiperSlide key={card.id}>
-                  <Card {...card} isSouvenir={false}   useFillImage={useFillImage} />
-                </SwiperSlide>
-              ))
-            ) : (
-              slides.map((slide, index) => (
-                <SwiperSlide key={index}>
-                  <div className={styles.slideItem}>
-                    <div className={cn(styles.slideImage, useFillImage && styles.fillImage)}>
-                      <Image
-                        src={slide.image}
-                        alt={slide.title || ''}
-                        width={400}
-                        height={300}
-                        style={{ width: '100%', height: 'auto' }}
-                      />
+            {isCardSlider
+              ? cards?.map((card) => (
+                  <SwiperSlide key={card.id}>
+                    <Card
+                      {...card}
+                      showCardTitle={showCardTitle}
+                      isSouvenir={false}
+                      useFillImage={useFillImage}
+                    />
+                  </SwiperSlide>
+                ))
+              : slides.map((slide, index) => (
+                  <SwiperSlide key={index}>
+                    <div className={styles.slideItem}>
+                      <div
+                        className={cn(
+                          styles.slideImage,
+                          useFillImage && styles.fillImage,
+                        )}
+                      >
+                        <Image
+                          src={slide.image}
+                          alt={slide.title || ""}
+                          width={400}
+                          height={300}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </div>
+                      {slide.title && (
+                        <p className={styles.slideTitle}>{slide.title}</p>
+                      )}
                     </div>
-                    {slide.title && (
-                      <p className={styles.slideTitle}>
-                        {slide.title}
-                      </p>
-                    )}
-                  </div>
-                </SwiperSlide>
-              ))
-            )}
+                  </SwiperSlide>
+                ))}
           </Swiper>
         </div>
 
@@ -141,40 +153,40 @@ function SliderBigGrid({ title, slides, useFillImage = false, isCardSlider = fal
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default SliderBigGrid
+export default SliderBigGrid;
 
 // Mock data для SliderBigGrid
 
 // Обычные слайды (без карточек)
 export const mockSlides = [
   {
-    image: '/mock/compl1.png',
+    image: "/mock/compl1.png",
   },
   {
-    image: '/mock/compl2.png',
+    image: "/mock/compl2.png",
   },
   {
-    image: '/mock/compl3.png',
+    image: "/mock/compl3.png",
   },
   {
-    image: '/mock/compl1.png',
+    image: "/mock/compl1.png",
   },
   {
-    image: '/mock/compl2.png',
+    image: "/mock/compl2.png",
   },
   {
-    image: '/mock/compl3.png',
+    image: "/mock/compl3.png",
   },
   {
-    image: '/mock/compl1.png',
+    image: "/mock/compl1.png",
   },
   {
-    image: '/mock/compl2.png',
+    image: "/mock/compl2.png",
   },
-]
+];
 
 // Карточки товаров
 export const mockCards: Product[] = [
@@ -185,8 +197,8 @@ export const mockCards: Product[] = [
     currentPrice: 4990,
     originalPrice: 6990,
     sale: 29,
-    description: '2-спальный, сатин, 100% хлопок',
-    imageUrl: '/mock/compl1.png',
+    description: "2-спальный, сатин, 100% хлопок",
+    imageUrl: "/mock/compl1.png",
     useFillImage: false,
   },
   {
@@ -196,8 +208,8 @@ export const mockCards: Product[] = [
     currentPrice: 5490,
     originalPrice: 7490,
     sale: 27,
-    description: 'Евро, премиум сатин',
-    imageUrl: '/mock/compl2.png',
+    description: "Евро, премиум сатин",
+    imageUrl: "/mock/compl2.png",
     useFillImage: false,
   },
   {
@@ -207,8 +219,8 @@ export const mockCards: Product[] = [
     currentPrice: 5490,
     originalPrice: 7490,
     sale: 27,
-    description: 'Евро, премиум сатин',
-    imageUrl: '/mock/compl2.png',
+    description: "Евро, премиум сатин",
+    imageUrl: "/mock/compl2.png",
     useFillImage: false,
   },
   {
@@ -218,8 +230,8 @@ export const mockCards: Product[] = [
     currentPrice: 5490,
     originalPrice: 7490,
     sale: 27,
-    description: 'Евро, премиум сатин',
-    imageUrl: '/mock/compl2.png',
+    description: "Евро, премиум сатин",
+    imageUrl: "/mock/compl2.png",
     useFillImage: false,
   },
   {
@@ -229,8 +241,8 @@ export const mockCards: Product[] = [
     currentPrice: 5490,
     originalPrice: 7490,
     sale: 27,
-    description: 'Евро, премиум сатин',
-    imageUrl: '/mock/compl2.png',
+    description: "Евро, премиум сатин",
+    imageUrl: "/mock/compl2.png",
     useFillImage: false,
   },
   {
@@ -240,9 +252,8 @@ export const mockCards: Product[] = [
     currentPrice: 5490,
     originalPrice: 7490,
     sale: 27,
-    description: 'Евро, премиум сатин',
-    imageUrl: '/mock/compl2.png',
+    description: "Евро, премиум сатин",
+    imageUrl: "/mock/compl2.png",
     useFillImage: false,
   },
-
-]
+];

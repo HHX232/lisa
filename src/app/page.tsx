@@ -6,6 +6,8 @@ export const dynamic = 'force-dynamic';
 export default async function Home() {
   const {data} = await advertisementService.getAdvertisements()
   const {data: products} = await productService.getProducts()
-  console.log('products', products)
-  return <HomePage mainSlides={data || []} decorSlides={products?.content || []}/>
+  const {data: complect} = await productService.getProducts({isComplect:true})
+  const {data: souvenirs} = await productService.getProducts({isSouvenir:true})
+
+  return <HomePage souvenirs={souvenirs?.content || []} complect={complect?.content || []} addSlides={data || []} products={products?.content || []}/>
 }

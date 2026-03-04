@@ -57,7 +57,7 @@
    width: 100%;
    aspect-ratio: 1/1;
    background: #ffffff;
-   border-radius: 8px;
+   
    overflow: hidden;
    display: flex;
    align-items: center;
@@ -103,7 +103,6 @@
    cursor: pointer;
    transition: transform 0.3s ease;
    background: #ffffff;
-   border-radius: 8px;
    overflow: hidden;
 
    &:hover {
@@ -146,7 +145,7 @@
    background: #ff4444;
    color: #ffffff;
    padding: 5px 10px;
-   border-radius: 4px;
+
    font-size: 14px;
    font-weight: 600;
 }

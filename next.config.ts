@@ -10,9 +10,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'random.imagecdn.app',
         port: '',
-        pathname: '/**', 
+        pathname: '/**',
       },
-
+      {
+        protocol: 'https',
+        hostname: 'septaria-api.up.railway.app',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 

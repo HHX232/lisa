@@ -25,6 +25,7 @@ export interface Product {
   imageUrl: string
   useFillImage: boolean
   isSouvenir?: boolean
+  showCardTitle?:boolean
 }
 export interface Characteristic {
   name: string
@@ -42,7 +43,9 @@ export interface ProductFull {
   imageUrl: string
   useFillImage: boolean
   isSouvenir: boolean
-  images: string[]
+  images: {  id:string,
+      url: string,
+      displayOrder: number}[]
   inShops: string[]
   characteristics: Characteristic[]
   fullDescription: string
@@ -63,8 +66,20 @@ export interface PaginatedProducts {
   empty: boolean
 }
 
+
+export type SortField = 'price' | 'createdAt'
+export type SortDirection = 'asc' | 'desc'
+
 export interface ProductsRequestParams {
   page?: number
   size?: number
-  sort?: string[]
+  sort?: SortField
+  direction?: SortDirection
+  isAdvertisement?: boolean
+  isComplect?: boolean
+  isSouvenir?: boolean
+  minPrice?: number
+  maxPrice?: number
+  title?: string
+  advertisementType?: string
 }

@@ -2,7 +2,7 @@ import cn from 'clsx'
 import Image from "next/image"
 import Link from 'next/link'
 import styles from './Logo.module.scss'
-const logo = '/logos/logo.svg'
+const logo = '/logos/Logo.svg'
 interface LogoProps {
   extraClassName?: string
 }

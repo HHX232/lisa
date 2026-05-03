@@ -1,0 +1,157 @@
+$bg: #F8F9FB;
+$dark: #1B3C78;
+$accent: #072761;
+$white: #ffffff;
+$text: #0d1b2e;
+
+.profilePage {
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: $bg;
+  padding: 40px 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: $white;
+  border: 1px solid rgba($dark, 0.12);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-shadow: 0 2px 16px rgba($dark, 0.06);
+
+  @media (max-width: 600px) {
+    padding: 24px 20px;
+  }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba($dark, 0.08);
+
+  &:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba($text, 0.4);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fieldInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fieldValue {
+  font-size: 15px;
+  font-weight: 500;
+  color: $text;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  background: rgba($dark, 0.07);
+  color: $dark;
+  letter-spacing: 0.3px;
+}
+
+.badgeUnverified {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+}
+
+.editButton {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border: 1px solid rgba($dark, 0.2);
+  background: transparent;
+  color: $dark;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+
+  &:hover {
+    background: $dark;
+    color: $white;
+    border-color: $dark;
+  }
+}
+
+.submitButton {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  background: $dark;
+  color: $white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #{$dark} 92%, white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba($dark, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.loading {
+  font-size: 15px;
+  color: rgba($text, 0.4);
+  margin: 80px auto;
+  text-align: center;
+}
+
+.error {
+  font-size: 15px;
+  color: #c0392b;
+  margin: 80px auto;
+  text-align: center;
+}

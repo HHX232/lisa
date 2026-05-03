@@ -1,0 +1,606 @@
+$bg: #F8F9FB;
+$dark: #1B3C78;
+$accent: #072761;
+$white: #ffffff;
+$text: #0d1b2e;
+$border: rgba($dark, 0.12);
+$muted: rgba($text, 0.4);
+
+// ─── Page Layout ─────────────────────────────────────────────────────────────
+
+.catalogPage {
+  min-height: 100vh;
+  background: $bg;
+  padding: 32px 24px 64px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px 48px;
+  }
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: $muted;
+  font-weight: 500;
+}
+
+// Search
+
+.searchForm {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  max-width: 420px;
+
+  @media (max-width: 600px) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.searchInput {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid $border;
+  border-right: none;
+  border-radius: 0;
+  background: $white;
+  font-size: 14px;
+  color: $text;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: $muted; }
+
+  &:focus {
+    border-color: rgba($dark, 0.4);
+  }
+}
+
+.searchBtn {
+  padding: 10px 20px;
+  background: $dark;
+  color: $white;
+  border: none;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $accent;
+  }
+}
+
+// ─── Two-column Layout ────────────────────────────────────────────────────────
+
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 28px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+
+.sidebar {
+  background: $white;
+  border: 1px solid $border;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 140px;
+
+  @media (max-width: 900px) {
+    display: none;
+    position: static;
+    order: 2;
+
+    &.sidebarOpen {
+      display: flex;
+    }
+  }
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: $text;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activeCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: $dark;
+  color: $white;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.resetBtn {
+  font-size: 12px;
+  color: $muted;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+
+  &:hover { color: #c0392b; }
+}
+
+// Filter Group
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filterLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: $muted;
+  margin: 0;
+}
+
+// Price
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priceInput {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid $border;
+  border-radius: 0;
+  font-size: 13px;
+  color: $text;
+  background: $bg;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.2s;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  &:focus { border-color: rgba($dark, 0.4); }
+}
+
+.priceSep {
+  font-size: 12px;
+  color: $muted;
+  flex-shrink: 0;
+}
+
+// Toggles
+
+.toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filterToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid $border;
+  background: transparent;
+  font-size: 13px;
+  color: rgba($text, 0.6);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+
+  &:hover {
+    border-color: rgba($dark, 0.3);
+    color: $text;
+  }
+
+  &.filterToggleOn {
+    background: rgba($dark, 0.06);
+    border-color: rgba($dark, 0.3);
+    color: $dark;
+    font-weight: 600;
+  }
+
+  &.filterToggleOff {
+    background: rgba(192, 57, 43, 0.04);
+    border-color: rgba(192, 57, 43, 0.2);
+    color: rgba(192, 57, 43, 0.8);
+  }
+}
+
+.filterToggleBadge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+// Sort
+
+.sortList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sortBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 13px;
+  color: rgba($text, 0.6);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+
+  &:hover {
+    background: rgba($dark, 0.04);
+    color: $text;
+  }
+
+  &.sortBtnActive {
+    background: $dark;
+    color: $white;
+    font-weight: 600;
+  }
+}
+
+.sortArrow {
+  font-size: 14px;
+}
+
+// Page size
+
+.pageSizeRow {
+  display: flex;
+  gap: 4px;
+}
+
+.pageSizeBtn {
+  flex: 1;
+  padding: 7px 0;
+  border: 1px solid $border;
+  background: transparent;
+  font-size: 13px;
+  color: $muted;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { border-color: rgba($dark, 0.3); color: $text; }
+
+  &.pageSizeBtnActive {
+    background: $dark;
+    border-color: $dark;
+    color: $white;
+    font-weight: 600;
+  }
+}
+
+// ─── Mobile filter button ────────────────────────────────────────────────────
+
+.mobileFilterBtn {
+  display: none;
+  width: 100%;
+  padding: 12px;
+  background: $white;
+  border: 1px solid $border;
+  font-size: 14px;
+  font-weight: 600;
+  color: $text;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  order: 1;
+
+  &:hover { background: rgba($dark, 0.04); }
+
+  @media (max-width: 900px) {
+    display: block;
+  }
+}
+
+// ─── Main Content ─────────────────────────────────────────────────────────────
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  transition: opacity 0.15s;
+
+  @media (max-width: 900px) {
+    order: 3;
+  }
+}
+
+.mainFading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// ─── Product Grid ─────────────────────────────────────────────────────────────
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+// Product Card
+
+.productCard {
+  background: $white;
+  border: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba($dark, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.productImage {
+  aspect-ratio: 4/3;
+  background: rgba($dark, 0.04);
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.productImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-size: 36px;
+    font-weight: 700;
+    color: rgba($dark, 0.15);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: $dark;
+  color: $white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+
+.productBody {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.productTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.productMeta {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: $muted;
+  padding: 2px 6px;
+  border: 1px solid $border;
+}
+
+.productPrice {
+  font-size: 16px;
+  font-weight: 700;
+  color: $dark;
+  margin: 0 0 0 auto;
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+// ─── Skeleton ────────────────────────────────────────────────────────────────
+
+.gridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.skeletonCard {
+  aspect-ratio: 3/4;
+  background: linear-gradient(90deg, rgba($dark, 0.06) 25%, rgba($dark, 0.1) 50%, rgba($dark, 0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ─── States ───────────────────────────────────────────────────────────────────
+
+.stateBox {
+  padding: 64px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.stateTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $text;
+  margin: 0;
+}
+
+.stateText {
+  font-size: 14px;
+  color: $muted;
+  margin: 0;
+}
+
+.resetBtnLarge {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: $dark;
+  color: $white;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: $accent; }
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pageBtn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid $border;
+  background: $white;
+  color: rgba($text, 0.6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled):not(.pageBtnActive) {
+    border-color: rgba($dark, 0.3);
+    color: $text;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &.pageBtnActive {
+    background: $dark;
+    border-color: $dark;
+    color: $white;
+    font-weight: 700;
+  }
+}
+
+.pageDots {
+  color: $muted;
+  font-size: 13px;
+  padding: 0 4px;
+}

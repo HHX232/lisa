@@ -1,0 +1,187 @@
+$bg: #F8F9FB;
+$dark: #1B3C78;
+$accent: #072761;
+$white: #ffffff;
+$text: #0d1b2e;
+
+.registerPage {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: fit-content;
+  background: $white;
+  border: 1px solid rgba($dark, 0.12);
+  border-radius: 0;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: 0 2px 16px rgba($dark, 0.06);
+  min-width: 420px;
+  @media (max-width: 600px) {
+    min-width: auto;
+  }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+// Tabs
+.tabs {
+  display: flex;
+  background: rgba($dark, 0.05);
+  border-radius: 0;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: rgba($text, 0.4);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+
+  &:hover:not(.tabActive) {
+    color: rgba($text, 0.7);
+    background: rgba($dark, 0.04);
+  }
+}
+
+.tabActive {
+  background: $dark;
+  color: $white;
+  box-shadow: 0 2px 8px rgba($dark, 0.2);
+}
+
+// Fields
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+// Buttons
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 0;
+  background: $dark;
+  color: $white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #{$dark} 92%, white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba($dark, 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: rgba($text, 0.4);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    color: rgba($text, 0.8);
+  }
+}
+
+// OTP step
+.otpHint {
+  font-size: 14px;
+  color: rgba($text, 0.5);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.otpTarget {
+  color: $text;
+  font-weight: 600;
+}
+
+// States
+.error {
+  font-size: 13px;
+  color: #c0392b;
+  margin: 0;
+  padding: 10px 14px;
+  background: rgba(192, 57, 43, 0.06);
+  border-radius: 0;
+  border: 1px solid rgba(192, 57, 43, 0.18);
+}
+
+.loading {
+  font-size: 13px;
+  color: rgba($text, 0.4);
+  margin: 0;
+  text-align: center;
+}
+
+// Success
+.successIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 0;
+  background: rgba($dark, 0.07);
+  border: 2px solid $dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: $dark;
+  align-self: center;
+}
+
+.successTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: $text;
+  margin: 0;
+  text-align: center;
+}
+
+.successText {
+  font-size: 14px;
+  color: rgba($text, 0.5);
+  margin: 0;
+  text-align: center;
+}

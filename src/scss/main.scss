@@ -1,14 +1,14 @@
 @use 'sass:math';
-@import 'variables';
-@import './config/fonts';
-@import './config/root';
-@import './config/functions';
-@import './config/mixins';
-@import './config/placeholders';
-@import './config/reset';
-@import './config/typography';
-@import './config/base';
-@import './config/keyframes';
+@use 'variables' as vars;
+@use './config/fonts' as fonts;
+@use './config/root' as root;
+@use './config/functions' as fn;
+@use './config/mixins' as mix;
+@use './config/placeholders' as ph;
+@use './config/reset' as reset;
+@use './config/typography' as typo;
+@use './config/base' as base;
+@use './config/keyframes' as kf;
 
 /* Для Firefox */
 // html {
@@ -272,11 +272,11 @@ body {
 
 
 .fontJaro {
-  font-family: $font-jaro;
+  font-family: vars.$font-jaro;
 }
 
 .fontInstrument {
-  font-family: $font-instrument-sans;
+  font-family: vars.$font-instrument-sans;
 }
 
 /* Reset CSS (Eric Meyer's Reset v2.0 + modern additions) */

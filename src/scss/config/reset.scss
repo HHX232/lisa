@@ -1,8 +1,11 @@
 /* ------------------------------------------------------------------------------------------------------------------------------
 RESET
 -------------------------------------------------------------------------------------------------------------------------------- */
-@import 'mixins';
-@import '../variables';
+
+@use './mixins.scss' as mix;
+@use './functions.scss' as fn;
+@use '../variables' as vars;
+
 * {
   padding: 0;
   border: 0;
@@ -35,8 +38,8 @@ body {
 }
 
 body {
-  font-family: $font-default;
-  font-size: rem(16);
+  font-family: vars.$font-default;
+  font-size: fn.rem(16);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   font-weight: 300;

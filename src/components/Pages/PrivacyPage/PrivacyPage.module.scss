@@ -1,0 +1,89 @@
+.privacy h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #072761;
+  margin: 0 0 32px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #072761;
+}
+
+.privacy h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1B3C78;
+  margin: 48px 0 16px;
+  padding-left: 12px;
+  border-left: 3px solid #1B3C78;
+}
+
+.privacy p {
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+.privacy a {
+  color: #1B3C78;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.privacy strong {
+  font-weight: 600;
+  color: #072761;
+}
+
+/* Lists */
+.privacy ul,
+.privacy ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  border: 1px solid #d8d8d4;
+}
+
+.privacy li {
+  position: relative;
+  padding: 10px 16px 10px 40px;
+  line-height: 1.6;
+  border-bottom: 1px solid #d8d8d4;
+}
+
+.privacy li:last-child {
+  border-bottom: none;
+}
+
+/* ul bullet — синий квадратик */
+.privacy ul > li::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: #1B3C78;
+  flex-shrink: 0;
+}
+
+/* ol counter */
+.privacy ol {
+  counter-reset: ol-counter;
+}
+
+.privacy ol > li {
+  counter-increment: ol-counter;
+}
+
+.privacy ol > li::before {
+  content: counter(ol-counter, decimal-leading-zero);
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #1B3C78;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}

@@ -1,0 +1,38 @@
+.favorite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #072761;
+  background: transparent;
+  padding: 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+  background: #072761;
+
+  svg path {
+    stroke: #fff;
+    fill: #fff; 
+  }
+}
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.favoriteActive {
+  svg path {
+    fill: #072761;
+    stroke: #072761; // ← добавь, иначе stroke остаётся синим при белом фоне hover
+  }
+
+  &:hover:not(:disabled) {
+    svg path {
+      fill: #fff;
+      stroke: #fff;
+    }
+  }
+}

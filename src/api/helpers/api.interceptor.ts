@@ -1,7 +1,7 @@
 import axios from 'axios'
-import {getAccessToken} from './auth.helper'
+import { getAccessToken, getCurrency, getCurrencyServer } from './auth.helper'
 
-export const getContentType = (overrideLang?: string) => {
+export const getContentType = (overrideLang?: string, overrideCurrency?: string) => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
@@ -11,19 +11,27 @@ export const getContentType = (overrideLang?: string) => {
   headers['X-Requested-With'] = 'XMLHttpRequest'
   headers['Accept'] = 'application/json'
 
+  const currency = overrideCurrency || getCurrency()
+  if (currency) {
+    headers['X-Currency'] = currency
+  }
+
   return headers
 }
+
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: getContentType()
+  headers: getContentType(),
+  withCredentials: true
 })
 
 export const axiosClassic = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: getContentType()
+  headers: getContentType(),
+  withCredentials: true
 })
 
-instance.interceptors.request.use((config) => {
+instance.interceptors.request.use(async (config) => {
   const accessToken = getAccessToken()
   if (config.headers && accessToken !== null) {
     config.headers.Authorization = `Bearer ${accessToken || ''}`
@@ -39,10 +47,15 @@ instance.interceptors.request.use((config) => {
     config.headers['x-language'] = currentHeaders['Accept-Language']
   }
 
+  const currency = await getCurrencyServer()
+  if (currency) {
+    config.headers['X-Currency'] = currency
+  }
+
   return config
 })
 
-axiosClassic.interceptors.request.use((config) => {
+axiosClassic.interceptors.request.use(async (config) => {
   const currentHeaders = getContentType()
 
   config.headers['Content-Type'] = currentHeaders['Content-Type']
@@ -55,6 +68,11 @@ axiosClassic.interceptors.request.use((config) => {
 
   if (!config.headers['x-language'] && currentHeaders['Accept-Language']) {
     config.headers['x-language'] = currentHeaders['Accept-Language']
+  }
+
+  const currency = await getCurrencyServer()
+  if (currency) {
+    config.headers['X-Currency'] = currency
   }
 
   return config

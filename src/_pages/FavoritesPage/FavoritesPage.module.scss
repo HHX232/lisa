@@ -1,0 +1,118 @@
+$dark: #1B3C78;
+$accent: #072761;
+$text: #0d1b2e;
+$bg: #F8F9FB;
+
+.favoritesPage {
+  background: $bg;
+  min-height: 70vh;
+  padding: 60px 0 80px;
+
+  @media (max-width: 1050px) {
+    padding: 40px 0 60px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 24px 0 40px;
+  }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.title {
+  font-size: 64px;
+  font-weight: 500;
+  margin: 0;
+  color: $text;
+
+  @media (max-width: 1050px) {
+    font-size: 48px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 32px;
+  }
+}
+
+.count {
+  font-size: 20px;
+  color: rgba($text, 0.4);
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.skeletonCard {
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(90deg, #e8edf5 25%, #f0f4fa 50%, #e8edf5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba($accent, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.stateTitle {
+  font-size: 24px;
+  font-weight: 500;
+  color: $text;
+  margin: 0;
+}
+
+.stateText {
+  font-size: 16px;
+  color: rgba($text, 0.4);
+  margin: 0;
+}

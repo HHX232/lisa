@@ -1,0 +1,115 @@
+$bg: #F8F9FB;
+$dark: #1B3C78;
+$accent: #072761;
+$white: #ffffff;
+$text: #0d1b2e;
+
+.modal_title {
+  font-size: 18px;
+  font-weight: 700;
+  color: $text;
+  margin: 0;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 0;
+  background: $dark;
+  color: $white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #{$dark} 92%, white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba($dark, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: rgba($text, 0.4);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    color: rgba($text, 0.8);
+  }
+}
+
+.otpHint {
+  font-size: 14px;
+  color: rgba($text, 0.5);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.otpTarget {
+  color: $text;
+  font-weight: 600;
+}
+
+.error {
+  font-size: 13px;
+  color: #c0392b;
+  margin: 0;
+  padding: 10px 14px;
+  background: rgba(192, 57, 43, 0.06);
+  border: 1px solid rgba(192, 57, 43, 0.18);
+}
+
+.loading {
+  font-size: 13px;
+  color: rgba($text, 0.4);
+  margin: 0;
+  text-align: center;
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  background: rgba($dark, 0.07);
+  border: 2px solid $dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: $dark;
+  align-self: center;
+}
+
+.successTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: $text;
+  margin: 0;
+  text-align: center;
+}
+
+.successText {
+  font-size: 14px;
+  color: rgba($text, 0.5);
+  margin: 0;
+  text-align: center;
+}

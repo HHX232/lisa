@@ -12,9 +12,10 @@ import type { Metadata } from "next";
 import '../scss/config/fonts.scss';
 
 
-import 'swiper/css'
-import 'swiper/css/navigation'
+import 'swiper/css';
+import 'swiper/css/navigation';
 
+import QueryProvider from '@/components/providers/QueryProvider';
 import { Montserrat, Philosopher } from 'next/font/google';
 
 const philosopher = Philosopher({
@@ -41,12 +42,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
-    <html className={`${philosopher.variable} ${montserrat.variable}`} lang="ru">
+     <html className={`${philosopher.variable} ${montserrat.variable}`} lang="ru">
       <body>
-        <div >
-        {children}
-        </div>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
+        <div id='modal_portal'></div>
       </body>
     </html>
   );

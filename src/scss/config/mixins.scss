@@ -1,5 +1,5 @@
 @use 'sass:math';
-@import 'functions';
+@use './functions.scss' as fn;
 
 @mixin text-gradient($gradient) {
   background: $gradient;
@@ -8,7 +8,7 @@
 }
 
 @mixin media-mx($value) {
-  $width: em($value);
+  $width: fn.em($value);
 
   @media (max-width: $width) {
     @content;
@@ -16,7 +16,7 @@
 }
 
 @mixin media-mn($value) {
-  $width: em($value + 0.98);
+  $width: fn.em($value + 0.98);
 
   @media (min-width: $width) {
     @content;
@@ -61,7 +61,7 @@
 
 @mixin hide-placeholder($time: 300, $effect: ease) {
   &::placeholder {
-    transition: opacity #{$time} + ms $effect;
+    transition: opacity #{$time}ms $effect;
   }
 
   &:focus {

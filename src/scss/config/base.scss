@@ -3,9 +3,9 @@ BASE
 -------------------------------------------------------------------------------------------------------------------------------- */
 
 @use 'sass:math';
-@import './mixins.scss';
-@import './functions.scss';
-@import './fonts.scss';
+@use './mixins' as mix;
+@use './functions' as fn;
+@use './fonts';
 
 html {
   opacity: 1;
@@ -18,7 +18,6 @@ html {
 }
 
 body {
-  // font-family: 'AvrileSans' !important;
   padding: 0;
   margin: 0;
   text-wrap: balance;
@@ -27,22 +26,22 @@ body {
 * {
   &::-webkit-scrollbar {
     background-color: var(--scrollbar);
-    inline-size: rem(8);
+    inline-size: fn.rem(8);
   }
 
   &::-webkit-scrollbar-track {
-    border-radius: rem(10);
+    border-radius: fn.rem(10);
     background: var(--scrollbar-track);
-    box-shadow: inset 0 0 rem(6) rgba(#000, 20%);
+    box-shadow: inset 0 0 fn.rem(6) rgba(#000, 20%);
   }
 
   &::-webkit-scrollbar-thumb {
     border: 0 none #fff;
-    border-radius: rem(10);
+    border-radius: fn.rem(10);
     background-color: var(--scrollbar-thumb);
     cursor: pointer;
 
-    @include any-hover {
+    @include mix.any-hover {
       background-color: grey;
     }
   }
@@ -59,13 +58,11 @@ body {
 .container {
   margin-inline: auto;
   max-width: 1400px !important;
-
   padding: 0 20px;
-
 }
 
 .sm-block {
-  @include sm {
+  @include mix.sm {
     display: block;
   }
 }
@@ -73,8 +70,8 @@ body {
 .container-full {
   width: 100%;
   margin-inline: auto;
-  max-inline-size: rem(1440);
-  min-inline-size: rem(320);
+  max-inline-size: fn.rem(1440);
+  min-inline-size: fn.rem(320);
 }
 
 .img-responsive {
@@ -103,8 +100,6 @@ body {
   position: fixed;
   z-index: 5;
   backdrop-filter: blur(7px);
-
-  /* эффект размытия */
   background-color: rgb(0 0 0 / 25%);
   inset: 0;
   opacity: 0;
@@ -135,13 +130,9 @@ body {
   z-index: 1000;
   width: auto;
   height: auto;
-
-  /* цвет текста */
   padding: 8px;
   background: #000;
   clip: auto;
-
-  /* или другой фон для выделения */
   color: #fff;
 }
 
@@ -151,8 +142,6 @@ body {
   width: 1px !important;
   height: 1px !important;
   padding: 0 !important;
-
-  /* предотвращает перенос текста */
   border: 0 !important;
   margin: -1px !important;
   clip: rect(0 0 0 0) !important;
@@ -160,12 +149,7 @@ body {
 }
 
 .wrapper {
-  // max-inline-size: var(--max-width);
-  // transform-origin: top center;
-
   display: flex;
-
-  /** Поменять на clip - если используется в проекте position: sticky */
   overflow: clip;
   flex-direction: column;
   min-block-size: 100%;

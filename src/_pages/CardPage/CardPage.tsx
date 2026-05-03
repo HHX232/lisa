@@ -1,9 +1,10 @@
-import MainCardSlider from "@/components/CardPage/MainCardSlider/MainCardSlider";
+import MainCardSlider from "@/components/Pages/MainCardSlider/MainCardSlider";
 import Breadcrumbs from "@/components/UI/Bread/Bread";
 import CharacterUI from "@/components/UI/CharacterUI/CharacterUI";
+import FavoriteButton from "@/components/UI/FavoriteButton/FavoriteButton";
 import SliderBigGrid, { mockCards } from "@/components/UI/SliderBigGrid/SliderBigGrid";
-import style from "./CardPage.module.scss";
 import { Characteristic } from "@/types/Product.types";
+import style from "./CardPage.module.scss";
 
 interface BreadcrumbItem {
   label: string;
@@ -23,6 +24,7 @@ interface CardPageComponentProps {
   breadcrumbs?: BreadcrumbItem[];
   images?: string[];
   characteristics?: Characteristic[];
+  id:string
 }
 
 function CardPageComponent({
@@ -41,6 +43,7 @@ function CardPageComponent({
     { label: "Дом", href: "/" },
     { label: "Каталог", href: "/catalog" },
   ],
+  id
 }: CardPageComponentProps) {
   return (
     <div className={`${style.margins} container`}>
@@ -59,11 +62,8 @@ function CardPageComponent({
           <div className={style.button_box}>
             <div className={style.top}>
               <button className={style.basket}>В корзину</button>
-              <div className={style.favorite}>
-                <svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.6875 0.75C3.40875 0.75 0.75 3.575 0.75 7.05875C0.75 14.0312 12 22 12 22C12 22 23.25 14.0312 23.25 7.05875C23.25 2.7425 20.5912 0.75 17.3125 0.75C14.9875 0.75 12.975 2.17 12 4.2375C11.025 2.17 9.0125 0.75 6.6875 0.75Z" stroke="#072761" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
+             <FavoriteButton productId={id} />
+
             </div>
             {isComplect && (
               <button className={style.show_complect}>Смотреть комплект</button>

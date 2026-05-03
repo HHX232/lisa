@@ -21,13 +21,13 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  async rewrites() {
+ async rewrites() {
     return [
       {
-        source: '/api/:path*', 
+        source: '/api/:path*',
         destination: 'https://septaria-api.up.railway.app/api/:path*',
       },
-    ];
+    ]
   },
 };
 

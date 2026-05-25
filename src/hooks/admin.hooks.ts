@@ -1,0 +1,128 @@
+'use client'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import adminService, { AdminUsersParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
+import advertisementService from '@/api/services/add.service'
+import productService from '@/api/services/productService.service'
+import { ProductStatus, ProductsRequestParams } from '@/types/Product.types'
+import { AdminOrdersParams, OrderStatus } from '@/types/Order.types'
+
+export const ADMIN_USERS_KEY = ['admin', 'users']
+export const ADMIN_ADS_KEY = ['admin', 'advertisements']
+export const ADMIN_ORDERS_KEY = ['admin', 'orders']
+export const ADMIN_PRODUCTS_KEY = ['admin', 'products']
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+export function useAdminUsers(params: AdminUsersParams = {}) {
+  return useQuery({
+    queryKey: [...ADMIN_USERS_KEY, params],
+    queryFn: () => adminService.getUsers(params)
+  })
+}
+
+export function useUpdateAdminUser() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, body }: { id: number; body: UpdateAdminUserBody }) =>
+      adminService.updateUser(id, body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_USERS_KEY })
+  })
+}
+
+export function useDeleteAdminUser() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteUser(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_USERS_KEY })
+  })
+}
+
+// ─── Advertisements ───────────────────────────────────────────────────────────
+
+export function useAdminAdvertisements() {
+  return useQuery({
+    queryKey: ADMIN_ADS_KEY,
+    queryFn: () => advertisementService.getAdvertisements(),
+    select: (res) => res.data
+  })
+}
+
+export function useUpsertAdvertisement() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ advertisement, image }: { advertisement: AdvertisementBody; image?: File | null }) =>
+      adminService.upsertAdvertisement(advertisement, image),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_ADS_KEY })
+  })
+}
+
+export function useDeleteAdvertisement() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteAdvertisement(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_ADS_KEY })
+  })
+}
+
+// ─── Products ─────────────────────────────────────────────────────────────────
+
+export function useAdminProducts(params: ProductsRequestParams = {}) {
+  return useQuery({
+    queryKey: [...ADMIN_PRODUCTS_KEY, params],
+    queryFn: () => productService.getProducts(params),
+    select: (res) => res.data
+  })
+}
+
+export function useDeleteAdminProduct() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteProduct(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_PRODUCTS_KEY })
+  })
+}
+
+export function useChangeProductStatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: ProductStatus }) =>
+      adminService.changeProductStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_PRODUCTS_KEY })
+  })
+}
+
+export function useImportProductsExcel() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (file: File) => adminService.importProductsExcel(file),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_PRODUCTS_KEY })
+  })
+}
+
+export function useUpsertProduct() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ product, images }: { product: ProductRequestBody; images: File[] }) =>
+      adminService.upsertProduct(product, images),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_PRODUCTS_KEY })
+  })
+}
+
+// ─── Orders ───────────────────────────────────────────────────────────────────
+
+export function useAdminOrders(params: AdminOrdersParams = {}) {
+  return useQuery({
+    queryKey: [...ADMIN_ORDERS_KEY, params],
+    queryFn: () => adminService.getAdminOrders(params)
+  })
+}
+
+export function useChangeAdminOrderStatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: OrderStatus }) =>
+      adminService.changeOrderStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_ORDERS_KEY })
+  })
+}

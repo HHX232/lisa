@@ -1,0 +1,606 @@
+$accent: #072761;
+$dark: #1B3C78;
+$bg: #F8F9FB;
+$white: #ffffff;
+$text: #0d1b2e;
+$border: rgba(27, 60, 120, 0.12);
+$red: #c0392b;
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+
+  @media (max-width: 740px) {
+    padding: 0;
+    align-items: flex-end;
+  }
+}
+
+.modal {
+  background: $white;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.22);
+  animation: slideUp 0.25s ease;
+
+  @media (max-width: 740px) {
+    max-width: 100%;
+    max-height: 96vh;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 32px;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    padding: 16px 20px;
+  }
+}
+
+.modalTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: $text;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.closeBtn {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+
+  &:hover { transform: rotate(90deg); }
+
+  span {
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    background: $accent;
+    &:first-child { transform: rotate(45deg); }
+    &:last-child { transform: rotate(-45deg); }
+  }
+}
+
+// ── Body ──────────────────────────────────────────────────────────────────────
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba($dark, 0.2); }
+}
+
+.loadingState {
+  padding: 64px;
+  text-align: center;
+  color: rgba($text, 0.35);
+  font-size: 14px;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 32px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    padding: 14px 20px;
+  }
+}
+
+.cancelBtn {
+  padding: 11px 22px;
+  border: 1px solid $border;
+  background: transparent;
+  color: rgba($text, 0.55);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $dark;
+    color: $dark;
+  }
+}
+
+.saveBtn {
+  padding: 11px 28px;
+  border: none;
+  background: $dark;
+  color: $white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #{$dark} 88%, white);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+// ── Sections ──────────────────────────────────────────────────────────────────
+
+.section {
+  padding: 24px 32px;
+  border-bottom: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &:last-child { border-bottom: none; }
+
+  @media (max-width: 600px) {
+    padding: 18px 20px;
+    gap: 12px;
+  }
+}
+
+.sectionTitle {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: rgba($text, 0.38);
+  margin: 0;
+}
+
+// ── Field layouts ─────────────────────────────────────────────────────────────
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.field {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldFull {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldHalf {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: calc(50% - 5px);
+
+  @media (max-width: 480px) { width: 100%; }
+}
+
+.fieldNarrow {
+  width: 88px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// ── Inputs ────────────────────────────────────────────────────────────────────
+
+.label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+  color: rgba($text, 0.42);
+}
+
+.input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid $border;
+  background: $bg;
+  font-size: 13.5px;
+  color: $text;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.18s, background 0.18s;
+
+  &::placeholder { color: rgba($text, 0.28); }
+
+  &:focus {
+    border-color: rgba($dark, 0.5);
+    background: $white;
+  }
+
+  // Number input arrows
+  &[type='number'] {
+    -moz-appearance: textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button { opacity: 0.4; }
+  }
+}
+
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid $border;
+  background: $bg;
+  font-size: 13.5px;
+  color: $text;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  line-height: 1.55;
+  width: 100%;
+  transition: border-color 0.18s, background 0.18s;
+
+  &::placeholder { color: rgba($text, 0.28); }
+
+  &:focus {
+    border-color: rgba($dark, 0.5);
+    background: $white;
+  }
+}
+
+.select {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid $border;
+  background: $bg;
+  font-size: 13.5px;
+  color: $text;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.18s;
+
+  &:focus { border-color: rgba($dark, 0.5); }
+}
+
+// ── Toggles ───────────────────────────────────────────────────────────────────
+
+.toggleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  row-gap: 14px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  background: rgba($text, 0.11);
+  flex-shrink: 0;
+  display: block;
+  transition: background 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 14px;
+    height: 14px;
+    background: $white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s;
+  }
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: $dark;
+
+  &::after {
+    transform: translateX(16px);
+  }
+}
+
+.toggleText {
+  font-size: 13px;
+  font-weight: 500;
+  color: $text;
+}
+
+// ── Shops ─────────────────────────────────────────────────────────────────────
+
+.tagInput {
+  display: flex;
+  gap: 8px;
+}
+
+.addBtn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 1px solid $border;
+  background: $white;
+  color: $dark;
+  font-size: 22px;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.18s;
+
+  &:hover {
+    background: $dark;
+    color: $white;
+    border-color: $dark;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  background: rgba($dark, 0.07);
+  color: $dark;
+  font-size: 13px;
+  font-weight: 500;
+
+  button {
+    background: none;
+    border: none;
+    color: rgba($dark, 0.45);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s;
+
+    &:hover { color: $red; }
+  }
+}
+
+// ── Characteristics ───────────────────────────────────────────────────────────
+
+.charList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.charRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .input { flex: 1; min-width: 0; }
+}
+
+.removeBtn {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid rgba($red, 0.22);
+  color: rgba($red, 0.55);
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+
+  &:hover {
+    background: $red;
+    color: $white;
+    border-color: $red;
+  }
+}
+
+.addLineBtn {
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed rgba($dark, 0.2);
+  color: rgba($text, 0.45);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+
+  &:hover {
+    border-color: $dark;
+    color: $dark;
+  }
+}
+
+// ── Images ────────────────────────────────────────────────────────────────────
+
+.subLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba($text, 0.38);
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.uploadZone {
+  border: 2px dashed rgba($dark, 0.18);
+  background: $bg;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  color: rgba($dark, 0.5);
+
+  &:hover {
+    border-color: $dark;
+    background: rgba($dark, 0.03);
+    color: $dark;
+  }
+
+  svg { margin-bottom: 2px; }
+
+  span:nth-child(2) {
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+  }
+}
+
+.uploadHint {
+  font-size: 11px;
+  color: rgba($text, 0.32);
+}
+
+.fileInput { display: none; }
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+
+.imageCard {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid $border;
+  overflow: hidden;
+  background: $bg;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .imageAction { opacity: 1; }
+}
+
+.imageCardDeleted {
+  img { opacity: 0.25; }
+}
+
+.deletedOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: $red;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.imageAction {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.imageActionDelete {
+  background: $red;
+  color: $white;
+  &:hover { background: color-mix(in srgb, #{$red} 82%, black); }
+}
+
+.imageActionRestore {
+  background: $dark;
+  color: $white;
+  opacity: 1;
+  &:hover { background: color-mix(in srgb, #{$dark} 82%, white); }
+}
+
+// ── Animations ────────────────────────────────────────────────────────────────
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}

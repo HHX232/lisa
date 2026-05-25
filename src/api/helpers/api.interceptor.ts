@@ -58,7 +58,11 @@ instance.interceptors.request.use(async (config) => {
 axiosClassic.interceptors.request.use(async (config) => {
   const currentHeaders = getContentType()
 
-  config.headers['Content-Type'] = currentHeaders['Content-Type']
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  } else {
+    config.headers['Content-Type'] = currentHeaders['Content-Type']
+  }
   config.headers['X-Requested-With'] = currentHeaders['X-Requested-With']
   config.headers['Accept'] = currentHeaders['Accept']
 

@@ -1,7 +1,10 @@
 import { Product } from "./Product.types"
 
+export type UserRole = 'ADMIN' | 'USER'
+
 export interface IMe {
   id: number
+  role: UserRole
   phoneNumber: string
   originalPhoneNumber: string
   phoneNumberVerified: boolean

@@ -14,6 +14,8 @@ export interface ProductPageable {
   sort: ProductSort
 }
 
+export type ProductStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE'
+
 export interface Product {
   id: number
   title: string
@@ -25,7 +27,8 @@ export interface Product {
   imageUrl: string
   useFillImage: boolean
   isSouvenir?: boolean
-  showCardTitle?:boolean
+  showCardTitle?: boolean
+  status?: ProductStatus
 }
 export interface Characteristic {
   name: string
@@ -38,19 +41,22 @@ export interface ProductFull {
   isComplect: boolean
   currentPrice: number
   originalPrice: number
+  currency?: string
   sale: number
   description: string
   imageUrl: string
   useFillImage: boolean
   isSouvenir: boolean
-  images: {  id:string,
-      url: string,
-      displayOrder: number}[]
+  isAdvertisement?: boolean
+  advertisementType?: string
+  status?: ProductStatus
+  images: { id: string; url: string; displayOrder: number }[]
   inShops: string[]
   characteristics: Characteristic[]
   fullDescription: string
   category: string
   complectItems: Product[]
+  count?: number
 }
 export interface PaginatedProducts {
   totalElements: number

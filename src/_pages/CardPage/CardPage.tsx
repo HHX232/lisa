@@ -1,9 +1,11 @@
 import MainCardSlider from "@/components/Pages/MainCardSlider/MainCardSlider";
 import Breadcrumbs from "@/components/UI/Bread/Bread";
+import AddToCartButton from "@/components/UI/AddToCartButton/AddToCartButton";
 import CharacterUI from "@/components/UI/CharacterUI/CharacterUI";
+import ComplectModal from "@/components/UI/ComplectModal/ComplectModal";
 import FavoriteButton from "@/components/UI/FavoriteButton/FavoriteButton";
 import SliderBigGrid, { mockCards } from "@/components/UI/SliderBigGrid/SliderBigGrid";
-import { Characteristic } from "@/types/Product.types";
+import { Characteristic, Product } from "@/types/Product.types";
 import style from "./CardPage.module.scss";
 
 interface BreadcrumbItem {
@@ -24,7 +26,10 @@ interface CardPageComponentProps {
   breadcrumbs?: BreadcrumbItem[];
   images?: string[];
   characteristics?: Characteristic[];
-  id:string
+  id: string;
+  stockCount?: number;
+  complectItems?: Product[];
+  currentProduct?: Product;
 }
 
 function CardPageComponent({
@@ -43,7 +48,10 @@ function CardPageComponent({
     { label: "Дом", href: "/" },
     { label: "Каталог", href: "/catalog" },
   ],
-  id
+  id,
+  stockCount,
+  complectItems = [],
+  currentProduct,
 }: CardPageComponentProps) {
   return (
     <div className={`${style.margins} container`}>
@@ -61,12 +69,16 @@ function CardPageComponent({
 
           <div className={style.button_box}>
             <div className={style.top}>
-              <button className={style.basket}>В корзину</button>
+              <AddToCartButton productId={id} className={style.basket} stockCount={stockCount} />
              <FavoriteButton productId={id} />
 
             </div>
-            {isComplect && (
-              <button className={style.show_complect}>Смотреть комплект</button>
+            {isComplect && currentProduct && (
+              <ComplectModal
+                currentProduct={currentProduct}
+                complectItems={complectItems}
+                buttonClassName={style.show_complect}
+              />
             )}
           </div>
 

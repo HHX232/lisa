@@ -6,8 +6,8 @@ import Header from "@/components/Main/Header/Header";
 
 async function CardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { data } = await productService.getProductById(id);
-console.log('dataProduct', data)
+  const { data, error } = await productService.getProductById(id);
+console.log('dataProduct', id,error, data)
   if (!data) return <div>Товар не найден</div>;
 
   return (
@@ -25,6 +25,20 @@ console.log('dataProduct', data)
         images={data.images.map(el=>el.url)}
         stores={data.inShops}
         characteristics={data.characteristics}
+        stockCount={data.count ?? 1}
+        complectItems={data.complectItems ?? []}
+        currentProduct={{
+          id: data.id,
+          title: data.title,
+          isComplect: data.isComplect,
+          currentPrice: data.currentPrice,
+          originalPrice: data.originalPrice,
+          sale: data.sale,
+          description: data.description,
+          imageUrl: data.imageUrl,
+          useFillImage: data.useFillImage,
+          isSouvenir: data.isSouvenir,
+        }}
       />
       <Footer />
     </>

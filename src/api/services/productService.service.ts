@@ -5,7 +5,7 @@ import {
   ProductsRequestParams,
 } from '@/types/Product.types'
 import { axiosClassic } from '../helpers/api.interceptor'
-import { getAccessToken } from '../helpers/auth.helper'
+import { getAccessTokenServer } from '../helpers/auth.helper'
 import {
   validateAdvertisementType,
   validateBoolean,
@@ -47,14 +47,19 @@ const productService = {
     if (title) query.set('title', title)
     if (advertisementType) query.set('advertisementType', advertisementType)
 
+    const url = `/products?${query.toString()}`
+    console.log('[productService.getProducts] request URL:', url, '| params:', params)
     try {
-      const res = await axiosClassic.get<PaginatedProducts>(`/products?${query.toString()}`, {
+      const res = await axiosClassic.get<PaginatedProducts>(url, {
         headers: {
           'Accept-Language': currentLang || 'en',
         },
       })
+      console.log('[productService.getProducts] status:', res.status, '| items count:', res.data?.content?.length ?? 'n/a')
       return { data: res.data, isLoading: false, isError: false, error: null }
-    } catch (err) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status: number; data: unknown }; message?: string }
+      console.error('[productService.getProducts] error:', axiosErr?.response?.status, axiosErr?.response?.data ?? axiosErr?.message)
       return {
         data: null,
         isLoading: false,
@@ -65,7 +70,7 @@ const productService = {
   },
 
   async getProductById(id: number | string, currentLang?: string) {
-    const accessToken = await getAccessToken()
+    const accessToken = await getAccessTokenServer()
     try {
       const res = await axiosClassic.get<ProductFull>(`/products/${id}`, {
         headers: {
@@ -85,7 +90,7 @@ const productService = {
   },
 
   async updateProduct(id: number | string, body: Partial<Product>, currentLang?: string) {
-    const accessToken = await getAccessToken()
+    const accessToken = await getAccessTokenServer()
     try {
       const res = await axiosClassic.put<Product>(`/products/${id}`, body, {
         headers: {
@@ -105,7 +110,7 @@ const productService = {
   },
 
   async deleteProduct(id: number | string, currentLang?: string) {
-    const accessToken = await getAccessToken()
+    const accessToken = await getAccessTokenServer()
     try {
       await axiosClassic.delete(`/products/${id}`, {
         headers: {

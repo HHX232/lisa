@@ -72,8 +72,12 @@ function Header() {
               <Image className={styles.cursorPointer} src={searchUrl} width={24} height={24} alt="search" />
             </div>
             <Image className={styles.cursorPointer} src={heartUrl} width={24} height={24} alt="heart" />
-            <Image className={styles.cursorPointer} src={bagUrl} width={24} height={24} alt="bag" />
-            <Image className={styles.cursorPointer} src={personUrl} width={24} height={24} alt="person" />
+            <Link href="/basket">
+              <Image className={styles.cursorPointer} src={bagUrl} width={24} height={24} alt="bag" />
+            </Link>
+            <Link href="/profile">
+              <Image className={styles.cursorPointer} src={personUrl} width={24} height={24} alt="person" />
+            </Link>
           </div>
            </div>
         </div>

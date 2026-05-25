@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import TextInputUI from '../../UI/inputs/TextInputUI/TextInputUI'
@@ -141,6 +142,11 @@ const handleTelegramClick = () => {
             >
               {loading ? 'Загрузка...' : 'Продолжить'}
             </button>
+
+            <p className={styles.footer}>
+              Уже есть аккаунт?{' '}
+              <Link href="/login" className={styles.link}>Войти</Link>
+            </p>
           </>
         )}
 

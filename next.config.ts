@@ -21,14 +21,6 @@ const nextConfig: NextConfig = {
     ],
   },
 
- async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'https://septaria-api.up.railway.app/api/:path*',
-      },
-    ]
-  },
 };
 
 export default nextConfig;

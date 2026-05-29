@@ -6,13 +6,26 @@ import { useCurrency } from '@/hooks/useCurrency'
 import { Product } from '@/types/Product.types'
 import { useQuery } from '@tanstack/react-query'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './CatalogPage.module.scss'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type SortField = 'ID' | 'TITLE' | 'PRICE'
 type SortDir = 'ASC' | 'DESC'
+
+const CATEGORY_LABELS: Record<string, string> = {
+  rings: 'Кольца',
+  earrings: 'Серьги',
+  sets: 'Комплекты',
+  bracelets: 'Браслеты',
+  brooches: 'Броши',
+  pendants: 'Подвески',
+  inserts: 'Вставки',
+  'costume-jewelry': 'Бижутерия',
+  souvenirs: 'Сувениры',
+  'gift-certificates': 'Подарочные сертификаты',
+}
 
 interface ProductsResponse {
   content: Product[]
@@ -34,6 +47,7 @@ interface Filters {
   advertisementType?: string
   sort?: SortField
   direction?: SortDir
+  category?: string
   page: number
   size: number
 }
@@ -55,6 +69,7 @@ const fetchProducts = async (filters: Filters): Promise<ProductsResponse> => {
   if (filters.advertisementType) params.advertisementType = filters.advertisementType
   if (filters.sort) params.sort = filters.sort
   if (filters.direction) params.direction = filters.direction
+  if (filters.category) params.category = filters.category
 
   const { data } = await axiosClassic.get('/products', { params })
   return data
@@ -79,6 +94,7 @@ function useFilters() {
     advertisementType: searchParams.get('advertisementType') ?? undefined,
     sort: (searchParams.get('sort') as SortField) ?? undefined,
     direction: (searchParams.get('direction') as SortDir) ?? undefined,
+    category: searchParams.get('category') ?? undefined,
   }
 
   const setFilters = useCallback((updates: Partial<Filters>) => {
@@ -98,6 +114,80 @@ function useFilters() {
   }, [searchParams, router, pathname])
 
   return { filters, setFilters }
+}
+
+// ─── CategorySelect ───────────────────────────────────────────────────────────
+
+function CategorySelect({
+  value,
+  onChange,
+}: {
+  value: string[]
+  onChange: (v: string[]) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const toggle = (slug: string) => {
+    const next = value.includes(slug) ? value.filter(s => s !== slug) : [...value, slug]
+    onChange(next)
+  }
+
+  const triggerLabel = value.length === 0
+    ? 'Выберите категории'
+    : value.length === 1
+      ? (CATEGORY_LABELS[value[0]] ?? value[0])
+      : `Выбрано: ${value.length}`
+
+  return (
+    <div className={styles.categorySelect} ref={ref}>
+      <button
+        className={`${styles.categorySelectTrigger} ${value.length > 0 ? styles.categorySelectActive : ''}`}
+        onClick={() => setOpen(o => !o)}
+        type="button"
+      >
+        <span>{triggerLabel}</span>
+        <span className={styles.categorySelectArrow}>{open ? '▲' : '▼'}</span>
+      </button>
+
+      {open && (
+        <div className={styles.categorySelectDropdown}>
+          {Object.entries(CATEGORY_LABELS).map(([slug, label]) => {
+            const checked = value.includes(slug)
+            return (
+              <label
+                key={slug}
+                className={`${styles.categorySelectOption} ${checked ? styles.categorySelectOptionChecked : ''}`}
+              >
+                <span className={`${styles.categoryCheckbox} ${checked ? styles.categoryCheckboxChecked : ''}`} />
+                {label}
+                <input type="checkbox" checked={checked} onChange={() => toggle(slug)} hidden />
+              </label>
+            )
+          })}
+        </div>
+      )}
+
+      {value.length > 0 && (
+        <div className={styles.categoryChips}>
+          {value.map(slug => (
+            <div key={slug} className={styles.categoryChip}>
+              <span>{CATEGORY_LABELS[slug] ?? slug}</span>
+              <button className={styles.categoryChipRemove} onClick={() => toggle(slug)} type="button">×</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ─── FilterToggle ─────────────────────────────────────────────────────────────
@@ -204,14 +294,6 @@ const currency = useCurrency()
     })
   }
 
-  const handleSort = (sort: SortField) => {
-    if (filters.sort === sort) {
-      setFilters({ direction: filters.direction === 'ASC' ? 'DESC' : 'ASC' })
-    } else {
-      setFilters({ sort, direction: 'ASC' })
-    }
-  }
-
   const resetFilters = () => {
     setMinPriceInput('')
     setMaxPriceInput('')
@@ -226,17 +308,18 @@ const currency = useCurrency()
       advertisementType: undefined,
       sort: undefined,
       direction: undefined,
+      category: undefined,
     })
   }
 
   const activeFiltersCount = [
-    filters.isAdvertisement,
     filters.isComplect,
     filters.isSouvenir,
     filters.minPrice,
     filters.maxPrice,
     filters.title,
     filters.advertisementType,
+    filters.category,
   ].filter((v) => v !== undefined && v !== '').length
 
   const pageInfo = data?.page
@@ -280,6 +363,14 @@ const currency = useCurrency()
           </div>
 
           <div className={styles.filterGroup}>
+            <p className={styles.filterLabel}>Категория</p>
+            <CategorySelect
+              value={filters.category?.split(',').filter(Boolean) ?? []}
+              onChange={(v) => setFilters({ category: v.length > 0 ? v.join(',') : undefined })}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
             <p className={styles.filterLabel}>Цена, ₽</p>
             <div className={styles.priceRow}>
               <input
@@ -307,29 +398,8 @@ const currency = useCurrency()
           <div className={styles.filterGroup}>
             <p className={styles.filterLabel}>Тип товара</p>
             <div className={styles.toggles}>
-              <FilterToggle label="Реклама" value={filters.isAdvertisement} onChange={(v) => setFilters({ isAdvertisement: v })} />
               <FilterToggle label="Комплект" value={filters.isComplect} onChange={(v) => setFilters({ isComplect: v })} />
               <FilterToggle label="Сувенир" value={filters.isSouvenir} onChange={(v) => setFilters({ isSouvenir: v })} />
-            </div>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <p className={styles.filterLabel}>Сортировка</p>
-            <div className={styles.sortList}>
-              {(['ID', 'TITLE', 'PRICE'] as SortField[]).map((field) => {
-                const labels: Record<SortField, string> = { ID: 'По ID', TITLE: 'По названию', PRICE: 'По цене' }
-                const active = filters.sort === field
-                return (
-                  <button
-                    key={field}
-                    className={`${styles.sortBtn} ${active ? styles.sortBtnActive : ''}`}
-                    onClick={() => handleSort(field)}
-                  >
-                    {labels[field]}
-                    {active && <span className={styles.sortArrow}>{filters.direction === 'ASC' ? '↑' : '↓'}</span>}
-                  </button>
-                )
-              })}
             </div>
           </div>
 

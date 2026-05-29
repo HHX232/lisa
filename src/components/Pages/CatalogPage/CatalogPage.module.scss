@@ -128,7 +128,7 @@ $muted: rgba($text, 0.4);
   flex-direction: column;
   gap: 24px;
   position: sticky;
-  top: 140px;
+  top: 220px;
 
   @media (max-width: 900px) {
     display: none;
@@ -230,6 +230,150 @@ $muted: rgba($text, 0.4);
   font-size: 12px;
   color: $muted;
   flex-shrink: 0;
+}
+
+// Category select
+
+.categorySelect {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.categorySelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid $border;
+  background: transparent;
+  font-size: 13px;
+  color: rgba($text, 0.5);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: rgba($dark, 0.3);
+    color: $text;
+  }
+
+  &.categorySelectActive {
+    border-color: rgba($dark, 0.3);
+    color: $dark;
+    font-weight: 600;
+  }
+}
+
+.categorySelectArrow {
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-left: 8px;
+  opacity: 0.5;
+}
+
+.categorySelectDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: $white;
+  border: 1px solid $border;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  max-height: 260px;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba($dark, 0.1);
+}
+
+.categorySelectOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: rgba($text, 0.7);
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover {
+    background: rgba($dark, 0.04);
+    color: $text;
+  }
+
+  &.categorySelectOptionChecked {
+    color: $dark;
+    font-weight: 600;
+    background: rgba($dark, 0.04);
+  }
+}
+
+.categoryCheckbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid $border;
+  flex-shrink: 0;
+  display: inline-block;
+  position: relative;
+  transition: all 0.12s;
+
+  &.categoryCheckboxChecked {
+    background: $dark;
+    border-color: $dark;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 1px;
+      width: 5px;
+      height: 8px;
+      border: 2px solid $white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+// Category chips (selected tags)
+
+.categoryChips {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.categoryChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  background: rgba($dark, 0.06);
+  border: 1px solid rgba($dark, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+  color: $dark;
+}
+
+.categoryChipRemove {
+  background: none;
+  border: none;
+  padding: 0 0 0 8px;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: $muted;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.15s;
+
+  &:hover { color: #c0392b; }
 }
 
 // Toggles

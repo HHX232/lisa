@@ -4,8 +4,9 @@ import { axiosClassic } from '../helpers/api.interceptor'
 const cartService = {
   async getCart(): Promise<CartItemCard[]> {
     const res = await axiosClassic.get<CartApiItem[]>('/me/cart')
-    return res.data.map(({ quantityInStock, ...item }) => ({
+    return res.data.map(({ quantityInStock, count, ...item }) => ({
       ...item,
+      count: count ?? 1,
       stockCount: quantityInStock ?? 1,
     }))
   },

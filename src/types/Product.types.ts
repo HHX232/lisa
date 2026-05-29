@@ -57,6 +57,7 @@ export interface ProductFull {
   category: string
   complectItems: Product[]
   count?: number
+  quantityInStock?: number
 }
 export interface PaginatedProducts {
   totalElements: number

@@ -16,8 +16,8 @@ function CartRow({ item }: { item: CartItemCard }) {
   const isPending = isUpdating || isRemoving
 
   const decrement = () => {
-    if (item.count <= 1) remove(item.id)
-    else update({ productId: item.id, count: item.count - 1 })
+    if ((item.count ?? 0) <= 1) remove(item.id)
+    else update({ productId: item.id, count: (item.count ?? 0) - 1 })
   }
 
   const atMax = item.count >= item.stockCount
@@ -34,7 +34,7 @@ function CartRow({ item }: { item: CartItemCard }) {
           <span className={styles.counterValue}>{item.count}</span>
           <button
             className={styles.counterBtn}
-            onClick={() => update({ productId: item.id, count: item.count + 1 })}
+            onClick={() => update({ productId: item.id, count: (item.count ?? 0) + 1 })}
             disabled={isPending || atMax}
             title={atMax ? `Максимум ${item.stockCount} шт.` : undefined}
           >
@@ -59,12 +59,12 @@ export default function BasketPage() {
   const { mutate: createOrder, isPending: isOrdering } = useCreateOrder()
   const [address, setAddress] = useState('')
 
-  const total = items?.reduce((sum, item) => sum + item.currentPrice * item.count, 0) ?? 0
+  const total = items?.reduce((sum, item) => sum + item.currentPrice * (item.count ?? 0), 0) ?? 0
 
   const handleOrder = () => {
     if (!items?.length) return
     createOrder({
-      items: items.map((item) => ({ productId: item.id, count: item.count })),
+      items: items.map((item) => ({ productId: item.id, count: item.count ?? 0 })),
       address: address.trim() || undefined,
     })
   }

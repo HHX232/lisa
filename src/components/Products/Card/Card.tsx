@@ -48,7 +48,7 @@ function Card({
               </span>
             )}
           </div>
-          {sale && <span className={styles.sale}>-{sale}%</span>}
+          {!!sale && <span className={styles.sale}>-{sale}%</span>}
         </div>
 
         {description && <p className={styles.description}>{description}</p>}

@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import QueryProvider from '@/components/providers/QueryProvider';
+import { Toaster } from 'sonner';
 import { Montserrat, Philosopher } from 'next/font/google';
 
 const philosopher = Philosopher({
@@ -49,6 +50,7 @@ export default function RootLayout({
         <QueryProvider>
           {children}
         </QueryProvider>
+        <Toaster richColors position="top-right" />
         <div id='modal_portal'></div>
       </body>
     </html>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import adminService, { AdminUsersParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
 import advertisementService from '@/api/services/add.service'
 import productService from '@/api/services/productService.service'
@@ -67,11 +67,22 @@ export function useDeleteAdvertisement() {
 
 // ─── Products ─────────────────────────────────────────────────────────────────
 
-export function useAdminProducts(params: ProductsRequestParams = {}) {
-  return useQuery({
+export function useAdminProducts(params: Omit<ProductsRequestParams, 'page'> = {}) {
+  return useInfiniteQuery({
     queryKey: [...ADMIN_PRODUCTS_KEY, params],
-    queryFn: () => productService.getProducts(params),
-    select: (res) => res.data
+    queryFn: ({ pageParam }) =>
+      productService.getProducts({ ...params, page: pageParam as number }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const data = lastPage.data
+      if (!data || data.last || data.content.length === 0) return undefined
+      return allPages.length
+    },
+    placeholderData: keepPreviousData,
+    select: (res) => ({
+      content: res.pages.flatMap(p => p.data?.content ?? []),
+      totalElements: res.pages[0]?.data?.totalElements ?? 0,
+    }),
   })
 }
 

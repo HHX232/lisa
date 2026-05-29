@@ -23,7 +23,7 @@ export interface ProductRequestBody {
   categoryId: number
   isAdvertisement: boolean
   advertisementType: string
-  imagesMeta: { id: string; displayOrder: number; delete: boolean }[]
+  imagesMeta: { id: string | null; displayOrder: number; delete: boolean }[]
 }
 
 export interface AdvertisementBody {
@@ -101,15 +101,15 @@ const adminService = {
   },
 
   async upsertAdvertisement(advertisement: AdvertisementBody, image?: File | null) {
-    const accessToken = await getAccessTokenServer()
     const formData = new FormData()
-    formData.append('advertisement', JSON.stringify(advertisement))
+    formData.append('advertisement', new Blob([JSON.stringify(advertisement)], { type: 'application/json' }))
     if (image) {
       formData.append('image', image)
     }
+    const payload = { ...advertisement, id: advertisement.id === 0 ? null : advertisement.id }
+    formData.set('advertisement', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/advertisements`, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${accessToken ?? ''}` },
       body: formData,
       credentials: 'include',
     })
@@ -139,12 +139,10 @@ const adminService = {
   },
 
   async importProductsExcel(file: File) {
-    const accessToken = await getAccessTokenServer()
     const formData = new FormData()
     formData.append('file', file)
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/products/import/excel`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${accessToken ?? ''}` },
       body: formData,
       credentials: 'include',
     })
@@ -153,13 +151,12 @@ const adminService = {
   },
 
   async upsertProduct(product: ProductRequestBody, images: File[]) {
-    const accessToken = await getAccessTokenServer()
+    const payload = { ...product, id: product.id === 0 ? null : product.id }
     const formData = new FormData()
-    formData.append('product', JSON.stringify(product))
+    formData.append('product', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
     images.forEach(img => formData.append('images', img))
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${accessToken ?? ''}` },
       body: formData,
       credentials: 'include',
     })

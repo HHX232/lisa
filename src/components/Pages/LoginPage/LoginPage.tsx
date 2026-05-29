@@ -1,5 +1,5 @@
 'use client'
-import { axiosClassic } from '@/api/helpers/api.interceptor'
+import { loginAction } from '@/actions/auth.actions'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import TextInputUI from '../../UI/inputs/TextInputUI/TextInputUI'
@@ -19,15 +19,14 @@ function LoginPage() {
     setLoading(true)
 
     try {
-      await axiosClassic.post('/auth/login', {
-        phoneNumberOrEmail,
-        password
-      })
-
-      router.push('/profile')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      setError(e?.response?.data?.message || 'Неверный логин или пароль')
+      const result = await loginAction(phoneNumberOrEmail, password)
+      if (result.error) {
+        setError(result.error)
+      } else {
+        router.push('/profile')
+      }
+    } catch {
+      setError('Неверный логин или пароль')
     } finally {
       setLoading(false)
     }

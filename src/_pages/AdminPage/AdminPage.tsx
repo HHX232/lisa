@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { Fragment } from 'react'
+import { toast } from 'sonner'
 import {
   useAdminUsers, useDeleteAdminUser, useUpdateAdminUser,
   useAdminAdvertisements, useUpsertAdvertisement, useDeleteAdvertisement,
@@ -279,10 +280,21 @@ function AdsTab() {
 
   const handleUpsert = async () => {
     if (!editAd) return
-    await upsertMutation.mutateAsync({ advertisement: editAd, image: imageFile })
-    setEditAd(null)
-    setImageFile(null)
-    setImagePreview(null)
+    try {
+      await upsertMutation.mutateAsync({ advertisement: editAd, image: imageFile })
+      toast.success(editAd.id === 0 ? 'Реклама создана' : 'Реклама обновлена')
+      setEditAd(null)
+      setImageFile(null)
+      setImagePreview(null)
+    } catch (e: unknown) {
+      const msg = (e as { message?: string })?.message
+      try {
+        const parsed = JSON.parse(msg ?? '')
+        toast.error(parsed?.message ?? msg ?? 'Ошибка')
+      } catch {
+        toast.error(msg ?? 'Ошибка')
+      }
+    }
   }
 
   const handleDelete = async () => {
@@ -455,14 +467,14 @@ const STATUS_LABELS: Record<ProductStatus, string> = {
 }
 
 function ProductsTab() {
-  const [page, setPage] = useState(0)
   const [search, setSearch] = useState('')
   const [deleteProduct, setDeleteProduct] = useState<Product | null>(null)
   const [importResult, setImportResult] = useState<string | null>(null)
   const [formProductId, setFormProductId] = useState<number | null | 0>(null)
   const excelRef = useRef<HTMLInputElement>(null)
 
-  const { data, isLoading, isError } = useAdminProducts({ page, size: PAGE_SIZE, title: search || undefined })
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useAdminProducts({ size: PAGE_SIZE, title: search || undefined })
   const deleteMutation = useDeleteAdminProduct()
   const statusMutation = useChangeProductStatus()
   const importMutation = useImportProductsExcel()
@@ -490,8 +502,8 @@ function ProductsTab() {
     }
   }
 
-  const totalPages = data?.totalPages ?? 0
   const totalElements = data?.totalElements ?? 0
+  const products = data?.content ?? []
 
   return (
     <>
@@ -527,7 +539,7 @@ function ProductsTab() {
           type="text"
           placeholder="Поиск по названию..."
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(0) }}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
@@ -548,10 +560,10 @@ function ProductsTab() {
               </tr>
             </thead>
             <tbody>
-              {!data?.content.length && (
+              {!products.length && (
                 <tr><td colSpan={7} className={styles.empty}>Нет товаров</td></tr>
               )}
-              {data?.content.map((product) => (
+              {products.map((product) => (
                 <tr key={product.id}>
                   <td className={styles.idCell}>{product.id}</td>
                   <td>
@@ -592,19 +604,15 @@ function ProductsTab() {
         )}
       </div>
 
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button className={styles.pageBtn} disabled={page === 0} onClick={() => setPage(p => p - 1)}>←</button>
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              className={`${styles.pageBtn} ${i === page ? styles.pageBtnActive : ''}`}
-              onClick={() => setPage(i)}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button className={styles.pageBtn} disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>→</button>
+      {hasNextPage && (
+        <div className={styles.loadMore}>
+          <button
+            className={styles.loadMoreBtn}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? 'Загрузка...' : 'Загрузить ещё'}
+          </button>
         </div>
       )}
 

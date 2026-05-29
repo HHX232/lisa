@@ -1,15 +1,24 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { axiosClassic } from '@/api/helpers/api.interceptor'
 import productService from '@/api/services/productService.service'
 import { useUpsertProduct } from '@/hooks/admin.hooks'
 import { Characteristic, ProductFull } from '@/types/Product.types'
 import styles from './ProductFormModal.module.scss'
 
+interface Category {
+  id: number
+  label: string
+  slug: string
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ImageMeta {
-  id: string
+  id: string | null
   displayOrder: number
   delete: boolean
 }
@@ -76,6 +85,12 @@ export default function ProductFormModal({ productId, onClose }: Props) {
 
   const upsertMutation = useUpsertProduct()
 
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: () => axiosClassic.get<Category[]>('/categories').then(r => r.data),
+    staleTime: Infinity,
+  })
+
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm(f => ({ ...f, [key]: value }))
 
@@ -101,7 +116,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         inShops: p.inShops ?? [],
         characteristics: p.characteristics ?? [],
         isSouvenir: p.isSouvenir,
-        categoryId: '',
+        categoryId: String(categories.find(c => c.label === p.category)?.id ?? ''),
         isAdvertisement: p.isAdvertisement ?? false,
         advertisementType: p.advertisementType ?? '',
         imagesMeta: p.images?.map((img, i) => ({
@@ -158,6 +173,10 @@ export default function ProductFormModal({ productId, onClose }: Props) {
   // ── Submit ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
+    if (!form.categoryId) {
+      toast.error('Выберите категорию')
+      return
+    }
     const product = {
       id: form.id,
       title: form.title,
@@ -175,13 +194,36 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       inShops: form.inShops,
       characteristics: form.characteristics.filter(c => c.name.trim()),
       isSouvenir: form.isSouvenir,
-      categoryId: form.categoryId ? Number(form.categoryId) : 0,
+      categoryId: Number(form.categoryId),
       isAdvertisement: form.isAdvertisement,
       advertisementType: form.advertisementType,
-      imagesMeta: form.imagesMeta,
+      imagesMeta: [
+        ...form.imagesMeta,
+        ...newImages.map((_, i) => ({
+          id: null,
+          displayOrder: form.imagesMeta.length + i,
+          delete: false,
+        })),
+      ],
     }
-    await upsertMutation.mutateAsync({ product, images: newImages })
-    onClose()
+    try {
+      await upsertMutation.mutateAsync({ product, images: newImages })
+      toast.success(isEdit ? 'Товар обновлён' : 'Товар создан')
+      onClose()
+    } catch (e: unknown) {
+      const msg = (e as { message?: string })?.message
+      try {
+        const parsed = JSON.parse(msg ?? '')
+        const errors = parsed?.errors
+        if (errors && typeof errors === 'object') {
+          Object.values(errors).forEach(v => toast.error(String(v)))
+        } else {
+          toast.error(parsed?.message ?? msg ?? 'Ошибка')
+        }
+      } catch {
+        toast.error(msg ?? 'Ошибка')
+      }
+    }
   }
 
   // ─── Render ───────────────────────────────────────────────────────────────
@@ -260,9 +302,17 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                 </div>
 
                 <div className={styles.fieldNarrow}>
-                  <label className={styles.label}>ID категории</label>
-                  <input className={styles.input} type="number" min={0} value={form.categoryId}
-                    onChange={e => set('categoryId', e.target.value)} />
+                  <label className={styles.label}>Категория</label>
+                  <select
+                    className={styles.select}
+                    value={form.categoryId}
+                    onChange={e => set('categoryId', e.target.value)}
+                  >
+                    <option value="">— выбрать —</option>
+                    {categories.map(c => (
+                      <option key={c.id} value={String(c.id)}>{c.label}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </section>

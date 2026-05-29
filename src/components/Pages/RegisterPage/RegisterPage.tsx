@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
+import { loginAction } from '@/actions/auth.actions'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -76,10 +77,14 @@ const handleTelegramClick = () => {
       await axiosClassic.post(`/auth/verify-phone-number/${encodeURIComponent(phone)}`, { code })
     }
 
-    await axiosClassic.post('/auth/login', {
-      phoneNumberOrEmail: tab === 'email' ? email : phone,
-      password,
-    })
+    const loginResult = await loginAction(
+      tab === 'email' ? email : phone,
+      password
+    )
+    if (loginResult.error) {
+      setError(loginResult.error)
+      return
+    }
 
     router.push('/profile')
   } catch (e: any) {

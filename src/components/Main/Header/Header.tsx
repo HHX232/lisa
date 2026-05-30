@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import PriceCurrencyTab from "../money/PriceCurrencyTab";
+import SearchModal from "./SearchModal/SearchModal";
 import styles from "./Header.module.scss";
 
 const placeUrl = "/header-svg/place.svg";
@@ -22,6 +23,7 @@ const personUrl = "/header-svg/person.svg";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -41,7 +43,7 @@ function Header() {
             <span></span>
             <span></span>
           </button>
-          <div className={styles.mobileSearchIcon}>
+          <div className={styles.mobileSearchIcon} onClick={() => setIsSearchOpen(true)} style={{ cursor: 'pointer' }}>
             <Image src={searchUrl} width={24} height={24} alt="search" />
           </div>
         </div>
@@ -68,7 +70,7 @@ function Header() {
              <PriceCurrencyTab/>
          
           <div className={styles.icons_group}>
-            <div className={styles.desktopSearchIcon}>
+            <div className={styles.desktopSearchIcon} onClick={() => setIsSearchOpen(true)}>
               <Image className={styles.cursorPointer} src={searchUrl} width={24} height={24} alt="search" />
             </div>
             <Image className={styles.cursorPointer} src={heartUrl} width={24} height={24} alt="heart" />
@@ -106,11 +108,13 @@ function Header() {
       </div>
 
       {isMenuOpen && (
-        <div 
-          className={`${styles.overlay} container`} 
+        <div
+          className={`${styles.overlay} container`}
           onClick={() => setIsMenuOpen(false)}
         />
       )}
+
+      {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
     </header>
   );
 }

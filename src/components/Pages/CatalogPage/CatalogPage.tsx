@@ -14,17 +14,10 @@ import styles from './CatalogPage.module.scss'
 type SortField = 'ID' | 'TITLE' | 'PRICE'
 type SortDir = 'ASC' | 'DESC'
 
-const CATEGORY_LABELS: Record<string, string> = {
-  rings: 'Кольца',
-  earrings: 'Серьги',
-  sets: 'Комплекты',
-  bracelets: 'Браслеты',
-  brooches: 'Броши',
-  pendants: 'Подвески',
-  inserts: 'Вставки',
-  'costume-jewelry': 'Бижутерия',
-  souvenirs: 'Сувениры',
-  'gift-certificates': 'Подарочные сертификаты',
+interface Category {
+  id: number
+  label: string
+  slug: string
 }
 
 interface ProductsResponse {
@@ -122,9 +115,11 @@ function useFilters() {
 function CategorySelect({
   value,
   onChange,
+  categories,
 }: {
   value: string[]
   onChange: (v: string[]) => void
+  categories: Category[]
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -142,10 +137,13 @@ function CategorySelect({
     onChange(next)
   }
 
+  const labelBySlug = (slug: string) =>
+    categories.find(c => c.slug === slug)?.label ?? slug
+
   const triggerLabel = value.length === 0
     ? 'Выберите категории'
     : value.length === 1
-      ? (CATEGORY_LABELS[value[0]] ?? value[0])
+      ? labelBySlug(value[0])
       : `Выбрано: ${value.length}`
 
   return (
@@ -161,7 +159,7 @@ function CategorySelect({
 
       {open && (
         <div className={styles.categorySelectDropdown}>
-          {Object.entries(CATEGORY_LABELS).map(([slug, label]) => {
+          {categories.map(({ slug, label }) => {
             const checked = value.includes(slug)
             return (
               <label
@@ -174,17 +172,24 @@ function CategorySelect({
               </label>
             )
           })}
+          {categories.length === 0 && (
+            <span className={styles.categorySelectOption}>Загрузка...</span>
+          )}
         </div>
       )}
 
-      {value.length > 0 && (
+      {value.length > 0 && categories.length > 0 && (
         <div className={styles.categoryChips}>
-          {value.map(slug => (
-            <div key={slug} className={styles.categoryChip}>
-              <span>{CATEGORY_LABELS[slug] ?? slug}</span>
-              <button className={styles.categoryChipRemove} onClick={() => toggle(slug)} type="button">×</button>
-            </div>
-          ))}
+          {value.map(slug => {
+            const label = categories.find(c => c.slug === slug)?.label
+            if (!label) return null
+            return (
+              <div key={slug} className={styles.categoryChip}>
+                <span>{label}</span>
+                <button className={styles.categoryChipRemove} onClick={() => toggle(slug)} type="button">×</button>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -283,6 +288,16 @@ const currency = useCurrency()
     placeholderData: (prev) => prev,
   })
 
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const res = await axiosClassic.get<Category[]>('/categories')
+      console.log('[categories]', res.data)
+      return res.data
+    },
+    staleTime: Infinity,
+  })
+
   const handleTitleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setFilters({ title: titleInput || undefined })
@@ -368,6 +383,7 @@ const currency = useCurrency()
             <CategorySelect
               value={filters.category?.split(',').filter(Boolean) ?? []}
               onChange={(v) => setFilters({ category: v.length > 0 ? v.join(',') : undefined })}
+              categories={categories}
             />
           </div>
 

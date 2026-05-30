@@ -1,6 +1,12 @@
 import Footer from "@/components/Main/Footer/Footer"
 import Header from "@/components/Main/Header/Header"
 import MDContentPage from "@/components/Pages/PrivacyPage/MDContentPage"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Политика конфиденциальности',
+  description: 'Политика ООО «МОНОСТИНЭКС» в отношении обработки персональных данных пользователей сайта Septaria.',
+}
 
 function page() {
   return (

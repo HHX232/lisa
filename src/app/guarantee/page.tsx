@@ -1,6 +1,12 @@
 import Footer from "@/components/Main/Footer/Footer"
 import Header from "@/components/Main/Header/Header"
 import MDContentPage from "@/components/Pages/PrivacyPage/MDContentPage"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Гарантия',
+  description: 'Гарантийные условия на ювелирные изделия Septaria. Гарантийный срок и условия обслуживания.',
+}
 
 function page() {
   return (

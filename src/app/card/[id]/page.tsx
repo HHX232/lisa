@@ -14,10 +14,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { data } = await productService.getProductById(id)
 
   if (!data) {
-    return { title: 'Товар не найден | Septaria' }
+    return { title: 'Товар не найден' }
   }
 
-  const title = `${data.title} | ${SITE_NAME}`
+  const title = data.title
   const description = data.description?.slice(0, 160) || `Купить ${data.title} в интернет-магазине ${SITE_NAME}`
   const image = data.images?.[0]?.url ?? data.imageUrl
   const url = `${SITE_URL}/card/${id}`

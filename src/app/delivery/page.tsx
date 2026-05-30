@@ -1,6 +1,12 @@
 import Footer from "@/components/Main/Footer/Footer"
 import Header from "@/components/Main/Header/Header"
 import MDContentPage from "@/components/Pages/PrivacyPage/MDContentPage"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Доставка и оплата',
+  description: 'Условия доставки, способы оплаты, бронирование и подарочные сертификаты Septaria.',
+}
 
 function page() {
   return (

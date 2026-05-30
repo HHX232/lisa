@@ -1,6 +1,12 @@
 import Footer from "@/components/Main/Footer/Footer"
 import Header from "@/components/Main/Header/Header"
 import MDContentPage from "@/components/Pages/PrivacyPage/MDContentPage"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Публичная оферта',
+  description: 'Договор публичной оферты ООО «МОНОСТИНЭКС» на продажу товаров в интернет-магазине Septaria.',
+}
 
 function page() {
   return (

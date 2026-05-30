@@ -1,6 +1,12 @@
 import Footer from "@/components/Main/Footer/Footer"
 import Header from "@/components/Main/Header/Header"
 import MDContentPage from "@/components/Pages/PrivacyPage/MDContentPage"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Дисконтная программа',
+  description: 'Положение о дисконтной программе Septaria. Условия получения и использования скидочной карты.',
+}
 
 function page() {
   return (

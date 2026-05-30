@@ -25,8 +25,8 @@ export default function SearchModal({ onClose }: Props) {
   useEffect(() => { inputRef.current?.focus() }, [])
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    document.body.style.setProperty('overflow', 'hidden', 'important')
+    return () => { document.body.style.removeProperty('overflow') }
   }, [])
 
   useEffect(() => {

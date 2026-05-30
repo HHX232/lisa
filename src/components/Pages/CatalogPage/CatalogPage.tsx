@@ -55,23 +55,24 @@ interface Filters {
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
 const fetchProducts = async (filters: Filters): Promise<ProductsResponse> => {
-  const params: Record<string, string> = {
-    page: String(filters.page),
-    size: String(filters.size),
+  const sp = new URLSearchParams()
+  sp.set('page', String(filters.page))
+  sp.set('size', String(filters.size))
+
+  if (filters.isAdvertisement !== undefined) sp.set('isAdvertisement', String(filters.isAdvertisement))
+  if (filters.isComplect !== undefined) sp.set('isComplect', String(filters.isComplect))
+  if (filters.isSouvenir !== undefined) sp.set('isSouvenir', String(filters.isSouvenir))
+  if (filters.minPrice !== undefined) sp.set('minPrice', String(filters.minPrice))
+  if (filters.maxPrice !== undefined) sp.set('maxPrice', String(filters.maxPrice))
+  if (filters.title) sp.set('title', filters.title)
+  if (filters.advertisementType) sp.set('advertisementType', filters.advertisementType)
+  if (filters.sort) sp.set('sort', filters.sort)
+  if (filters.direction) sp.set('direction', filters.direction)
+  if (filters.category) {
+    filters.category.split(',').filter(Boolean).forEach(c => sp.append('category', c))
   }
 
-  if (filters.isAdvertisement !== undefined) params.isAdvertisement = String(filters.isAdvertisement)
-  if (filters.isComplect !== undefined) params.isComplect = String(filters.isComplect)
-  if (filters.isSouvenir !== undefined) params.isSouvenir = String(filters.isSouvenir)
-  if (filters.minPrice !== undefined) params.minPrice = String(filters.minPrice)
-  if (filters.maxPrice !== undefined) params.maxPrice = String(filters.maxPrice)
-  if (filters.title) params.title = filters.title
-  if (filters.advertisementType) params.advertisementType = filters.advertisementType
-  if (filters.sort) params.sort = filters.sort
-  if (filters.direction) params.direction = filters.direction
-  if (filters.category) params.category = filters.category
-
-  const { data } = await axiosClassic.get('/products', { params })
+  const { data } = await axiosClassic.get(`/products?${sp.toString()}`)
   return data
 }
 

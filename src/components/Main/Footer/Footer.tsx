@@ -25,20 +25,20 @@ function Footer() {
           <div className={styles.catalog_box}>
             <p className={styles.catalog_title}>Каталог</p>
             <ul className={styles.catalog_list}>
-              <li><Link href="/catalog/rings">Кольца</Link></li>
-              <li><Link href="/catalog/inserts">Вставки</Link></li>
-              <li><Link href="/catalog/earrings">Серьги</Link></li>
-              <li><Link href="/catalog/bijouterie">Бижутерия</Link></li>
-              <li><Link href="/catalog/sets">Комплекты</Link></li>
-              <li><Link href="/catalog/souvenirs">Сувениры</Link></li>
+              <li><Link href="/catalog?category=koltsa">Кольца</Link></li>
+              <li><Link href="/catalog?category=vstavki">Вставки</Link></li>
+              <li><Link href="/catalog?category=sergi">Серьги</Link></li>
+              <li><Link href="/catalog?category=bizhuteriya">Бижутерия</Link></li>
+              <li><Link href="/catalog?category=komplekty">Комплекты</Link></li>
+              <li><Link href="/catalog?category=suveniry">Сувениры</Link></li>
               <li>
-                <Link href="/catalog/certificates">
+                <Link href="/catalog?category=podarochnye-sertifikaty">
                   Подарочные <br />
                   сертификаты
                 </Link>
               </li>
-              <li><Link href="/catalog/brooches">Броши</Link></li>
-              <li><Link href="/catalog/pendants">Подвески</Link></li>
+              <li><Link href="/catalog?category=broshi">Броши</Link></li>
+              <li><Link href="/catalog?category=podveski">Подвески</Link></li>
             </ul>
           </div>
           <div className={styles.base_text_box}>

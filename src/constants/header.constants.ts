@@ -15,16 +15,16 @@ export const categories = [
 ];
 
 export const categoriesLinks = [
-  "/catalog?category=rings",
-  "/catalog?category=earrings", 
-  "/catalog?category=sets",
-  "/catalog?category=bracelets",
-  "/catalog?category=brooches",
-  "/catalog?category=pendants",
-  "/catalog?category=inserts",
-  "/catalog?category=costume-jewelry",
-  "/catalog?category=souvenirs",
-  "/catalog?category=gift-certificates"
+  "/catalog?category=koltsa",
+  "/catalog?category=sergi",
+  "/catalog?category=komplekty",
+  "/catalog?category=braslety",
+  "/catalog?category=broshi",
+  "/catalog?category=podveski",
+  "/catalog?category=vstavki",
+  "/catalog?category=bizhuteriya",
+  "/catalog?category=suveniry",
+  "/catalog?category=podarochnye-sertifikaty",
 ];
 
 export const contactInfo = ["Минск", "+375 29 299-56-18"];

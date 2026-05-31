@@ -67,6 +67,46 @@
   flex-shrink: 0;
 }
 
+/* Tables */
+.privacy table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 24px;
+  font-size: 0.9375rem;
+}
+
+.privacy th {
+  background: #1B3C78;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border: 1px solid #1B3C78;
+}
+
+.privacy td {
+  padding: 10px 16px;
+  border: 1px solid #d8d8d4;
+  line-height: 1.6;
+}
+
+.privacy tr:nth-child(even) td {
+  background: #f5f5f3;
+}
+
+/* Blockquotes */
+.privacy blockquote {
+  margin: 0 0 24px;
+  padding: 12px 16px 12px 20px;
+  border-left: 3px solid #1B3C78;
+  background: #f0f4ff;
+  color: #333;
+}
+
+.privacy blockquote p {
+  margin: 0;
+}
+
 /* ol counter */
 .privacy ol {
   counter-reset: ol-counter;

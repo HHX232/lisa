@@ -2,7 +2,7 @@
 import Footer from '@/components/Main/Footer/Footer'
 import Header from '@/components/Main/Header/Header'
 import Card from '@/components/Products/Card/Card'
-import BynIcon from '@/components/UI/BynIcon/BynIcon'
+import CurrencySymbol from '@/components/UI/BynIcon/CurrencySymbol'
 import TextInputUI from '@/components/UI/inputs/TextInputUI/TextInputUI'
 import { useCart, useRemoveCartItem, useUpdateCartItem } from '@/hooks/cart.hooks'
 import { useCreateOrder } from '@/hooks/order.hooks'
@@ -44,7 +44,7 @@ function CartRow({ item }: { item: CartItemCard }) {
         </div>
 
         <span className={styles.rowTotal}>
-          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<BynIcon size={15} />
+          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<CurrencySymbol size={15} />
         </span>
 
         <button className={styles.removeBtn} onClick={() => remove(item.id)} disabled={isRemoving}>
@@ -110,7 +110,7 @@ export default function BasketPage() {
                 </div>
                 <div className={styles.summaryRow}>
                   <span>Сумма</span>
-                  <span>{total.toLocaleString('ru-RU')}<BynIcon size={15} /></span>
+                  <span>{total.toLocaleString('ru-RU')}<CurrencySymbol size={15} /></span>
                 </div>
                 <TextInputUI
                   placeholder="Адрес доставки (необязательно)"

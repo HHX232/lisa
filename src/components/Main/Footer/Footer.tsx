@@ -32,7 +32,7 @@ function Footer() {
               <li><Link href="/catalog?category=komplekty">Комплекты</Link></li>
               <li><Link href="/catalog?category=suveniry">Сувениры</Link></li>
               <li>
-                <Link href="/catalog?category=podarochnye-sertifikaty">
+                <Link href="/certificates">
                   Подарочные <br />
                   сертификаты
                 </Link>

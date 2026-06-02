@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./GiftInfoBlock.module.scss";
 const imageUrl = "/info/gift/gift.png";
 
@@ -20,7 +21,9 @@ function GiftInfoBlock() {
         причиной этого открытия. С сертификатом SEPTARIA вы точно попадёте в
         цель.
       </p>
-      <button className={styles.button}>Заказать идеальный подарок</button>
+      <Link href="/certificates">
+        <button className={styles.button}>Заказать идеальный подарок</button>
+      </Link>
       </div>
     </div>
   );

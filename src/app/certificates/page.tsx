@@ -16,6 +16,7 @@ interface Certificate {
   price: number
   gradient: string
   imageUrl?: string
+  textColor?: string
 }
 
 const CERTIFICATES: Certificate[] = [
@@ -66,7 +67,7 @@ export default function CertificatesPage() {
               <div key={cert.id} className={styles.card}>
                 <div
                   className={styles.certImg}
-                  style={cert.imageUrl ? undefined : { background: cert.gradient }}
+                  style={cert.imageUrl ? undefined : { background: cert.gradient, color: cert.textColor }}
                 >
                   {cert.imageUrl ? (
                     <NextImage

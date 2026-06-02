@@ -1,3 +1,4 @@
+import BynIcon from "@/components/UI/BynIcon/BynIcon";
 import MainCardSlider from "@/components/Pages/MainCardSlider/MainCardSlider";
 import Breadcrumbs from "@/components/UI/Bread/Bread";
 import AddToCartButton from "@/components/UI/AddToCartButton/AddToCartButton";
@@ -62,8 +63,8 @@ function CardPageComponent({
           <p className={style.title}>{title}</p>
 
           <div className={style.prices_box}>
-            <p className={style.current_price}>{currentPrice}</p>
-            {originalPrice && <p className={style.original_price}>{originalPrice}</p>}
+            <p className={style.current_price}>{currentPrice}<BynIcon size={22} /></p>
+            {originalPrice && <p className={style.original_price}>{originalPrice}<BynIcon size={16} /></p>}
             {sale && <p className={style.sale}>{sale}</p>}
           </div>
 

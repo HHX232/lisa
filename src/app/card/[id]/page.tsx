@@ -123,8 +123,8 @@ async function CardPage({ params }: Props) {
       <CardPageComponent
         title={data.title}
         id={id}
-        currentPrice={`${data.currentPrice} р`}
-        originalPrice={data.originalPrice ? `${data.originalPrice} р` : undefined}
+        currentPrice={`${data.currentPrice}`}
+        originalPrice={data.originalPrice ? `${data.originalPrice}` : undefined}
         sale={data.sale ? `-${data.sale}%` : undefined}
         isComplect={data.isComplect}
         description={data.description}

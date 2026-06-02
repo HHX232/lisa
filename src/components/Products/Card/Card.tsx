@@ -1,4 +1,5 @@
 'use client'
+import BynIcon from '@/components/UI/BynIcon/BynIcon'
 import { Product } from '@/types/Product.types'
 import cn from 'clsx'
 import Image from 'next/image'
@@ -41,10 +42,10 @@ function Card({
 
         <div className={styles.priceRow}>
           <div className={styles.priceGroup}>
-            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')} ₽</span>
+            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')}<BynIcon size={16} /></span>
             {originalPrice && (
               <span className={styles.originalPrice}>
-                {originalPrice.toLocaleString('ru-RU')} ₽
+                {originalPrice.toLocaleString('ru-RU')}<BynIcon size={13} />
               </span>
             )}
           </div>

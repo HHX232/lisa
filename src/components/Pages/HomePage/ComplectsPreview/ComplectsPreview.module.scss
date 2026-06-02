@@ -27,6 +27,9 @@
 .swiperContainer {
   flex: 1;
   overflow: hidden;
+  padding: 0 60px;
+
+  @media (max-width: 768px) { padding: 0 44px; }
 }
 
 .swiper {
@@ -88,17 +91,17 @@
 }
 
 .navPrev {
-  left: 0;
-  transform: translate(-50%, -50%);
+  left: 10px;
+  transform: translateY(-50%);
 
-  &:active { transform: translate(-50%, -50%) scale(0.95); }
+  &:active { transform: translateY(-50%) scale(0.95); }
 }
 
 .navNext {
-  right: 0;
-  transform: translate(50%, -50%);
+  right: 10px;
+  transform: translateY(-50%);
 
-  &:active { transform: translate(50%, -50%) scale(0.95); }
+  &:active { transform: translateY(-50%) scale(0.95); }
 }
 
 .btnWrap {

@@ -102,11 +102,9 @@ function Footer() {
         <div className={styles.other}>
           <p className={styles.other_title}>Информация</p>
           <Link href="/payment-delivery" className={styles.our_text_link}><div className=""> Оплата и доставка</div></Link>
-          <Link href="/news" className={styles.our_text_link}><div className=""> Новости и акции</div></Link>
           <Link href="/care" className={styles.our_text_link}><div className=""> Уход за изделиями</div></Link>
           <Link href="/reviews" className={styles.our_text_link}><div className=""> Отзывы</div></Link>
           <Link href="/certificates" className={styles.our_text_link}><div className=""> Подарочные сертификаты</div></Link>
-          <Link href="/faq" className={styles.our_text_link}><div className=""> Популярные вопросы</div></Link>
           <Link href="/warranty" className={styles.our_text_link}><div className=""> Гарантия качества</div></Link>
           <Link href="/returns" className={styles.our_text_link}><div className=""> Возврат товара</div></Link>
           <Link href="/offer" className={styles.our_text_link}>

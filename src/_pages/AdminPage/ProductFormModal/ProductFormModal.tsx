@@ -7,7 +7,14 @@ import { axiosClassic } from '@/api/helpers/api.interceptor'
 import productService from '@/api/services/productService.service'
 import { useUpsertProduct } from '@/hooks/admin.hooks'
 import { Characteristic, ProductFull } from '@/types/Product.types'
+import ComplectPickerModal from './ComplectPickerModal'
 import styles from './ProductFormModal.module.scss'
+
+interface PickedProduct {
+  id: number
+  title: string
+  imageUrl: string
+}
 
 interface Category {
   id: number
@@ -30,7 +37,7 @@ interface FormState {
   fullDescription: string
   isComplect: boolean
   quantityInStock: number
-  complectItems: string
+  complectItems: number[]
   sale: number
   currency: string
   useFillImage: boolean
@@ -51,7 +58,7 @@ const EMPTY: FormState = {
   fullDescription: '',
   isComplect: false,
   quantityInStock: 0,
-  complectItems: '',
+  complectItems: [],
   sale: 0,
   currency: 'BYN',
   useFillImage: false,
@@ -81,6 +88,8 @@ export default function ProductFormModal({ productId, onClose }: Props) {
   const [newPreviews, setNewPreviews] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(isEdit)
   const [shopInput, setShopInput] = useState('')
+  const [complectProducts, setComplectProducts] = useState<PickedProduct[]>([])
+  const [isPickerOpen, setIsPickerOpen] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const upsertMutation = useUpsertProduct()
@@ -108,7 +117,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         fullDescription: p.fullDescription ?? '',
         isComplect: p.isComplect,
         quantityInStock: 0,
-        complectItems: p.complectItems?.map(c => c.id).join(', ') ?? '',
+        complectItems: p.complectItems?.map(c => c.id) ?? [],
         sale: p.sale,
         currency: p.currency ?? 'BYN',
         useFillImage: p.useFillImage,
@@ -126,6 +135,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         })) ?? [],
       })
       setExistingImages(p.images ?? [])
+      setComplectProducts(p.complectItems?.map(c => ({ id: c.id, title: c.title, imageUrl: c.imageUrl })) ?? [])
       setIsLoading(false)
     })
   }, [productId])
@@ -184,9 +194,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       fullDescription: form.fullDescription,
       isComplect: form.isComplect,
       quantityInStock: Number(form.quantityInStock),
-      complectItems: form.complectItems
-        ? form.complectItems.split(',').map(s => Number(s.trim())).filter(n => n > 0)
-        : [],
+      complectItems: form.complectItems,
       sale: Number(form.sale),
       currency: form.currency,
       useFillImage: form.useFillImage,
@@ -351,10 +359,50 @@ export default function ProductFormModal({ productId, onClose }: Props) {
 
               {form.isComplect && (
                 <div className={styles.fieldFull}>
-                  <label className={styles.label}>ID товаров в комплекте (через запятую)</label>
-                  <input className={styles.input} value={form.complectItems} placeholder="1, 2, 3"
-                    onChange={e => set('complectItems', e.target.value)} />
+                  <label className={styles.label}>Товары в комплекте</label>
+                  <button
+                    type="button"
+                    className={styles.addLineBtn}
+                    onClick={() => setIsPickerOpen(true)}
+                  >
+                    + Выбрать товары
+                  </button>
+                  {complectProducts.length > 0 && (
+                    <div className={styles.complectChips}>
+                      {complectProducts.map(p => (
+                        <div key={p.id} className={styles.complectChip}>
+                          <img src={p.imageUrl} alt={p.title} className={styles.chipImg} />
+                          <span className={styles.chipTitle}>{p.title}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              set('complectItems', form.complectItems.filter(id => id !== p.id))
+                              setComplectProducts(prev => prev.filter(cp => cp.id !== p.id))
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
+              )}
+
+              {isPickerOpen && (
+                <ComplectPickerModal
+                  selectedIds={form.complectItems}
+                  onToggle={product => {
+                    if (form.complectItems.includes(product.id)) {
+                      set('complectItems', form.complectItems.filter(id => id !== product.id))
+                      setComplectProducts(prev => prev.filter(cp => cp.id !== product.id))
+                    } else {
+                      set('complectItems', [...form.complectItems, product.id])
+                      setComplectProducts(prev => [...prev, product])
+                    }
+                  }}
+                  onClose={() => setIsPickerOpen(false)}
+                />
               )}
             </section>
 

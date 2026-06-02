@@ -18,7 +18,6 @@ function Card({
   description,
   imageUrl,
   useFillImage = false,
-  isSouvenir,
   showCardTitle = true
 }: Product) {
   return (
@@ -42,10 +41,10 @@ function Card({
 
         <div className={styles.priceRow}>
           <div className={styles.priceGroup}>
-            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')}<CurrencySymbol size={16} /></span>
+            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')}<CurrencySymbol size={24} /></span>
             {originalPrice && (
               <span className={styles.originalPrice}>
-                {originalPrice.toLocaleString('ru-RU')}<CurrencySymbol size={13} />
+                {originalPrice.toLocaleString('ru-RU')}<CurrencySymbol size={18} />
               </span>
             )}
           </div>

@@ -44,7 +44,7 @@ function CartRow({ item }: { item: CartItemCard }) {
         </div>
 
         <span className={styles.rowTotal}>
-          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<CurrencySymbol size={15} />
+          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<CurrencySymbol size={16} />
         </span>
 
         <button className={styles.removeBtn} onClick={() => remove(item.id)} disabled={isRemoving}>
@@ -110,7 +110,7 @@ export default function BasketPage() {
                 </div>
                 <div className={styles.summaryRow}>
                   <span>Сумма</span>
-                  <span>{total.toLocaleString('ru-RU')}<CurrencySymbol size={15} /></span>
+                  <span>{total.toLocaleString('ru-RU')}<CurrencySymbol size={18} /></span>
                 </div>
                 <TextInputUI
                   placeholder="Адрес доставки (необязательно)"

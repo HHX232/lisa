@@ -151,14 +151,8 @@
    display: flex;
    align-items: center;
    justify-content: space-between;
-   gap: 0 20px;
-   flex-wrap: wrap;
-
-   @media (max-width: 1370px) {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 15px 20px;
-   }
+   gap: 6px;
+   flex-wrap: nowrap;
 
    @media (max-width: 1070px) {
       display: none;

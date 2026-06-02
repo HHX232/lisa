@@ -3,7 +3,7 @@ export const mainNavLinks = ["/", "/about", "/delivery", "/contacts"];
 
 export const categories = [
   "Кольца",
-  "Серьги", 
+  "Серьги",
   "Комплекты",
   "Браслеты",
   "Броши",
@@ -11,7 +11,6 @@ export const categories = [
   "Вставки",
   "Бижутерия",
   "Сувениры",
-  "Подарочные сертификаты"
 ];
 
 export const categoriesLinks = [
@@ -24,7 +23,6 @@ export const categoriesLinks = [
   "/catalog?category=vstavki",
   "/catalog?category=bizhuteriya",
   "/catalog?category=suveniry",
-  "/catalog?category=podarochnye-sertifikaty",
 ];
 
 export const contactInfo = ["Минск", "+375 29 299-56-18"];

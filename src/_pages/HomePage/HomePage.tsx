@@ -14,10 +14,12 @@ function HomePage({
   addSlides,
   products,
   complect = [],
+  souvenirs = [],
 }: {
   addSlides: Advertisement[];
   products: Product[];
   complect: Product[];
+  souvenirs: Product[];
 }) {
   return (
     <>
@@ -68,12 +70,10 @@ function HomePage({
         title="Сувениры"
         useFillImage
         isCardSlider
-        slides={(products || []).map((el) => ({
-          image: el.imageUrl,
-          title: el.title,
-        }))}
+        slides={souvenirs.map((el) => ({ image: el.imageUrl, title: el.title }))}
         showCardTitle={false}
-        cards={(products || []).map((el) => ({ ...el, useFillImage: true }))}
+        cards={souvenirs.map((el) => ({ ...el, useFillImage: true }))}
+        viewAllHref="/catalog?isSouvenir=true"
       />
 
       <GiftInfoBlock />

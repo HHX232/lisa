@@ -28,12 +28,15 @@ export default async function Home() {
   if (error) console.error('[Home] products error:', error);
 
   const complectRes = await productService.getProducts({ isComplect: true });
-  console.log('[Home] complect response:', JSON.stringify(complectRes));
   const { data: complect } = complectRes;
+
+  const souvenirsRes = await productService.getProducts({ isSouvenir: true, size: 10 });
+  const { data: souvenirs } = souvenirsRes;
 
   return (
     <HomePage
       complect={complect?.content || []}
+      souvenirs={souvenirs?.content || []}
       addSlides={data || []}
       products={products?.content || []}
     />

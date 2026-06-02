@@ -3,6 +3,7 @@ import Card from "@/components/Products/Card/Card";
 import { Product } from "@/types/Product.types";
 import cn from "clsx";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { Navigation } from "swiper/modules";
@@ -12,6 +13,7 @@ import styles from "./SliderBigGrid.module.scss";
 type Props = {
   showCardTitle?: boolean;
   title?: string;
+  viewAllHref?: string;
   slides: {
     image: string;
     title?: string;
@@ -23,6 +25,7 @@ type Props = {
 
 function SliderBigGrid({
   title,
+  viewAllHref,
   slides,
   useFillImage = false,
   isCardSlider = false,
@@ -152,6 +155,14 @@ function SliderBigGrid({
           </svg>
         </button>
       </div>
+
+      {viewAllHref && (
+        <div className={styles.viewAllWrap}>
+          <Link href={viewAllHref} className={styles.viewAllBtn}>
+            Смотреть все
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

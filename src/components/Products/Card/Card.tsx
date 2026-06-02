@@ -41,10 +41,10 @@ function Card({
 
         <div className={styles.priceRow}>
           <div className={styles.priceGroup}>
-            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')}<CurrencySymbol size={24} /></span>
+            <span className={styles.currentPrice}>{currentPrice.toLocaleString('ru-RU')}<CurrencySymbol size={20} /></span>
             {originalPrice && (
               <span className={styles.originalPrice}>
-                {originalPrice.toLocaleString('ru-RU')}<CurrencySymbol size={18} />
+                {originalPrice.toLocaleString('ru-RU')}<CurrencySymbol size={16} />
               </span>
             )}
           </div>

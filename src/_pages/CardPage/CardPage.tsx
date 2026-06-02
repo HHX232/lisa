@@ -63,8 +63,8 @@ function CardPageComponent({
           <p className={style.title}>{title}</p>
 
           <div className={style.prices_box}>
-            <p className={style.current_price}>{currentPrice}<CurrencySymbol size={42} /></p>
-            {originalPrice && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={28} /></p>}
+            <p className={style.current_price}>{currentPrice}<CurrencySymbol size={28} /></p>
+            {originalPrice && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={20} /></p>}
             {sale && <p className={style.sale}>{sale}</p>}
           </div>
 

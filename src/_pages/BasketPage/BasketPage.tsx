@@ -44,7 +44,7 @@ function CartRow({ item }: { item: CartItemCard }) {
         </div>
 
         <span className={styles.rowTotal}>
-          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<CurrencySymbol size={16} />
+          {(item.currentPrice * item.count).toLocaleString('ru-RU')}<CurrencySymbol size={18} />
         </span>
 
         <button className={styles.removeBtn} onClick={() => remove(item.id)} disabled={isRemoving}>

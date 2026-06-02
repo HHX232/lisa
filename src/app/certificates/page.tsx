@@ -1,6 +1,7 @@
 import Footer from '@/components/Main/Footer/Footer'
 import Header from '@/components/Main/Header/Header'
 import type { Metadata } from 'next'
+import NextImage from 'next/image'
 import styles from './certificates.module.css'
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ interface Certificate {
   description: string
   price: number
   gradient: string
+  imageUrl?: string
 }
 
 const CERTIFICATES: Certificate[] = [
@@ -56,16 +58,30 @@ export default function CertificatesPage() {
           <h1 className={styles.pageTitle}>Подарочные сертификаты</h1>
           <p className={styles.pageDesc}>
             Не знаете, какое украшение выбрать? Подарите сертификат — и пусть ваш близкий выберет сам.
-            Срок действия сертификата — <strong>3 месяца</strong>. Оплата онлайн или в магазине.
+            Срок действия сертификата — <strong>3 месяца</strong>. Оплата в магазине.
           </p>
 
           <div className={styles.grid}>
             {CERTIFICATES.map(cert => (
               <div key={cert.id} className={styles.card}>
-                <div className={styles.certImg} style={{ background: cert.gradient }}>
-                  <div className={styles.certLabel}>Septaria</div>
-                  <div className={styles.certAmount}>{cert.price} руб.</div>
-                  <div className={styles.certSub}>Подарочный сертификат</div>
+                <div
+                  className={styles.certImg}
+                  style={cert.imageUrl ? undefined : { background: cert.gradient }}
+                >
+                  {cert.imageUrl ? (
+                    <NextImage
+                      src={cert.imageUrl}
+                      alt={cert.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <>
+                      <div className={styles.certLabel}>Septaria</div>
+                      <div className={styles.certAmount}>{cert.price} руб.</div>
+                      <div className={styles.certSub}>Подарочный сертификат</div>
+                    </>
+                  )}
                 </div>
                 <div className={styles.cardBody}>
                   <h2 className={styles.cardTitle}>{cert.name}</h2>

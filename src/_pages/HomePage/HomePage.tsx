@@ -14,12 +14,10 @@ function HomePage({
   addSlides,
   products,
   complect = [],
-  souvenirs = [],
 }: {
   addSlides: Advertisement[];
   products: Product[];
   complect: Product[];
-  souvenirs: Product[];
 }) {
   return (
     <>
@@ -34,16 +32,7 @@ function HomePage({
         }))}
       />
 
-      <ComplectsPreview
-        previews={(souvenirs.length === 0 ? products : souvenirs).map((el) => {
-          return {
-            id: el.id,
-            image: el.imageUrl,
-            description: el.description,
-            title: el.title,
-          };
-        })}
-      />
+      <ComplectsPreview products={complect} />
       {/* Фильтры камушков */}
       <SliderLittleGrid
         title="Каталог камней"

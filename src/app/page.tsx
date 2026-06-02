@@ -31,13 +31,8 @@ export default async function Home() {
   console.log('[Home] complect response:', JSON.stringify(complectRes));
   const { data: complect } = complectRes;
 
-  const souvenirsRes = await productService.getProducts({ isSouvenir: true });
-  console.log('[Home] souvenirs response:', JSON.stringify(souvenirsRes));
-  const { data: souvenirs } = souvenirsRes;
-
   return (
     <HomePage
-      souvenirs={souvenirs?.content || []}
       complect={complect?.content || []}
       addSlides={data || []}
       products={products?.content || []}

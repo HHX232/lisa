@@ -1,38 +1,42 @@
-.complectsPreview {
+.section {
+  margin-top: 70px;
+
+  @media (max-width: 900px) { margin-top: 50px; }
+  @media (max-width: 600px) { margin-top: 36px; }
+}
+
+.title {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 0 16px;
+
+  @media (max-width: 1280px) { font-size: 48px; }
+  @media (max-width: 900px)  { font-size: 36px; }
+  @media (max-width: 600px)  { font-size: 26px; margin-bottom: 20px; }
+}
+
+.sliderWrapper {
   display: flex;
-  flex-direction: column;
   align-items: center;
-
-  h1 {
-    font-size: 64px;
-    text-align: center;
-    margin-top: 70px;
-    margin-bottom: 30px;
-
-    @media (max-width: 1280px) { font-size: 48px; }
-    @media (max-width: 900px)  { font-size: 36px; margin-top: 50px; }
-    @media (max-width: 600px)  { font-size: 26px; margin-top: 36px; margin-bottom: 20px; }
-  }
+  gap: 12px;
 }
 
-.items_box {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+.swiperContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+.swiper {
   width: 100%;
-
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
 }
 
-.complectPreview {
+.slide {
+  display: block;
   position: relative;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background-color: #fff;
-  display: block;
+  background: #f0f0f0;
 
   img {
     transition: transform 0.35s ease;
@@ -43,16 +47,51 @@
   }
 }
 
-.button_show_all {
+.navButton {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(7, 39, 97, 0.2);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(7, 39, 97, 0.06);
+    border-color: #072761;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+.navPrev { order: -1; }
+.navNext { order: 1; }
+
+.btnWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.btnAll {
   display: inline-block;
   padding: 12px 28px;
   color: #072761;
   border: 2px solid #072761;
   font-size: 18px;
   font-weight: 500;
-  transition: background 0.2s, color 0.2s;
-  margin: 30px auto 0 auto;
   text-decoration: none;
+  transition: background 0.2s, color 0.2s;
 
   &:hover {
     background: #072761;

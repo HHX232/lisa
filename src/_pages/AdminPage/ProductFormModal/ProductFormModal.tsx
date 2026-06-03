@@ -8,6 +8,7 @@ import productService from '@/api/services/productService.service'
 import { useUpsertProduct } from '@/hooks/admin.hooks'
 import { Characteristic, ProductFull } from '@/types/Product.types'
 import ComplectPickerModal from './ComplectPickerModal'
+import ProductReviewsAdmin from './ProductReviewsAdmin'
 import styles from './ProductFormModal.module.scss'
 
 interface PickedProduct {
@@ -530,6 +531,9 @@ export default function ProductFormModal({ productId, onClose }: Props) {
             </section>
           </div>
         )}
+
+        {/* Reviews section — only in edit mode */}
+        {isEdit && !isLoading && <ProductReviewsAdmin productId={productId!} />}
 
         {/* Footer */}
         <div className={styles.footer}>

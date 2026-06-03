@@ -1,0 +1,288 @@
+$dark: #1B3C78;
+$accent: #072761;
+$bg: #F8F9FB;
+$white: #ffffff;
+$text: #0d1b2e;
+$border: rgba(27, 60, 120, 0.12);
+$red: #c0392b;
+
+.wrap {
+  border-top: 2px solid $border;
+  padding: 20px 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: $bg;
+
+  @media (max-width: 600px) { padding: 16px 20px; }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: rgba($text, 0.38);
+}
+
+.statusFilter {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid $border;
+  background: $white;
+  font-size: 12px;
+  color: $text;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.empty {
+  font-size: 13px;
+  color: rgba($text, 0.35);
+  padding: 8px 0;
+}
+
+.card {
+  background: $white;
+  border: 1px solid $border;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.author {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text;
+}
+
+.date {
+  font-size: 11px;
+  color: rgba($text, 0.35);
+  margin-left: auto;
+}
+
+.thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: 13px;
+  color: rgba($text, 0.7);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.statusSelect {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid $border;
+  background: $bg;
+  font-size: 12px;
+  color: $text;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.editBtn {
+  padding: 5px 12px;
+  border: 1px solid rgba($dark, 0.2);
+  background: transparent;
+  color: $dark;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+
+  &:hover { background: $dark; color: $white; border-color: $dark; }
+}
+
+.deleteBtn {
+  padding: 5px 12px;
+  border: 1px solid rgba($red, 0.2);
+  background: transparent;
+  color: $red;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+
+  &:hover { background: $red; color: $white; border-color: $red; }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba($text, 0.5);
+
+  button {
+    background: none;
+    border: 1px solid $border;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    color: $dark;
+    transition: all 0.18s;
+
+    &:hover:not(:disabled) { background: $dark; color: $white; border-color: $dark; }
+    &:disabled { opacity: 0.3; cursor: default; }
+  }
+}
+
+// ── Edit panel ────────────────────────────────────────────────────────────────
+
+.editPanel {
+  border: 1px solid rgba($dark, 0.2);
+  background: $white;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: slideIn 0.18s ease;
+}
+
+.editHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: $text;
+  margin-bottom: 4px;
+}
+
+.closeEdit {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: rgba($text, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+  &:hover { color: $text; }
+}
+
+.label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba($text, 0.4);
+}
+
+.textarea {
+  resize: vertical;
+  border: 1px solid $border;
+  background: $bg;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: $text;
+  outline: none;
+  min-height: 70px;
+  transition: border-color 0.18s;
+
+  &:focus { border-color: rgba($dark, 0.4); background: $white; }
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: $text;
+  cursor: pointer;
+}
+
+.fileBtn {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px dashed rgba($dark, 0.2);
+  background: transparent;
+  color: rgba($text, 0.5);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color 0.18s, color 0.18s;
+
+  &:hover { border-color: $dark; color: $dark; }
+}
+
+.editFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cancelBtn {
+  padding: 8px 18px;
+  border: 1px solid $border;
+  background: transparent;
+  color: rgba($text, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+
+  &:hover { border-color: $dark; color: $dark; }
+}
+
+.saveBtn {
+  padding: 8px 20px;
+  border: none;
+  background: $dark;
+  color: $white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+
+  &:hover:not(:disabled) { background: color-mix(in srgb, #{$dark} 88%, white); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

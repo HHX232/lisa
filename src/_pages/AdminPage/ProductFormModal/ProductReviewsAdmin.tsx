@@ -40,7 +40,7 @@ export default function ProductReviewsAdmin({ productId }: { productId: number }
   const [editText, setEditText] = useState('')
   const [editStars, setEditStars] = useState(5)
   const [deleteImage, setDeleteImage] = useState(false)
-  const [editImage, setEditImage] = useState<File | null>(null)
+  const [editImages, setEditImages] = useState<File[]>([])
   const fileRef = useRef<HTMLInputElement>(null)
 
   const { data, isLoading } = useQuery<ReviewsPage>({
@@ -65,7 +65,7 @@ export default function ProductReviewsAdmin({ productId }: { productId: number }
     setEditText(r.text)
     setEditStars(r.stars)
     setDeleteImage(false)
-    setEditImage(null)
+    setEditImages([])
   }
 
   const handleUpdate = async () => {
@@ -74,7 +74,7 @@ export default function ProductReviewsAdmin({ productId }: { productId: number }
       await updateMutation.mutateAsync({
         productId: editReview.id,
         data: { text: editText, stars: editStars, deleteImage },
-        image: editImage,
+        images: editImages.length > 0 ? editImages : undefined,
       })
       qc.invalidateQueries({ queryKey: QUERY_KEY })
       toast.success('Отзыв обновлён')
@@ -178,11 +178,24 @@ export default function ProductReviewsAdmin({ productId }: { productId: number }
             </label>
           )}
 
+          {editImages.length > 0 && (
+            <div className={styles.newImgList}>
+              {editImages.map((img, i) => (
+                <span key={i} className={styles.newImgChip}>
+                  {img.name}
+                  <button type="button" onClick={() => setEditImages(prev => prev.filter((_, j) => j !== i))}>✕</button>
+                </span>
+              ))}
+            </div>
+          )}
           <button type="button" className={styles.fileBtn} onClick={() => fileRef.current?.click()}>
-            {editImage ? editImage.name : 'Заменить фото'}
+            + Добавить фото
           </button>
-          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
-            onChange={e => setEditImage(e.target.files?.[0] ?? null)} />
+          <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
+            onChange={e => {
+              setEditImages(prev => [...prev, ...Array.from(e.target.files ?? [])])
+              e.target.value = ''
+            }} />
 
           <div className={styles.editFooter}>
             <button type="button" className={styles.cancelBtn} onClick={() => setEditReview(null)}>Отмена</button>

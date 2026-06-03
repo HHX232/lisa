@@ -823,7 +823,7 @@ function ReviewsTab() {
   const [editText, setEditText] = useState('')
   const [editStars, setEditStars] = useState(5)
   const [deleteImage, setDeleteImage] = useState(false)
-  const [editImage, setEditImage] = useState<File | null>(null)
+  const [editImages, setEditImages] = useState<File[]>([])
   const fileRef = useRef<HTMLInputElement>(null)
 
   const { data, isLoading } = useAdminReviews({ search: search || undefined, status: statusFilter || undefined, page, size: PAGE_SIZE })
@@ -839,12 +839,12 @@ function ReviewsTab() {
     setEditText(r.text)
     setEditStars(r.stars)
     setDeleteImage(false)
-    setEditImage(null)
+    setEditImages([])
   }
 
   const handleUpdate = async () => {
     if (!editReview) return
-    await updateMutation.mutateAsync({ productId: editReview.id, data: { text: editText, stars: editStars, deleteImage }, image: editImage })
+    await updateMutation.mutateAsync({ productId: editReview.id, data: { text: editText, stars: editStars, deleteImage }, images: editImages.length > 0 ? editImages : undefined })
     toast.success('Отзыв обновлён')
     setEditReview(null)
   }
@@ -970,30 +970,32 @@ function ReviewsTab() {
                     </div>
                   )}
 
-                  {/* New image preview */}
-                  {editImage && (
-                    <div className={styles.reviewImgCard}>
+                  {/* New image previews */}
+                  {editImages.map((img, i) => (
+                    <div key={i} className={styles.reviewImgCard}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={URL.createObjectURL(editImage)} alt="новое фото" />
+                      <img src={URL.createObjectURL(img)} alt="новое фото" />
                       <button type="button" className={styles.reviewImgAction}
-                        onClick={() => setEditImage(null)}>✕</button>
+                        onClick={() => setEditImages(prev => prev.filter((_, j) => j !== i))}>✕</button>
                       <div className={styles.reviewImgBadgeNew}>Новое</div>
                     </div>
-                  )}
+                  ))}
 
-                  {/* Upload button */}
-                  {!editImage && (
-                    <button type="button" className={styles.reviewImgUpload}
-                      onClick={() => fileRef.current?.click()}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
-                      </svg>
-                      <span>Загрузить</span>
-                    </button>
-                  )}
+                  {/* Upload button — always visible */}
+                  <button type="button" className={styles.reviewImgUpload}
+                    onClick={() => fileRef.current?.click()}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg>
+                    <span>Добавить</span>
+                  </button>
                 </div>
-                <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
-                  onChange={e => setEditImage(e.target.files?.[0] ?? null)} />
+                <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
+                  onChange={e => {
+                    const files = Array.from(e.target.files ?? [])
+                    setEditImages(prev => [...prev, ...files])
+                    e.target.value = ''
+                  }} />
               </div>
             </div>
 

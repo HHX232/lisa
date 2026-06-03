@@ -168,10 +168,10 @@ const adminService = {
     await axiosClassic.patch(`/admin/product-reviews/${id}/status`, { status })
   },
 
-  async updateAdminReview(productId: number, data: { text: string; stars: number; deleteImage?: boolean }, image?: File | null) {
+  async updateAdminReview(productId: number, data: { text: string; stars: number; deleteImage?: boolean }, images?: File[]) {
     const fd = new FormData()
     fd.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }))
-    if (image) fd.append('image', image)
+    images?.forEach(img => fd.append('image', img))
     const res = await fetch(`/api/proxy/admin/product-reviews/${productId}`, {
       method: 'PUT',
       body: fd,

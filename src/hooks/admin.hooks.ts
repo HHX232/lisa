@@ -169,8 +169,8 @@ export function useChangeReviewStatus() {
 export function useUpdateAdminReview() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ productId, data, image }: { productId: number; data: { text: string; stars: number; deleteImage?: boolean }; image?: File | null }) =>
-      adminService.updateAdminReview(productId, data, image),
+    mutationFn: ({ productId, data, images }: { productId: number; data: { text: string; stars: number; deleteImage?: boolean }; images?: File[] }) =>
+      adminService.updateAdminReview(productId, data, images),
     onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
   })
 }

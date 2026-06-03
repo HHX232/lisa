@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!
 
-const SKIP_FORWARD_HEADERS = new Set(['content-encoding', 'transfer-encoding', 'connection'])
+const SKIP_FORWARD_HEADERS = new Set(['content-encoding', 'transfer-encoding', 'connection', 'content-length'])
 
 async function handler(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params

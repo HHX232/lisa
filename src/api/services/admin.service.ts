@@ -1,5 +1,4 @@
 import { axiosClassic } from '../helpers/api.interceptor'
-import { getAccessTokenServer } from '../helpers/auth.helper'
 import { UserRole } from '@/types/user.types'
 import { Advertisement } from '@/types/Advertisement.types'
 import { ProductFull, ProductStatus } from '@/types/Product.types'
@@ -77,27 +76,17 @@ export interface UpdateAdminUserBody {
 
 const adminService = {
   async getUsers(params: AdminUsersParams = {}) {
-    const accessToken = await getAccessTokenServer()
-    const res = await axiosClassic.get<AdminUsersResponse>('/admin/users', {
-      params,
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    const res = await axiosClassic.get<AdminUsersResponse>('/admin/users', { params })
     return res.data
   },
 
   async updateUser(id: number, body: UpdateAdminUserBody) {
-    const accessToken = await getAccessTokenServer()
-    const res = await axiosClassic.put<AdminUser>(`/admin/users/${id}`, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    const res = await axiosClassic.put<AdminUser>(`/admin/users/${id}`, body)
     return res.data
   },
 
   async deleteUser(id: number) {
-    const accessToken = await getAccessTokenServer()
-    await axiosClassic.delete(`/admin/users/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    await axiosClassic.delete(`/admin/users/${id}`)
   },
 
   async upsertAdvertisement(advertisement: AdvertisementBody, image?: File | null) {
@@ -118,24 +107,15 @@ const adminService = {
   },
 
   async deleteAdvertisement(id: number) {
-    const accessToken = await getAccessTokenServer()
-    await axiosClassic.delete(`/admin/advertisements/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    await axiosClassic.delete(`/admin/advertisements/${id}`)
   },
 
   async deleteProduct(id: number) {
-    const accessToken = await getAccessTokenServer()
-    await axiosClassic.delete(`/admin/products/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    await axiosClassic.delete(`/admin/products/${id}`)
   },
 
   async changeProductStatus(id: number, status: ProductStatus) {
-    const accessToken = await getAccessTokenServer()
-    await axiosClassic.patch(`/admin/products/${id}/status`, { status }, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    await axiosClassic.patch(`/admin/products/${id}/status`, { status })
   },
 
   async importProductsExcel(file: File) {
@@ -165,19 +145,12 @@ const adminService = {
   },
 
   async getAdminOrders(params: AdminOrdersParams = {}) {
-    const accessToken = await getAccessTokenServer()
-    const res = await axiosClassic.get<AdminOrdersResponse>('/admin/orders', {
-      params,
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    const res = await axiosClassic.get<AdminOrdersResponse>('/admin/orders', { params })
     return res.data
   },
 
   async changeOrderStatus(id: number, status: OrderStatus) {
-    const accessToken = await getAccessTokenServer()
-    await axiosClassic.patch(`/admin/orders/${id}/status`, { status }, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    await axiosClassic.patch(`/admin/orders/${id}/status`, { status })
   }
 }
 

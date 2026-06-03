@@ -5,7 +5,6 @@ import {
   ProductsRequestParams,
 } from '@/types/Product.types'
 import { axiosClassic } from '../helpers/api.interceptor'
-import { getAccessTokenServer } from '../helpers/auth.helper'
 import {
   validateAdvertisementType,
   validateBoolean,
@@ -32,11 +31,8 @@ const productService = {
     const advertisementType = validateAdvertisementType(params?.advertisementType)
 
     const query = new URLSearchParams()
-
     query.set('page', String(page))
     query.set('size', String(size))
-
-    // TODO перенести в валидацию
     if (sort) query.set('sort', sort)
     if (direction) query.set('direction', direction)
     if (isAdvertisement !== undefined) query.set('isAdvertisement', String(isAdvertisement))
@@ -48,84 +44,48 @@ const productService = {
     if (advertisementType) query.set('advertisementType', advertisementType)
 
     const url = `/products?${query.toString()}`
-    console.log('[productService.getProducts] request URL:', url, '| params:', params)
     try {
       const res = await axiosClassic.get<PaginatedProducts>(url, {
-        headers: {
-          'Accept-Language': currentLang || 'en',
-        },
+        headers: { 'Accept-Language': currentLang || 'en' },
       })
-      console.log('[productService.getProducts] status:', res.status, '| items count:', res.data?.content?.length ?? 'n/a')
       return { data: res.data, isLoading: false, isError: false, error: null }
     } catch (err: unknown) {
       const axiosErr = err as { response?: { status: number; data: unknown }; message?: string }
       console.error('[productService.getProducts] error:', axiosErr?.response?.status, axiosErr?.response?.data ?? axiosErr?.message)
-      return {
-        data: null,
-        isLoading: false,
-        isError: true,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      }
+      return { data: null, isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
     }
   },
 
   async getProductById(id: number | string, currentLang?: string) {
-    const accessToken = await getAccessTokenServer()
     try {
       const res = await axiosClassic.get<ProductFull>(`/products/${id}`, {
-        headers: {
-          'Accept-Language': currentLang || 'en',
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { 'Accept-Language': currentLang || 'en' },
       })
       return { data: res.data, isLoading: false, isError: false, error: null }
     } catch (err) {
-      return {
-        data: null,
-        isLoading: false,
-        isError: true,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      }
+      return { data: null, isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
     }
   },
 
   async updateProduct(id: number | string, body: Partial<Product>, currentLang?: string) {
-    const accessToken = await getAccessTokenServer()
     try {
       const res = await axiosClassic.put<Product>(`/products/${id}`, body, {
-        headers: {
-          'Accept-Language': currentLang || 'en',
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { 'Accept-Language': currentLang || 'en' },
       })
       return { data: res.data, isLoading: false, isError: false, error: null }
     } catch (err) {
-      return {
-        data: null,
-        isLoading: false,
-        isError: true,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      }
+      return { data: null, isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
     }
   },
 
   async deleteProduct(id: number | string, currentLang?: string) {
-    const accessToken = await getAccessTokenServer()
     try {
       await axiosClassic.delete(`/products/${id}`, {
-        headers: {
-          'Accept-Language': currentLang || 'en',
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { 'Accept-Language': currentLang || 'en' },
       })
       return { data: null, isLoading: false, isError: false, error: null }
     } catch (err) {
-      return {
-        data: null,
-        isLoading: false,
-        isError: true,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      }
+      return { data: null, isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
     }
   },
 }

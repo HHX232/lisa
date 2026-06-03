@@ -3,6 +3,11 @@ import { getCurrency, getCurrencyServer } from './auth.helper'
 
 const isClient = typeof window !== 'undefined'
 
+// Client-side: requests go through /api/proxy (same-origin → cookies sent automatically)
+// Server-side: requests go directly to the API with Cookie header forwarded
+const clientBaseURL = '/api/proxy'
+const serverBaseURL = process.env.NEXT_PUBLIC_API_URL!
+
 export const getContentType = () => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -16,13 +21,14 @@ export const getContentType = () => {
 }
 
 async function applyCommonHeaders(config: InternalAxiosRequestConfig) {
+  // Server-side: forward cookies from the incoming Next.js request
   if (!isClient) {
     try {
       const { cookies } = await import('next/headers')
       const cookieStore = await cookies()
       const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ')
       if (cookieHeader) config.headers.set('Cookie', cookieHeader)
-    } catch { /* not in server context */ }
+    } catch { /* not in a server request context */ }
   }
 
   const currency = await getCurrencyServer()
@@ -34,13 +40,13 @@ async function applyCommonHeaders(config: InternalAxiosRequestConfig) {
 }
 
 const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: isClient ? clientBaseURL : serverBaseURL,
   headers: getContentType(),
   withCredentials: true,
 })
 
 export const axiosClassic = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: isClient ? clientBaseURL : serverBaseURL,
   headers: getContentType(),
   withCredentials: true,
 })

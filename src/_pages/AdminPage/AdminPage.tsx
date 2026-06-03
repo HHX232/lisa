@@ -915,29 +915,90 @@ function ReviewsTab() {
 
       {/* Edit modal */}
       {editReview && (
-        <div className={styles.modalOverlay} onClick={() => setEditReview(null)}>
-          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-            <h3>Редактировать отзыв #{editReview.id}</h3>
-            <label className={styles.modalLabel}>Текст</label>
-            <textarea className={styles.modalTextarea} rows={4} value={editText}
-              onChange={e => setEditText(e.target.value)} />
-            <label className={styles.modalLabel}>Оценка</label>
-            <select value={editStars} onChange={e => setEditStars(Number(e.target.value))} className={styles.filterSelect}>
-              {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} ★</option>)}
-            </select>
-            {editReview.image && (
-              <label className={styles.checkRow}>
-                <input type="checkbox" checked={deleteImage} onChange={e => setDeleteImage(e.target.checked)} />
-                Удалить фото
-              </label>
-            )}
-            <label className={styles.modalLabel}>Новое фото</label>
-            <button type="button" className={styles.filePickBtn} onClick={() => fileRef.current?.click()}>
-              {editImage ? editImage.name : 'Выбрать файл'}
-            </button>
-            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={e => setEditImage(e.target.files?.[0] ?? null)} />
-            <div className={styles.modalFooter}>
+        <div className={styles.reviewEditOverlay} onClick={() => setEditReview(null)}>
+          <div className={styles.reviewEditModal} onClick={e => e.stopPropagation()}>
+
+            {/* Header */}
+            <div className={styles.reviewEditHeader}>
+              <div>
+                <h3 className={styles.reviewEditTitle}>Редактировать отзыв</h3>
+                <span className={styles.reviewEditSub}>#{editReview.id} · {editReview.author || 'Аноним'}</span>
+              </div>
+              <button className={styles.reviewEditClose} onClick={() => setEditReview(null)}>
+                <span /><span />
+              </button>
+            </div>
+
+            <div className={styles.reviewEditBody}>
+              {/* Stars */}
+              <div className={styles.reviewEditField}>
+                <label className={styles.reviewEditLabel}>Оценка</label>
+                <div className={styles.reviewStarPicker}>
+                  {[1,2,3,4,5].map(n => (
+                    <button key={n} type="button"
+                      className={`${styles.reviewStar} ${n <= editStars ? styles.reviewStarOn : ''}`}
+                      onClick={() => setEditStars(n)}>★</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className={styles.reviewEditField}>
+                <label className={styles.reviewEditLabel}>Текст отзыва</label>
+                <textarea className={styles.reviewEditTextarea} rows={5} value={editText}
+                  onChange={e => setEditText(e.target.value)} />
+              </div>
+
+              {/* Images */}
+              <div className={styles.reviewEditField}>
+                <label className={styles.reviewEditLabel}>Фото</label>
+                <div className={styles.reviewImgRow}>
+                  {/* Current image */}
+                  {editReview.image && (
+                    <div className={`${styles.reviewImgCard} ${deleteImage ? styles.reviewImgDeleted : ''}`}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={editReview.image} alt="текущее фото" />
+                      <button
+                        type="button"
+                        className={styles.reviewImgAction}
+                        onClick={() => setDeleteImage(d => !d)}
+                        title={deleteImage ? 'Восстановить' : 'Удалить'}
+                      >
+                        {deleteImage ? '↩' : '✕'}
+                      </button>
+                      {deleteImage && <div className={styles.reviewImgBadge}>Удалить</div>}
+                    </div>
+                  )}
+
+                  {/* New image preview */}
+                  {editImage && (
+                    <div className={styles.reviewImgCard}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={URL.createObjectURL(editImage)} alt="новое фото" />
+                      <button type="button" className={styles.reviewImgAction}
+                        onClick={() => setEditImage(null)}>✕</button>
+                      <div className={styles.reviewImgBadgeNew}>Новое</div>
+                    </div>
+                  )}
+
+                  {/* Upload button */}
+                  {!editImage && (
+                    <button type="button" className={styles.reviewImgUpload}
+                      onClick={() => fileRef.current?.click()}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                      </svg>
+                      <span>Загрузить</span>
+                    </button>
+                  )}
+                </div>
+                <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
+                  onChange={e => setEditImage(e.target.files?.[0] ?? null)} />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className={styles.reviewEditFooter}>
               <button className={styles.cancelBtn} onClick={() => setEditReview(null)}>Отмена</button>
               <button className={styles.saveBtn} onClick={handleUpdate} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? 'Сохраняем...' : 'Сохранить'}

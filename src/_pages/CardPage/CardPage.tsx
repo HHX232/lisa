@@ -1,5 +1,6 @@
 import CurrencySymbol from "@/components/UI/BynIcon/CurrencySymbol";
 import MainCardSlider from "@/components/Pages/MainCardSlider/MainCardSlider";
+import ProductReviews from "@/components/Pages/ProductReviews/ProductReviews";
 import Breadcrumbs from "@/components/UI/Bread/Bread";
 import AddToCartButton from "@/components/UI/AddToCartButton/AddToCartButton";
 import CharacterUI from "@/components/UI/CharacterUI/CharacterUI";
@@ -115,6 +116,8 @@ function CardPageComponent({
 
       {description && <p className={style.description}>{description}</p>}
       {fullDescription && <p className={style.description}>{fullDescription}</p>}
+
+      <ProductReviews productId={id} />
 
       <h2 className={style.second_title}>Возможно вам понравится</h2>
       <SliderBigGrid isCardSlider slides={[]} cards={mockCards} />

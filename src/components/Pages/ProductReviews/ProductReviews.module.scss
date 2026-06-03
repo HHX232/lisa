@@ -1,0 +1,228 @@
+$dark: #1B3C78;
+$accent: #072761;
+$text: #0d1b2e;
+$border: rgba(27, 60, 120, 0.12);
+$bg: #F8F9FB;
+
+.wrap {
+  margin-top: 60px;
+}
+
+.heading {
+  font-size: 32px;
+  font-weight: 400;
+  color: $text;
+  margin: 0 0 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: flex-start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── List ──────────────────────────────────────────────────────────────────────
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.empty {
+  font-size: 14px;
+  color: rgba($text, 0.4);
+  padding: 24px 0;
+}
+
+.reviewCard {
+  padding: 18px 20px;
+  border: 1px solid $border;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reviewAuthor {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text;
+}
+
+.starsDisplay {
+  display: flex;
+  gap: 2px;
+}
+
+.starActive {
+  color: #c9a84c;
+  font-size: 16px;
+}
+
+.starInactive {
+  color: rgba($text, 0.2);
+  font-size: 16px;
+}
+
+.reviewDate {
+  font-size: 12px;
+  color: rgba($text, 0.35);
+  margin-left: auto;
+}
+
+.reviewText {
+  font-size: 14px;
+  color: rgba($text, 0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.reviewImg {
+  max-width: 200px;
+  max-height: 160px;
+  object-fit: cover;
+  border: 1px solid $border;
+}
+
+// ── Form ─────────────────────────────────────────────────────────────────────
+
+.form {
+  background: $bg;
+  border: 1px solid $border;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 180px;
+}
+
+.formTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: $text;
+  margin: 0 0 4px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba($text, 0.4);
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin-top: -4px;
+}
+
+.star {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: rgba($text, 0.2);
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+
+  &:hover { color: #c9a84c; }
+}
+
+.starActive {
+  color: #c9a84c;
+}
+
+.textarea {
+  resize: vertical;
+  border: 1px solid $border;
+  background: #fff;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: $text;
+  outline: none;
+  min-height: 100px;
+  transition: border-color 0.18s;
+
+  &::placeholder { color: rgba($text, 0.28); }
+  &:focus { border-color: rgba($dark, 0.4); }
+}
+
+.fileRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fileBtn {
+  padding: 8px 16px;
+  border: 1px dashed rgba($dark, 0.25);
+  background: transparent;
+  color: rgba($text, 0.55);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.18s, color 0.18s;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover { border-color: $dark; color: $dark; }
+}
+
+.clearFile {
+  background: none;
+  border: none;
+  color: rgba($text, 0.35);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  transition: color 0.15s;
+
+  &:hover { color: #c0392b; }
+}
+
+.error {
+  font-size: 13px;
+  color: #c0392b;
+  margin: 0;
+}
+
+.successMsg {
+  font-size: 13px;
+  color: #1a7a4a;
+  margin: 0;
+}
+
+.submit {
+  padding: 12px;
+  border: none;
+  background: $dark;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+  margin-top: 4px;
+
+  &:hover:not(:disabled) { background: color-mix(in srgb, #{$dark} 88%, white); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}

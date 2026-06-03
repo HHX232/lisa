@@ -1,7 +1,7 @@
 'use client'
 
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import adminService, { AdminUsersParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
+import adminService, { AdminUsersParams, AdminReviewsParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
 import advertisementService from '@/api/services/add.service'
 import productService from '@/api/services/productService.service'
 import { ProductStatus, ProductsRequestParams } from '@/types/Product.types'
@@ -11,6 +11,7 @@ export const ADMIN_USERS_KEY = ['admin', 'users']
 export const ADMIN_ADS_KEY = ['admin', 'advertisements']
 export const ADMIN_ORDERS_KEY = ['admin', 'orders']
 export const ADMIN_PRODUCTS_KEY = ['admin', 'products']
+export const ADMIN_REVIEWS_KEY = ['admin', 'reviews']
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 
@@ -135,5 +136,41 @@ export function useChangeAdminOrderStatus() {
     mutationFn: ({ id, status }: { id: number; status: OrderStatus }) =>
       adminService.changeOrderStatus(id, status),
     onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_ORDERS_KEY })
+  })
+}
+
+// ─── Reviews ──────────────────────────────────────────────────────────────────
+
+export function useAdminReviews(params: AdminReviewsParams = {}) {
+  return useQuery({
+    queryKey: [...ADMIN_REVIEWS_KEY, params],
+    queryFn: () => adminService.getAdminReviews(params),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useDeleteAdminReview() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteAdminReview(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+  })
+}
+
+export function useChangeReviewStatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: string }) =>
+      adminService.changeReviewStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+  })
+}
+
+export function useUpdateAdminReview() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ productId, data, image }: { productId: number; data: { text: string; stars: number; deleteImage?: boolean }; image?: File | null }) =>
+      adminService.updateAdminReview(productId, data, image),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
   })
 }

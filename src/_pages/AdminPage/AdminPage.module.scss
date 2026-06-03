@@ -900,6 +900,72 @@ $red: #c0392b;
 .orderStatus_DELIVERED { color: #166534; font-weight: 600; }
 .orderStatus_CANCELLED { color: $red; font-weight: 600; }
 
+// ─── Review tab extras ───────────────────────────────────────────────────────
+
+.textCell {
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: rgba($text, 0.7);
+}
+
+.modalLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba($text, 0.4);
+  margin-top: 4px;
+}
+
+.modalTextarea {
+  resize: vertical;
+  border: 1px solid $border;
+  background: $bg;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: $text;
+  outline: none;
+  min-height: 80px;
+  transition: border-color 0.18s;
+  &:focus { border-color: rgba($dark, 0.4); background: $white; }
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: $text;
+  cursor: pointer;
+}
+
+.filePickBtn {
+  padding: 7px 14px;
+  border: 1px dashed rgba($dark, 0.25);
+  background: transparent;
+  color: rgba($text, 0.55);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color 0.18s, color 0.18s;
+  &:hover { border-color: $dark; color: $dark; }
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
 @keyframes fadeIn {
   from { opacity: 0 }
   to { opacity: 1 }

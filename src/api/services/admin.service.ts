@@ -151,7 +151,62 @@ const adminService = {
 
   async changeOrderStatus(id: number, status: OrderStatus) {
     await axiosClassic.patch(`/admin/orders/${id}/status`, { status })
+  },
+
+  // ─── Reviews ──────────────────────────────────────────────────────────────
+
+  async getAdminReviews(params: AdminReviewsParams = {}) {
+    const res = await axiosClassic.get<AdminReviewsResponse>('/admin/product-reviews', { params })
+    return res.data
+  },
+
+  async deleteAdminReview(id: number) {
+    await axiosClassic.delete(`/admin/product-reviews/${id}`)
+  },
+
+  async changeReviewStatus(id: number, status: string) {
+    await axiosClassic.patch(`/admin/product-reviews/${id}/status`, { status })
+  },
+
+  async updateAdminReview(productId: number, data: { text: string; stars: number; deleteImage?: boolean }, image?: File | null) {
+    const fd = new FormData()
+    fd.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }))
+    if (image) fd.append('image', image)
+    const res = await fetch(`/api/proxy/admin/product-reviews/${productId}`, {
+      method: 'PUT',
+      body: fd,
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error(await res.text())
+    return res.json()
   }
 }
 
 export default adminService
+
+// ─── Review types ─────────────────────────────────────────────────────────────
+
+export type ReviewStatus = 'PENDING' | 'ACTIVE' | 'REJECTED'
+
+export interface AdminReview {
+  id: number
+  author: string
+  status: ReviewStatus
+  text: string
+  image?: string
+  stars: number
+  createdAt: string
+}
+
+export interface AdminReviewsParams {
+  productId?: number
+  status?: string
+  search?: string
+  page?: number
+  size?: number
+}
+
+export interface AdminReviewsResponse {
+  content: AdminReview[]
+  page: { size: number; number: number; totalElements: number; totalPages: number }
+}

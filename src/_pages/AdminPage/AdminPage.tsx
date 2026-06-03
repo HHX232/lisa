@@ -7,9 +7,10 @@ import {
   useAdminUsers, useDeleteAdminUser, useUpdateAdminUser,
   useAdminAdvertisements, useUpsertAdvertisement, useDeleteAdvertisement,
   useAdminProducts, useDeleteAdminProduct, useChangeProductStatus, useImportProductsExcel,
-  useAdminOrders, useChangeAdminOrderStatus
+  useAdminOrders, useChangeAdminOrderStatus,
+  useAdminReviews, useDeleteAdminReview, useChangeReviewStatus, useUpdateAdminReview,
 } from '@/hooks/admin.hooks'
-import { AdminUser, UpdateAdminUserBody, AdvertisementBody } from '@/api/services/admin.service'
+import { AdminUser, UpdateAdminUserBody, AdvertisementBody, AdminReview, ReviewStatus } from '@/api/services/admin.service'
 import { Advertisement } from '@/types/Advertisement.types'
 import { Product, ProductStatus } from '@/types/Product.types'
 import { ORDER_STATUS_LABELS, OrderStatus } from '@/types/Order.types'
@@ -18,7 +19,7 @@ import ProductFormModal from './ProductFormModal/ProductFormModal'
 import styles from './AdminPage.module.scss'
 
 const PAGE_SIZE = 10
-type Tab = 'users' | 'ads' | 'products' | 'orders'
+type Tab = 'users' | 'ads' | 'products' | 'orders' | 'reviews'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Users Tab
@@ -804,6 +805,151 @@ function OrdersTab() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Root
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Reviews Tab
+// ─────────────────────────────────────────────────────────────────────────────
+
+const REVIEW_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'На проверке',
+  ACTIVE: 'Опубликован',
+  REJECTED: 'Отклонён',
+}
+
+function ReviewsTab() {
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [page, setPage] = useState(0)
+  const [editReview, setEditReview] = useState<AdminReview | null>(null)
+  const [editText, setEditText] = useState('')
+  const [editStars, setEditStars] = useState(5)
+  const [deleteImage, setDeleteImage] = useState(false)
+  const [editImage, setEditImage] = useState<File | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const { data, isLoading } = useAdminReviews({ search: search || undefined, status: statusFilter || undefined, page, size: PAGE_SIZE })
+  const deleteMutation = useDeleteAdminReview()
+  const statusMutation = useChangeReviewStatus()
+  const updateMutation = useUpdateAdminReview()
+
+  const reviews = data?.content ?? []
+  const totalPages = data?.page.totalPages ?? 0
+
+  const openEdit = (r: AdminReview) => {
+    setEditReview(r)
+    setEditText(r.text)
+    setEditStars(r.stars)
+    setDeleteImage(false)
+    setEditImage(null)
+  }
+
+  const handleUpdate = async () => {
+    if (!editReview) return
+    await updateMutation.mutateAsync({ productId: editReview.id, data: { text: editText, stars: editStars, deleteImage }, image: editImage })
+    toast.success('Отзыв обновлён')
+    setEditReview(null)
+  }
+
+  return (
+    <>
+      <div className={styles.tabHeader}>
+        <span className={styles.count}>{data?.page.totalElements ?? 0} отзывов</span>
+      </div>
+
+      <div className={styles.filters}>
+        <input className={styles.searchInput} placeholder="Поиск..." value={search}
+          onChange={e => { setSearch(e.target.value); setPage(0) }} />
+        <select className={styles.filterSelect} value={statusFilter}
+          onChange={e => { setStatusFilter(e.target.value); setPage(0) }}>
+          <option value="">Все статусы</option>
+          <option value="PENDING">На проверке</option>
+          <option value="ACTIVE">Опубликован</option>
+          <option value="REJECTED">Отклонён</option>
+        </select>
+      </div>
+
+      <div className={styles.tableWrap}>
+        {isLoading ? <div className={styles.loading}>Загрузка...</div> : (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th><th>Автор</th><th>Текст</th><th>Оценка</th><th>Статус</th><th>Дата</th><th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reviews.map(r => (
+                <tr key={r.id}>
+                  <td>{r.id}</td>
+                  <td>{r.author || '—'}</td>
+                  <td className={styles.textCell}>{r.text}</td>
+                  <td>{'★'.repeat(r.stars)}</td>
+                  <td>
+                    <select
+                      value={r.status}
+                      className={styles.statusSelect}
+                      onChange={e => statusMutation.mutate({ id: r.id, status: e.target.value })}
+                    >
+                      {(['PENDING', 'ACTIVE', 'REJECTED'] as ReviewStatus[]).map(s => (
+                        <option key={s} value={s}>{REVIEW_STATUS_LABELS[s]}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>{new Date(r.createdAt).toLocaleDateString('ru-RU')}</td>
+                  <td className={styles.actions}>
+                    <button className={styles.editBtn} onClick={() => openEdit(r)}>✏️</button>
+                    <button className={styles.deleteBtn} onClick={() => deleteMutation.mutate(r.id)}>✕</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button disabled={page === 0} onClick={() => setPage(p => p - 1)}>←</button>
+          <span>{page + 1} / {totalPages}</span>
+          <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>→</button>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {editReview && (
+        <div className={styles.modalOverlay} onClick={() => setEditReview(null)}>
+          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+            <h3>Редактировать отзыв #{editReview.id}</h3>
+            <label className={styles.modalLabel}>Текст</label>
+            <textarea className={styles.modalTextarea} rows={4} value={editText}
+              onChange={e => setEditText(e.target.value)} />
+            <label className={styles.modalLabel}>Оценка</label>
+            <select value={editStars} onChange={e => setEditStars(Number(e.target.value))} className={styles.filterSelect}>
+              {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} ★</option>)}
+            </select>
+            {editReview.image && (
+              <label className={styles.checkRow}>
+                <input type="checkbox" checked={deleteImage} onChange={e => setDeleteImage(e.target.checked)} />
+                Удалить фото
+              </label>
+            )}
+            <label className={styles.modalLabel}>Новое фото</label>
+            <button type="button" className={styles.filePickBtn} onClick={() => fileRef.current?.click()}>
+              {editImage ? editImage.name : 'Выбрать файл'}
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
+              onChange={e => setEditImage(e.target.files?.[0] ?? null)} />
+            <div className={styles.modalFooter}>
+              <button className={styles.cancelBtn} onClick={() => setEditReview(null)}>Отмена</button>
+              <button className={styles.saveBtn} onClick={handleUpdate} disabled={updateMutation.isPending}>
+                {updateMutation.isPending ? 'Сохраняем...' : 'Сохранить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export default function AdminPage() {
   const [tab, setTab] = useState<Tab>('users')
 
@@ -838,12 +984,19 @@ export default function AdminPage() {
         >
           Заказы
         </button>
+        <button
+          className={`${styles.tab} ${tab === 'reviews' ? styles.tabActive : ''}`}
+          onClick={() => setTab('reviews')}
+        >
+          Отзывы
+        </button>
       </div>
 
       {tab === 'users' && <UsersTab />}
       {tab === 'ads' && <AdsTab />}
       {tab === 'products' && <ProductsTab />}
       {tab === 'orders' && <OrdersTab />}
+      {tab === 'reviews' && <ReviewsTab />}
     </div>
   )
 }

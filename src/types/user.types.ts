@@ -11,9 +11,11 @@ export interface IMe {
   email: string
   emailVerified: boolean
   contactInfo: string
+  name?: string
 }
 
 export interface IUpdateContactInfo {
+  name?: string
   contactInfo: string
 }
 

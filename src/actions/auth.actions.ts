@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -39,4 +40,22 @@ export async function loginAction(
   }
 
   return {}
+}
+
+export async function logoutAction() {
+  const cookieStore = await cookies()
+  cookieStore.delete('SEPTARIA_SESSION_ID')
+
+  try {
+    const sessionId = cookieStore.get('SEPTARIA_SESSION_ID')?.value
+    if (sessionId) {
+      await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: { Cookie: `SEPTARIA_SESSION_ID=${sessionId}` },
+        cache: 'no-store',
+      })
+    }
+  } catch { /* ignore */ }
+
+  redirect('/')
 }

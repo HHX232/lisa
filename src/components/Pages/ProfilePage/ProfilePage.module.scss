@@ -29,12 +29,43 @@ $text: #0d1b2e;
   }
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .title {
   font-size: 28px;
   font-weight: 700;
   color: $text;
   letter-spacing: -0.5px;
   margin: 0;
+}
+
+.logoutBtn {
+  padding: 8px 18px;
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  background: transparent;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: #c0392b;
+    color: $white;
+    border-color: #c0392b;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .section {

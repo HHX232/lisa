@@ -19,6 +19,7 @@ function RegisterPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
 
   const [loading, setLoading] = useState(false)
@@ -32,6 +33,7 @@ function RegisterPage() {
       await axiosClassic.post('/auth/register', {
         email: tab === 'email' ? email : undefined,
         phoneNumber: tab === 'phone' ? phone : undefined,
+        name: name.trim() || undefined,
         password,
       })
 
@@ -130,6 +132,12 @@ const handleTelegramClick = () => {
                   onSetValue={setPhone}
                 />
               )}
+
+              <TextInputUI
+                placeholder="Имя (необязательно)"
+                currentValue={name}
+                onSetValue={setName}
+              />
 
               <TextInputUI
                 placeholder="Пароль"

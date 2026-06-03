@@ -811,7 +811,7 @@ function OrdersTab() {
 
 const REVIEW_STATUS_LABELS: Record<string, string> = {
   PENDING: 'На проверке',
-  ACTIVE: 'Опубликован',
+  APPROVED: 'Опубликован',
   REJECTED: 'Отклонён',
 }
 
@@ -862,7 +862,7 @@ function ReviewsTab() {
           onChange={e => { setStatusFilter(e.target.value); setPage(0) }}>
           <option value="">Все статусы</option>
           <option value="PENDING">На проверке</option>
-          <option value="ACTIVE">Опубликован</option>
+          <option value="APPROVED">Опубликован</option>
           <option value="REJECTED">Отклонён</option>
         </select>
       </div>
@@ -888,7 +888,7 @@ function ReviewsTab() {
                       className={styles.statusSelect}
                       onChange={e => statusMutation.mutate({ id: r.id, status: e.target.value })}
                     >
-                      {(['PENDING', 'ACTIVE', 'REJECTED'] as ReviewStatus[]).map(s => (
+                      {(['PENDING', 'APPROVED', 'REJECTED'] as ReviewStatus[]).map(s => (
                         <option key={s} value={s}>{REVIEW_STATUS_LABELS[s]}</option>
                       ))}
                     </select>

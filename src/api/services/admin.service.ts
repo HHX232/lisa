@@ -186,7 +186,7 @@ export default adminService
 
 // ─── Review types ─────────────────────────────────────────────────────────────
 
-export type ReviewStatus = 'PENDING' | 'ACTIVE' | 'REJECTED'
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 
 export interface AdminReview {
   id: number

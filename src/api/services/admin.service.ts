@@ -97,7 +97,7 @@ const adminService = {
     }
     const payload = { ...advertisement, id: advertisement.id === 0 ? null : advertisement.id }
     formData.set('advertisement', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/advertisements`, {
+    const res = await fetch(`/api/proxy/admin/advertisements`, {
       method: 'PUT',
       body: formData,
       credentials: 'include',
@@ -121,7 +121,7 @@ const adminService = {
   async importProductsExcel(file: File) {
     const formData = new FormData()
     formData.append('file', file)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/products/import/excel`, {
+    const res = await fetch(`/api/proxy/admin/products/import/excel`, {
       method: 'POST',
       body: formData,
       credentials: 'include',
@@ -135,7 +135,7 @@ const adminService = {
     const formData = new FormData()
     formData.append('product', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
     images.forEach(img => formData.append('images', img))
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+    const res = await fetch(`/api/proxy/products`, {
       method: 'PUT',
       body: formData,
       credentials: 'include',

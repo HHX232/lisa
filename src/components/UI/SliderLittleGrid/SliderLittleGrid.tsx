@@ -79,9 +79,9 @@ function SliderLittleGrid({ title, slides }: Props) {
                 spaceBetween: 25,
               },
               1280: {
-                slidesPerView: 6,
-                slidesPerGroup: 6,
-                spaceBetween: 30,
+                slidesPerView: 7,
+                slidesPerGroup: 7,
+                spaceBetween: 20,
               },
             }}
             className={styles.swiper}
@@ -90,7 +90,7 @@ function SliderLittleGrid({ title, slides }: Props) {
               <SwiperSlide key={index}>
                 <div className={styles.slideItem}>
                   <div className={styles.slideImage}>
-                    <Image src={slide.image} alt={slide.title} width={195} height={195} />
+                    <Image src={slide.image} alt={slide.title} width={132} height={132} />
                   </div>
                   <p className={styles.slideTitle}>{slide.title}</p>
                 </div>

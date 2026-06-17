@@ -1,0 +1,187 @@
+.hintBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 700px;
+  padding: 14px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #072761;
+  background: transparent;
+  border: 1px solid #072761;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  &:hover {
+    background: #072761;
+    color: #fff;
+
+    svg path {
+      stroke: #fff;
+    }
+  }
+}
+
+// ─── Overlay ──────────────────────────────────────────────────────────────────
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+// ─── Modal ────────────────────────────────────────────────────────────────────
+
+.modal {
+  background: #fff;
+  width: 100%;
+  max-width: 460px;
+  padding: 40px 36px 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: #072761;
+    border-radius: 1px;
+
+    &:first-child { transform: translateY(-50%) rotate(45deg); }
+    &:last-child  { transform: translateY(-50%) rotate(-45deg); }
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(7, 39, 97, 0.15);
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #072761;
+  margin: 0;
+}
+
+.desc {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ─── Fields ───────────────────────────────────────────────────────────────────
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #072761;
+}
+
+.input {
+  padding: 11px 14px;
+  border: 1px solid rgba(7, 39, 97, 0.25);
+  font-size: 15px;
+  color: #000;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: #aaa; }
+  &:focus { border-color: #072761; }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancel {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: 1px solid rgba(7, 39, 97, 0.2);
+  font-size: 15px;
+  color: #072761;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: #072761; }
+}
+
+.submit {
+  flex: 2;
+  padding: 12px;
+  background: #072761;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 1050px) {
+  .hintBtn {
+    max-width: 100%;
+    margin: 12px auto 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 32px 20px 24px;
+  }
+
+  .hintBtn {
+    font-size: 16px;
+  }
+}

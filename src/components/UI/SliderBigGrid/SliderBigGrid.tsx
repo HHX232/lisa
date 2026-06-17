@@ -67,9 +67,11 @@ function SliderBigGrid({
         <div className={styles.swiperContainer}>
           <Swiper
             modules={[Navigation]}
-            spaceBetween={30}
-            slidesPerView={4}
-            slidesPerGroup={4}
+            spaceBetween={18}
+            slidesPerView={'auto'}
+            slidesPerGroup={1}
+            slidesOffsetBefore={20}
+            slidesOffsetAfter={20}
             navigation={{
               prevEl,
               nextEl,
@@ -81,17 +83,17 @@ function SliderBigGrid({
               320: {
                 slidesPerView: 2,
                 slidesPerGroup: 2,
-                spaceBetween: 15,
+                spaceBetween: 10,
               },
-              768: {
+              580: {
                 slidesPerView: 3,
                 slidesPerGroup: 3,
-                spaceBetween: 20,
+                spaceBetween: 14,
               },
               1024: {
-                slidesPerView: 4,
-                slidesPerGroup: 4,
-                spaceBetween: 30,
+                slidesPerView: 'auto',
+                slidesPerGroup: 1,
+                spaceBetween: 18,
               },
             }}
             className={styles.swiper}

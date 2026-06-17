@@ -16,18 +16,17 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
   const isFormData = request.headers.get('content-type')?.includes('multipart/form-data')
   const body = request.method === 'GET' || request.method === 'HEAD'
     ? undefined
-    : isFormData ? await request.formData() : await request.text()
+    : isFormData
+      ? await request.arrayBuffer()  // raw bytes — preserves part boundaries and content-types exactly
+      : await request.text()
 
   const forwardHeaders: Record<string, string> = { Cookie: cookieHeader }
   request.headers.forEach((v, k) => {
     const lower = k.toLowerCase()
     if (!SKIP_FORWARD_HEADERS.has(lower) && lower !== 'host' && lower !== 'cookie') {
-      forwardHeaders[k] = v
+      forwardHeaders[k] = v  // content-type (with boundary) forwarded as-is for multipart
     }
   })
-  if (isFormData) {
-    delete forwardHeaders['content-type']
-  }
 
   const res = await fetch(target.toString(), {
     method: request.method,

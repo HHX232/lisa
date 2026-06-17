@@ -30,13 +30,11 @@ $thumb-column-height: calc(
   // Превью уходит под главный слайдер
   .thumbSwiper {
     order: 2;
-    // Ширина и высота будут выставлены ниже в блоке .layoutMobile .thumbSwiper
   }
 
-  .mainWrap {
+  .mainColumn {
     order: 1;
     width: 100%;
-    flex: none;
   }
 
   .mainSwiper {
@@ -94,10 +92,16 @@ $thumb-column-height: calc(
 
 /* ─── Main swiper ──────────────────────────────────────────── */
 
-.mainWrap {
-  position: relative;
+.mainColumn {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainWrap {
+  position: relative;
+  width: 100%;
 }
 
 .mainSwiper {
@@ -119,6 +123,13 @@ $thumb-column-height: calc(
   background-repeat: no-repeat;
 }
 
+/* ─── Hint slot ────────────────────────────────────────────── */
+
+.hintSlot {
+  margin-top: 12px;
+  width: 100%;
+}
+
 /* ─── Complect label ───────────────────────────────────────── */
 
 .complectLabel {
@@ -133,7 +144,94 @@ $thumb-column-height: calc(
   font-size: 13px;
   color: #072761;
   letter-spacing: 0.04em;
-  pointer-events: none;
   z-index: 1;
-  user-select: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+
+  &:hover {
+    background-color: #edf0f7;
+  }
+}
+
+/* ─── Complect modal ───────────────────────────────────────── */
+
+.complectOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.complectModal {
+  background: #fff;
+  width: 100%;
+  max-width: 860px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 48px 36px 36px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.complectClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  span {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: #072761;
+    border-radius: 1px;
+
+    &:first-child { transform: translateY(-50%) rotate(45deg); }
+    &:last-child  { transform: translateY(-50%) rotate(-45deg); }
+  }
+}
+
+.complectTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #072761;
+  margin: 0;
+}
+
+.complectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+
+  :global([class*="imageContainer"]) {
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .complectModal {
+    padding: 40px 16px 24px;
+  }
+
+  .complectGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
 }

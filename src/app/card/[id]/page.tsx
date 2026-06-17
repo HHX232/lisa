@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import CardPageComponent from "@/_pages/CardPage/CardPage";
+import { axiosClassic } from "@/api/helpers/api.interceptor";
 import productService from "@/api/services/productService.service";
 import Footer from "@/components/Main/Footer/Footer";
 import Header from "@/components/Main/Header/Header";
+import { Product } from "@/types/Product.types";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://septaria.by'
 const SITE_NAME = 'Septaria'
@@ -55,6 +57,40 @@ async function CardPage({ params }: Props) {
   const { data } = await productService.getProductById(id)
 
   if (!data) return <div>Товар не найден</div>
+
+  // 1. By category
+  let similarProducts: Product[] = []
+  if (data.category) {
+    const res = await productService.getProductsByCategory(data.category, data.id)
+    similarProducts = res.data ?? []
+  }
+
+  // 2. By stone — match characteristics to stone-categories labels
+  if (!similarProducts.length) {
+    try {
+      type StoneCategory = { slug: string; label: string }
+      const stoneRes = await axiosClassic.get<StoneCategory[]>('/stone-categories')
+      const stoneCategories: StoneCategory[] = stoneRes.data ?? []
+      const stoneChar = data.characteristics?.find(c =>
+        stoneCategories.some((s: StoneCategory) => s.label.toLowerCase() === c.value.toLowerCase())
+      )
+      if (stoneChar) {
+        const matched = stoneCategories.find(
+          (s: StoneCategory) => s.label.toLowerCase() === stoneChar.value.toLowerCase()
+        )
+        if (matched) {
+          const res = await productService.getProductsByStone(matched.slug, data.id)
+          similarProducts = res.data ?? []
+        }
+      }
+    } catch {}
+  }
+
+  // 3. Random (middle page)
+  if (!similarProducts.length) {
+    const res = await productService.getProductsMiddlePage(data.id)
+    similarProducts = res.data ?? []
+  }
 
   const image = data.images?.[0]?.url ?? data.imageUrl
   const url = `${SITE_URL}/card/${id}`
@@ -134,6 +170,7 @@ async function CardPage({ params }: Props) {
         characteristics={data.characteristics}
         stockCount={data.quantityInStock ?? data.count ?? 1}
         complectItems={data.complectItems ?? []}
+        similarProducts={similarProducts ?? []}
         currentProduct={{
           id: data.id,
           title: data.title,

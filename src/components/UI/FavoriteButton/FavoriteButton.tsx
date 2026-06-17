@@ -1,6 +1,7 @@
 'use client'
 
 import { useFavoriteProducts, useToggleFavorite } from '@/hooks/User.queries'
+import { toast } from 'sonner'
 import styles from './FavoriteButton.module.scss'
 
 interface Props {
@@ -12,11 +13,23 @@ export default function FavoriteButton({ productId, extraClass }: Props) {
   const { data: favorites } = useFavoriteProducts()
   const toggle = useToggleFavorite()
 
-const isFavorite = favorites?.some((p) => String(p.id) === String(productId)) ?? false
+  const isFavorite = favorites?.some((p) => String(p.id) === String(productId)) ?? false
+
+  const handleClick = () => {
+    const willAdd = !isFavorite
+    toggle.mutate(productId, {
+      onSuccess: () => toast.success(willAdd ? 'Добавлено в избранное' : 'Убрано из избранного'),
+      onError: (err: unknown) => {
+        const status = (err as { response?: { status?: number } })?.response?.status
+        if (status === 401) toast.error('Необходимо войти в аккаунт')
+      },
+    })
+  }
+
   return (
     <button
       className={`${styles.favorite} ${isFavorite ? styles.favoriteActive : ''} ${extraClass ?? ''}`}
-      onClick={() => toggle.mutate(productId)}
+      onClick={handleClick}
       disabled={toggle.isPending}
       aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
     >

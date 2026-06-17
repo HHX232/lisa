@@ -1,6 +1,7 @@
 'use client'
 
 import { useCart, useRemoveCartItem, useUpdateCartItem } from '@/hooks/cart.hooks'
+import { toast } from 'sonner'
 import styles from './AddToCartButton.module.scss'
 
 interface Props {
@@ -20,7 +21,12 @@ export default function AddToCartButton({ productId, stockCount, className }: Pr
   const maxCount = stockCount ?? 1
   const atMax = cartCount >= maxCount
 
-  const add = () => updateCart({ productId: Number(productId), count: 1 })
+  const handleCartError = (err: unknown) => {
+    const status = (err as { response?: { status?: number } })?.response?.status
+    if (status === 401) toast.error('Необходимо войти в аккаунт')
+  }
+
+  const add = () => updateCart({ productId: Number(productId), count: 1 }, { onError: handleCartError })
   const increment = () => {
     if (atMax) return
     updateCart({ productId: Number(productId), count: cartCount + 1 })

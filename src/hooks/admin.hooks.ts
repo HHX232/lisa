@@ -4,10 +4,15 @@ import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClie
 import adminService, { AdminUsersParams, AdminReviewsParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
 import advertisementService from '@/api/services/add.service'
 import productService from '@/api/services/productService.service'
+import { axiosClassic } from '@/api/helpers/api.interceptor'
 import { ProductStatus, ProductsRequestParams } from '@/types/Product.types'
 import { AdminOrdersParams, OrderStatus } from '@/types/Order.types'
+import { StoneCategory, StoneCategoryBody } from '@/types/StoneCategory.types'
+import { GiftCertificate, GiftCertificateBody } from '@/types/GiftCertificate.types'
 
 export const ADMIN_USERS_KEY = ['admin', 'users']
+export const STONE_CATEGORIES_KEY = ['stone-categories']
+export const GIFT_CERTIFICATES_KEY = ['gift-certificates']
 export const ADMIN_ADS_KEY = ['admin', 'advertisements']
 export const ADMIN_ORDERS_KEY = ['admin', 'orders']
 export const ADMIN_PRODUCTS_KEY = ['admin', 'products']
@@ -163,6 +168,66 @@ export function useChangeReviewStatus() {
     mutationFn: ({ id, status }: { id: number; status: string }) =>
       adminService.changeReviewStatus(id, status),
     onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+  })
+}
+
+// ─── Stone Categories ─────────────────────────────────────────────────────────
+
+export function useStoneCategories() {
+  return useQuery({
+    queryKey: STONE_CATEGORIES_KEY,
+    queryFn: async () => {
+      const res = await axiosClassic.get<StoneCategory[]>('/stone-categories')
+      return res.data
+    },
+    staleTime: Infinity,
+  })
+}
+
+export function useUpsertStoneCategory() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ category, images }: { category: StoneCategoryBody; images: File[] }) =>
+      adminService.upsertStoneCategory(category, images),
+    onSuccess: () => qc.invalidateQueries({ queryKey: STONE_CATEGORIES_KEY }),
+  })
+}
+
+export function useDeleteStoneCategory() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteStoneCategory(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: STONE_CATEGORIES_KEY }),
+  })
+}
+
+// ─── Gift Certificates ────────────────────────────────────────────────────────
+
+export function useGiftCertificates() {
+  return useQuery({
+    queryKey: GIFT_CERTIFICATES_KEY,
+    queryFn: async () => {
+      const res = await axiosClassic.get<GiftCertificate[]>('/gift-certificates')
+      return res.data
+    },
+    staleTime: Infinity,
+  })
+}
+
+export function useUpsertGiftCertificate() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ certificate, image }: { certificate: GiftCertificateBody; image?: File | null }) =>
+      adminService.upsertGiftCertificate(certificate, image),
+    onSuccess: () => qc.invalidateQueries({ queryKey: GIFT_CERTIFICATES_KEY }),
+  })
+}
+
+export function useDeleteGiftCertificate() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteGiftCertificate(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: GIFT_CERTIFICATES_KEY }),
   })
 }
 

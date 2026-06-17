@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/thumbs";
 import { FreeMode, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Card from "@/components/Products/Card/Card";
+import { Product } from "@/types/Product.types";
 import styles from "./MainCardSlider.module.scss";
 
 interface MainCardSliderProps {
@@ -14,6 +16,9 @@ interface MainCardSliderProps {
   isComplect?: boolean;
   extraClass?: string;
   useDefaultAdaptive?: boolean;
+  hintSlot?: React.ReactNode;
+  currentProduct?: Product;
+  complectItems?: Product[];
 }
 
 const DEFAULT_IMAGES = [
@@ -30,8 +35,12 @@ export default function MainCardSlider({
   isComplect,
   extraClass,
   useDefaultAdaptive = true,
+  hintSlot,
+  currentProduct,
+  complectItems = [],
 }: MainCardSliderProps) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [complectOpen, setComplectOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -93,45 +102,89 @@ export default function MainCardSlider({
         ))}
       </Swiper>
 
-      <div className={styles.mainWrap}>
-        <Swiper
-          modules={[Thumbs]}
-          thumbs={{ swiper: thumbsSwiper }}
-          loop
-          onSlideChange={(swiper) => syncThumbs(swiper.realIndex)}
-          className={styles.mainSwiper}
-        >
-          {images.map((src, i) => (
-            <SwiperSlide key={i} className={styles.mainSlide}>
-              <div
-                className={styles.mainSlideInner}
-                style={{
-                  backgroundImage: `url(${src})`,
-                  backgroundSize: "contain",
-                }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className={styles.mainColumn}>
+        <div className={styles.mainWrap}>
+          <Swiper
+            modules={[Thumbs]}
+            thumbs={{ swiper: thumbsSwiper }}
+            loop
+            onSlideChange={(swiper) => syncThumbs(swiper.realIndex)}
+            className={styles.mainSwiper}
+          >
+            {images.map((src, i) => (
+              <SwiperSlide key={i} className={styles.mainSlide}>
+                <div
+                  className={styles.mainSlideInner}
+                  style={{
+                    backgroundImage: `url(${src})`,
+                    backgroundSize: "contain",
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-        {isComplect && (
-          <span className={styles.complectLabel}>
-            <svg
-              width="13"
-              height="16"
-              viewBox="0 0 13 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          {isComplect && (
+            <button
+              className={styles.complectLabel}
+              onClick={() => setComplectOpen(true)}
+              type="button"
             >
-              <path
-                d="M6.33333 6.33333L3.16667 1.9L4.43333 0H8.23333L9.5 1.9L6.33333 6.33333ZM9.10417 3.8L8.15417 5.14583C9.89583 5.85833 11.0833 7.52083 11.0833 9.5C11.0833 10.7598 10.5829 11.968 9.69209 12.8588C8.80129 13.7496 7.59311 14.25 6.33333 14.25C5.07355 14.25 3.86537 13.7496 2.97458 12.8588C2.08378 11.968 1.58333 10.7598 1.58333 9.5C1.58333 7.52083 2.77083 5.85833 4.5125 5.14583L3.5625 3.8C1.425 4.82917 0 6.96667 0 9.5C0 11.1797 0.66726 12.7906 1.85499 13.9783C3.04272 15.1661 4.65363 15.8333 6.33333 15.8333C8.01304 15.8333 9.62395 15.1661 10.8117 13.9783C11.9994 12.7906 12.6667 11.1797 12.6667 9.5C12.6667 6.96667 11.2417 4.82917 9.10417 3.8Z"
-                fill="#072761"
-              />
-            </svg>
-            Комплект
-          </span>
-        )}
+              <svg
+                width="13"
+                height="16"
+                viewBox="0 0 13 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.33333 6.33333L3.16667 1.9L4.43333 0H8.23333L9.5 1.9L6.33333 6.33333ZM9.10417 3.8L8.15417 5.14583C9.89583 5.85833 11.0833 7.52083 11.0833 9.5C11.0833 10.7598 10.5829 11.968 9.69209 12.8588C8.80129 13.7496 7.59311 14.25 6.33333 14.25C5.07355 14.25 3.86537 13.7496 2.97458 12.8588C2.08378 11.968 1.58333 10.7598 1.58333 9.5C1.58333 7.52083 2.77083 5.85833 4.5125 5.14583L3.5625 3.8C1.425 4.82917 0 6.96667 0 9.5C0 11.1797 0.66726 12.7906 1.85499 13.9783C3.04272 15.1661 4.65363 15.8333 6.33333 15.8333C8.01304 15.8333 9.62395 15.1661 10.8117 13.9783C11.9994 12.7906 12.6667 11.1797 12.6667 9.5C12.6667 6.96667 11.2417 4.82917 9.10417 3.8Z"
+                  fill="#072761"
+                />
+              </svg>
+              Комплект
+            </button>
+          )}
+        </div>
+
+        {hintSlot && <div className={styles.hintSlot}>{hintSlot}</div>}
       </div>
+
+      {complectOpen && currentProduct && (
+        <div
+          className={styles.complectOverlay}
+          onClick={() => setComplectOpen(false)}
+        >
+          <div
+            className={styles.complectModal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.complectClose}
+              onClick={() => setComplectOpen(false)}
+              aria-label="Закрыть"
+              type="button"
+            >
+              <span />
+              <span />
+            </button>
+            <h2 className={styles.complectTitle}>Комплект</h2>
+            <div className={styles.complectGrid}>
+              {[
+                currentProduct,
+                ...complectItems.filter((i) => i.status === "ACTIVE"),
+              ].map((item) => (
+                <Card
+                  key={item.id}
+                  {...item}
+                  showCardTitle
+                  useFillImage={false}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

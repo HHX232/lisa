@@ -34,13 +34,14 @@ function ComplectsPreview({ products }: { products: Product[] }) {
           <Swiper
             modules={[Navigation]}
             navigation={{ prevEl, nextEl }}
-            spaceBetween={30}
-            slidesPerView={4}
-            slidesPerGroup={4}
+            spaceBetween={17}
+            slidesPerView={'auto'}
+            slidesPerGroup={1}
             breakpoints={{
-              320: { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 12 },
-              768: { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 20 },
-              1024: { slidesPerView: 4, slidesPerGroup: 4, spaceBetween: 30 },
+              320: { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 10 },
+              640: { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 17 },
+              768: { slidesPerView: 4, slidesPerGroup: 4, spaceBetween: 17 },
+              1024: { slidesPerView: 'auto', slidesPerGroup: 1, spaceBetween: 17 },
             }}
             className={styles.swiper}
           >

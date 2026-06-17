@@ -1,24 +1,25 @@
 .section {
   margin-top: 70px;
+  padding: 0 20px;
 
   @media (max-width: 900px) { margin-top: 50px; }
   @media (max-width: 600px) { margin-top: 36px; }
 }
 
 .title {
-  font-size: 64px;
+  font-size: 36px;
+  font-weight: 400;
   text-align: center;
   margin-bottom: 30px;
   padding: 0 16px;
 
-  @media (max-width: 1280px) { font-size: 48px; }
-  @media (max-width: 900px)  { font-size: 36px; }
-  @media (max-width: 600px)  { font-size: 26px; margin-bottom: 20px; }
+  @media (max-width: 768px) { font-size: 24px; margin-bottom: 20px; }
 }
 
 .sliderWrapper {
   position: relative;
   width: 100%;
+  max-width: 1044px !important;
   display: flex;
   align-items: flex-start;
   padding: 0 !important;
@@ -27,13 +28,21 @@
 .swiperContainer {
   flex: 1;
   overflow: hidden;
-  padding: 0 60px;
+  padding: 0;
 
   @media (max-width: 768px) { padding: 0 44px; }
 }
 
 .swiper {
   width: 100%;
+
+  :global(.swiper-slide) {
+    width: 155px;
+
+    @media (max-width: 768px) {
+      width: auto;
+    }
+  }
 }
 
 .slide {
@@ -91,17 +100,27 @@
 }
 
 .navPrev {
-  left: 10px;
-  transform: translateY(-50%);
+  left: 0;
+  transform: translate(calc(-100% - 20px), -50%);
 
-  &:active { transform: translateY(-50%) scale(0.95); }
+  &:active { transform: translate(calc(-100% - 20px), -50%) scale(0.95); }
+
+  @media (max-width: 1170px) {
+    transform: translate(-50%, -50%);
+    &:active { transform: translate(-50%, -50%) scale(0.95); }
+  }
 }
 
 .navNext {
-  right: 10px;
-  transform: translateY(-50%);
+  right: 0;
+  transform: translate(calc(100% + 20px), -50%);
 
-  &:active { transform: translateY(-50%) scale(0.95); }
+  &:active { transform: translate(calc(100% + 20px), -50%) scale(0.95); }
+
+  @media (max-width: 1170px) {
+    transform: translate(50%, -50%);
+    &:active { transform: translate(50%, -50%) scale(0.95); }
+  }
 }
 
 .btnWrap {
@@ -125,8 +144,23 @@
     color: #fff;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
+    font-size: 16px;
+    padding: 11px 24px;
+  }
+
+  @media (max-width: 700px) {
     font-size: 15px;
     padding: 10px 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    padding: 9px 16px;
+  }
+
+  @media (max-width: 380px) {
+    font-size: 12px;
+    padding: 8px 14px;
   }
 }

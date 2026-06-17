@@ -128,7 +128,7 @@ $muted: rgba($text, 0.4);
   flex-direction: column;
   gap: 24px;
   position: sticky;
-  top: 220px;
+  top: 20px;
 
   @media (max-width: 900px) {
     display: none;

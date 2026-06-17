@@ -42,6 +42,8 @@
   .pageTitle { font-size: 32px; }
 }
 
+/* ─── Regular card ─────────────────────────────────────────────────────────── */
+
 .card {
   display: flex;
   flex-direction: column;
@@ -55,7 +57,62 @@
   box-shadow: 0 8px 32px rgba(7, 39, 97, 0.12);
 }
 
-/* Визуальное изображение сертификата */
+/* ─── Custom (dashed) card ─────────────────────────────────────────────────── */
+
+.cardCustom {
+  border: 2px dashed rgba(7, 39, 97, 0.3);
+  cursor: pointer;
+  background: #fafbfd;
+  transition: box-shadow 0.25s, border-color 0.2s;
+}
+
+.cardCustom:hover {
+  border-color: #072761;
+  box-shadow: 0 8px 32px rgba(7, 39, 97, 0.1);
+}
+
+.certImgCustom {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f0f3fa 0%, #e4eaf5 100%);
+}
+
+.customPlus {
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(7, 39, 97, 0.3);
+  line-height: 1;
+}
+
+.customLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(7, 39, 97, 0.4);
+}
+
+/* ─── Skeleton ─────────────────────────────────────────────────────────────── */
+
+.skeleton {
+  min-height: 260px;
+  background: linear-gradient(90deg, #f0f3fa 25%, #e4eaf5 50%, #f0f3fa 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border: none;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Cert visual ──────────────────────────────────────────────────────────── */
+
 .certImg {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -89,6 +146,8 @@
   color: rgba(7, 39, 97, 0.5);
 }
 
+/* ─── Card body ────────────────────────────────────────────────────────────── */
+
 .cardBody {
   padding: 20px;
   display: flex;
@@ -120,7 +179,7 @@
 }
 
 .price {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: #072761;
 }
@@ -137,11 +196,17 @@
   transition: background 0.2s;
 }
 
-.buyBtn:hover {
+.buyBtn:hover:not(:disabled) {
   background: #1B3C78;
 }
 
-/* Инфо-блок */
+.buyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ─── Info block ───────────────────────────────────────────────────────────── */
+
 .info {
   background: #f5f6fa;
   border: 1px solid rgba(7, 39, 97, 0.08);
@@ -169,4 +234,118 @@
   font-size: 15px;
   color: #444;
   line-height: 1.6;
+}
+
+/* ─── Modal overlay ────────────────────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal {
+  background: #fff;
+  width: 100%;
+  max-width: 440px;
+  padding: 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeBtn span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 2px;
+  background: #072761;
+  display: block;
+}
+
+.closeBtn span:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.closeBtn span:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #072761;
+  margin: 0;
+}
+
+.modalDesc {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.modalLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #072761;
+}
+
+.modalInput {
+  padding: 10px 14px;
+  border: 1px solid rgba(7, 39, 97, 0.2);
+  font-size: 15px;
+  font-family: inherit;
+  color: #0d1b2e;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modalInput:focus {
+  border-color: #072761;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.cancelBtn {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid rgba(7, 39, 97, 0.2);
+  color: #072761;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.cancelBtn:hover {
+  border-color: #072761;
 }

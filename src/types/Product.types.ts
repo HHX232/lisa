@@ -14,7 +14,7 @@ export interface ProductPageable {
   sort: ProductSort
 }
 
-export type ProductStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE'
+export type ProductStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'APPROVED'
 
 export interface Product {
   id: number
@@ -26,6 +26,7 @@ export interface Product {
   description: string
   imageUrl: string
   useFillImage: boolean
+  currency?: string
   isSouvenir?: boolean
   showCardTitle?: boolean
   status?: ProductStatus

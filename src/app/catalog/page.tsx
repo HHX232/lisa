@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 function CatalogPageServer() {
   return (
     <>
-      <Header />
+      <Header staticPos />
       <Suspense>
         <CatalogPage />
       </Suspense>

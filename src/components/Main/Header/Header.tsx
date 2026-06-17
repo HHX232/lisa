@@ -21,7 +21,7 @@ const heartUrl = "/header-svg/heart.svg";
 const bagUrl = "/header-svg/bag.svg";
 const personUrl = "/header-svg/person.svg";
 
-function Header() {
+function Header({ staticPos }: { staticPos?: boolean } = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -30,7 +30,7 @@ function Header() {
   };
 
   return (
-    <header  className={`${styles.header} `}>
+    <header className={`${styles.header} ${staticPos ? styles.headerStatic : ''}`}>
       
       <div className={`${styles.main} container`}>
         <div className={styles.leftSection}>
@@ -62,9 +62,11 @@ function Header() {
 
          
           <div className={styles.contact_info_box}>
-            <Image src={placeUrl} width={20} height={20} alt="place" />
-            <p className={styles.contactInfo}>{contactInfo[0]}</p>
-          <Link href={`tel:${CLEAR_PHONE}`}>  <p className={styles.contactInfo}>{contactInfo[1]}</p></Link>
+            <Link href="/locations" className={styles.locationLink}>
+              <Image src={placeUrl} width={20} height={20} alt="place" />
+              <p className={styles.contactInfo}>{contactInfo[0]}</p>
+            </Link>
+            <Link href={`tel:${CLEAR_PHONE}`}><p className={styles.contactInfo}>{contactInfo[1]}</p></Link>
           </div>
           <div className={styles.price_and_icon}>
              <PriceCurrencyTab/>

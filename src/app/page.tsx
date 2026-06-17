@@ -1,6 +1,7 @@
 import HomePage from "@/_pages/HomePage/HomePage";
 import advertisementService from "@/api/services/add.service";
 import productService from "@/api/services/productService.service";
+import stoneCategoryService from "@/api/services/stoneCategory.service";
 import type { Metadata } from 'next'
 
 export const dynamic = "force-dynamic";
@@ -33,12 +34,16 @@ export default async function Home() {
   const souvenirsRes = await productService.getProducts({ isSouvenir: true, size: 10 });
   const { data: souvenirs } = souvenirsRes;
 
+  const stoneCategoriesRes = await stoneCategoryService.getStoneCategories().catch(() => null);
+  const stoneCategories = stoneCategoriesRes?.data ?? [];
+
   return (
     <HomePage
       complect={complect?.content || []}
       souvenirs={souvenirs?.content || []}
       addSlides={data || []}
       products={products?.content || []}
+      stoneCategories={stoneCategories}
     />
   );
 }

@@ -88,6 +88,53 @@ const productService = {
       return { data: null, isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
     }
   },
+
+  async getProductsByCategory(category: string, excludeId?: number, size = 20) {
+    try {
+      const query = new URLSearchParams({ category, size: String(size), page: '0' })
+      const res = await axiosClassic.get<PaginatedProducts>(`/products?${query.toString()}`)
+      const content = excludeId
+        ? res.data.content.filter(p => p.id !== excludeId)
+        : res.data.content
+      return { data: content, isLoading: false, isError: false, error: null }
+    } catch (err) {
+      return { data: [] as Product[], isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
+    }
+  },
+
+  async getProductsByStone(stoneSlug: string, excludeId?: number, size = 20) {
+    try {
+      const query = new URLSearchParams({ stone: stoneSlug, size: String(size), page: '0' })
+      const res = await axiosClassic.get<PaginatedProducts>(`/products?${query.toString()}`)
+      const content = excludeId
+        ? res.data.content.filter(p => p.id !== excludeId)
+        : res.data.content
+      return { data: content, isLoading: false, isError: false, error: null }
+    } catch (err) {
+      return { data: [] as Product[], isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
+    }
+  },
+
+  async getProductsMiddlePage(excludeId?: number, size = 20) {
+    try {
+      const firstRes = await axiosClassic.get<PaginatedProducts>(`/products?page=0&size=${size}`)
+      const totalPages = firstRes.data.totalPages
+      if (totalPages <= 1) {
+        const content = excludeId
+          ? firstRes.data.content.filter(p => p.id !== excludeId)
+          : firstRes.data.content
+        return { data: content, isLoading: false, isError: false, error: null }
+      }
+      const midPage = Math.floor(totalPages / 2)
+      const res = await axiosClassic.get<PaginatedProducts>(`/products?page=${midPage}&size=${size}`)
+      const content = excludeId
+        ? res.data.content.filter(p => p.id !== excludeId)
+        : res.data.content
+      return { data: content, isLoading: false, isError: false, error: null }
+    } catch (err) {
+      return { data: [] as Product[], isLoading: false, isError: true, error: err instanceof Error ? err.message : 'Unknown error' }
+    }
+  },
 }
 
 export default productService

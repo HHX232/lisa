@@ -1,56 +1,140 @@
+'use client'
+
 import Footer from '@/components/Main/Footer/Footer'
 import Header from '@/components/Main/Header/Header'
-import type { Metadata } from 'next'
+import { axiosClassic } from '@/api/helpers/api.interceptor'
+import { GiftCertificate } from '@/types/GiftCertificate.types'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import NextImage from 'next/image'
 import styles from './certificates.module.css'
 
-export const metadata: Metadata = {
-  title: 'Подарочные сертификаты',
-  description: 'Подарочные сертификаты Septaria — идеальный подарок для близких. Выберите номинал от 100 рублей.',
+// ─── Order modal ──────────────────────────────────────────────────────────────
+
+function OrderModal({ cert, onClose }: { cert: GiftCertificate; onClose: () => void }) {
+  const [count, setCount] = useState(1)
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      axiosClassic.post('/gift-certificates/order', { certificateId: cert.id, count }).then(r => r.data),
+    onSuccess: () => {
+      toast.success('Заявка отправлена! Мы свяжемся с вами.')
+      onClose()
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : 'Ошибка'),
+  })
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <button className={styles.closeBtn} onClick={onClose} aria-label="Закрыть">
+          <span /><span />
+        </button>
+        <h2 className={styles.modalTitle}>Заказать сертификат</h2>
+        <p className={styles.modalDesc}>{cert.name} — {cert.price} {cert.currency ?? 'BYN'}</p>
+
+        <label className={styles.modalLabel}>
+          Количество
+          <input
+            className={styles.modalInput}
+            type="number"
+            min={1}
+            max={99}
+            value={count}
+            onChange={e => setCount(Math.max(1, Number(e.target.value)))}
+          />
+        </label>
+
+        <div className={styles.modalFooter}>
+          <button className={styles.cancelBtn} onClick={onClose}>Отмена</button>
+          <button className={styles.buyBtn} onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+            {mutation.isPending ? 'Отправляем...' : 'Оформить заявку'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-interface Certificate {
-  id: number
-  name: string
-  description: string
-  price: number
-  gradient: string
-  imageUrl?: string
-  textColor?: string
+// ─── Custom order modal ───────────────────────────────────────────────────────
+
+function CustomOrderModal({ onClose }: { onClose: () => void }) {
+  const [count, setCount] = useState(1)
+  const [price, setPrice] = useState('')
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      axiosClassic.post('/gift-certificates/order-custom', { count, price: Number(price), currency: 'BYN' }).then(r => r.data),
+    onSuccess: () => {
+      toast.success('Заявка на кастомный сертификат отправлена!')
+      onClose()
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : 'Ошибка'),
+  })
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <button className={styles.closeBtn} onClick={onClose} aria-label="Закрыть">
+          <span /><span />
+        </button>
+        <h2 className={styles.modalTitle}>Кастомный сертификат</h2>
+        <p className={styles.modalDesc}>Выберите любой номинал — мы оформим сертификат на нужную сумму.</p>
+
+        <label className={styles.modalLabel}>
+          Номинал (BYN)
+          <input
+            className={styles.modalInput}
+            type="number"
+            min={1}
+            placeholder="Например, 150"
+            value={price}
+            onChange={e => setPrice(e.target.value)}
+          />
+        </label>
+        <label className={styles.modalLabel}>
+          Количество
+          <input
+            className={styles.modalInput}
+            type="number"
+            min={1}
+            max={99}
+            value={count}
+            onChange={e => setCount(Math.max(1, Number(e.target.value)))}
+          />
+        </label>
+
+        <div className={styles.modalFooter}>
+          <button className={styles.cancelBtn} onClick={onClose}>Отмена</button>
+          <button
+            className={styles.buyBtn}
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending || !price || Number(price) < 1}
+          >
+            {mutation.isPending ? 'Отправляем...' : 'Оформить заявку'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-const CERTIFICATES: Certificate[] = [
-  {
-    id: 1,
-    name: 'Сертификат на 100 рублей',
-    description: 'Идеальный старт — позвольте близкому человеку выбрать украшение по душе в любом из наших магазинов.',
-    price: 100,
-    gradient: 'linear-gradient(135deg, #c9a84c 0%, #f5d78e 50%, #c9a84c 100%)',
-  },
-  {
-    id: 2,
-    name: 'Сертификат на 200 рублей',
-    description: 'Широкий выбор серебряных украшений с натуральными камнями — кольца, серьги, браслеты и комплекты.',
-    price: 200,
-    gradient: 'linear-gradient(135deg, #a8c0cc 0%, #dce9ef 50%, #a8c0cc 100%)',
-  },
-  {
-    id: 3,
-    name: 'Сертификат на 300 рублей',
-    description: 'Премиальный выбор для особенного подарка. Украшения из серебра 925 пробы с уникальными вставками.',
-    price: 300,
-    gradient: 'linear-gradient(135deg, #b8a9c9 0%, #e0d8ee 50%, #b8a9c9 100%)',
-  },
-  {
-    id: 4,
-    name: 'Сертификат на 500 рублей',
-    description: 'Роскошный подарок для самых близких. Доступны эксклюзивные изделия и авторские комплекты.',
-    price: 500,
-    gradient: 'linear-gradient(135deg, #c9a84c 0%, #e8c97a 30%, #fff5cc 60%, #c9a84c 100%)',
-  },
-]
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CertificatesPage() {
+  const { data: certs = [], isLoading } = useQuery<GiftCertificate[]>({
+    queryKey: ['gift-certificates'],
+    queryFn: async () => {
+      const res = await axiosClassic.get<GiftCertificate[]>('/gift-certificates')
+      return res.data
+    },
+    staleTime: Infinity,
+  })
+
+  const [orderCert, setOrderCert] = useState<GiftCertificate | null>(null)
+  const [customOpen, setCustomOpen] = useState(false)
+
   return (
     <>
       <Header />
@@ -59,54 +143,72 @@ export default function CertificatesPage() {
           <h1 className={styles.pageTitle}>Подарочные сертификаты</h1>
           <p className={styles.pageDesc}>
             Не знаете, какое украшение выбрать? Подарите сертификат — и пусть ваш близкий выберет сам.
-            Срок действия сертификата — <strong>3 месяца</strong>. Оплата в магазине.
           </p>
 
-          <div className={styles.grid}>
-            {CERTIFICATES.map(cert => (
-              <div key={cert.id} className={styles.card}>
-                <div
-                  className={styles.certImg}
-                  style={cert.imageUrl ? undefined : { background: cert.gradient, color: cert.textColor }}
-                >
-                  {cert.imageUrl ? (
-                    <NextImage
-                      src={cert.imageUrl}
-                      alt={cert.name}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <>
-                      <div className={styles.certLabel}>Septaria</div>
-                      <div className={styles.certAmount}>{cert.price} руб.</div>
-                      <div className={styles.certSub}>Подарочный сертификат</div>
-                    </>
-                  )}
+          {isLoading ? (
+            <div className={styles.grid}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className={`${styles.card} ${styles.skeleton}`} />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.grid}>
+              {/* Custom certificate card — always first */}
+              <div className={`${styles.card} ${styles.cardCustom}`} onClick={() => setCustomOpen(true)}>
+                <div className={styles.certImgCustom}>
+                  <div className={styles.customPlus}>+</div>
+                  <div className={styles.customLabel}>Свой номинал</div>
                 </div>
                 <div className={styles.cardBody}>
-                  <h2 className={styles.cardTitle}>{cert.name}</h2>
-                  <p className={styles.cardDesc}>{cert.description}</p>
+                  <h2 className={styles.cardTitle}>Кастомный сертификат</h2>
+                  <p className={styles.cardDesc}>Выберите любую сумму — мы оформим сертификат на нужный номинал специально для вас.</p>
                   <div className={styles.cardFooter}>
-                    <span className={styles.price}>{cert.price} руб.</span>
-                    <button className={styles.buyBtn}>Купить</button>
+                    <span className={styles.price}>любой номинал</span>
+                    <button className={styles.buyBtn} type="button">Заказать</button>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
 
-          <div className={styles.info}>
-            <h2>Как использовать сертификат</h2>
-            <ol>
-              <li>Оплатите сертификат онлайн на сайте или в одном из наших магазинов.</li>
-              <li>Получите бумажный сертификат с уникальным кодом.</li>
-              <li>Предъявите сертификат при покупке в магазине «Серебро» или салоне «Золото».</li>
-            </ol>
-          </div>
+              {certs.map(cert => (
+                <div key={cert.id} className={styles.card}>
+                  <div
+                    className={styles.certImg}
+                    style={cert.imageUrl ? undefined : { background: cert.gradient, color: cert.textColor }}
+                  >
+                    {cert.imageUrl ? (
+                      <NextImage
+                        src={cert.imageUrl}
+                        alt={cert.name}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <>
+                        <div className={styles.certLabel}>Septaria</div>
+                        <div className={styles.certAmount}>{cert.price} руб.</div>
+                        <div className={styles.certSub}>Подарочный сертификат</div>
+                      </>
+                    )}
+                  </div>
+                  <div className={styles.cardBody}>
+                    <h2 className={styles.cardTitle}>{cert.name}</h2>
+                    <p className={styles.cardDesc}>{cert.description}</p>
+                    <div className={styles.cardFooter}>
+                      <span className={styles.price}>{cert.price} {cert.currency ?? 'BYN'}</span>
+                      <button className={styles.buyBtn} type="button" onClick={() => setOrderCert(cert)}>Купить</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
       </main>
       <Footer />
+
+      {orderCert && <OrderModal cert={orderCert} onClose={() => setOrderCert(null)} />}
+      {customOpen && <CustomOrderModal onClose={() => setCustomOpen(false)} />}
     </>
   )
 }

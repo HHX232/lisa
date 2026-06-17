@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import { useRef, useState } from 'react'
@@ -9,8 +10,12 @@ import {
   useAdminProducts, useDeleteAdminProduct, useChangeProductStatus, useImportProductsExcel,
   useAdminOrders, useChangeAdminOrderStatus,
   useAdminReviews, useDeleteAdminReview, useChangeReviewStatus, useUpdateAdminReview,
+  useStoneCategories, useUpsertStoneCategory, useDeleteStoneCategory,
+  useGiftCertificates, useUpsertGiftCertificate, useDeleteGiftCertificate,
 } from '@/hooks/admin.hooks'
 import { AdminUser, UpdateAdminUserBody, AdvertisementBody, AdminReview, ReviewStatus } from '@/api/services/admin.service'
+import { StoneCategory, StoneCategoryBody } from '@/types/StoneCategory.types'
+import { GiftCertificate, GiftCertificateBody } from '@/types/GiftCertificate.types'
 import { Advertisement } from '@/types/Advertisement.types'
 import { Product, ProductStatus } from '@/types/Product.types'
 import { ORDER_STATUS_LABELS, OrderStatus } from '@/types/Order.types'
@@ -19,7 +24,7 @@ import ProductFormModal from './ProductFormModal/ProductFormModal'
 import styles from './AdminPage.module.scss'
 
 const PAGE_SIZE = 10
-type Tab = 'users' | 'ads' | 'products' | 'orders' | 'reviews'
+type Tab = 'users' | 'ads' | 'products' | 'orders' | 'reviews' | 'stones' | 'certificates'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Users Tab
@@ -465,6 +470,7 @@ const STATUS_LABELS: Record<ProductStatus, string> = {
   PENDING: 'Ожидает',
   ACTIVE: 'Активен',
   INACTIVE: 'Неактивен',
+  APPROVED: 'Активен',
 }
 
 function ProductsTab() {
@@ -585,6 +591,7 @@ function ProductsTab() {
                       {!product.status && <option value="" disabled>—</option>}
                       <option value="PENDING">{STATUS_LABELS.PENDING}</option>
                       <option value="ACTIVE">{STATUS_LABELS.ACTIVE}</option>
+                      <option value="APPROVED">{STATUS_LABELS.APPROVED}</option>
                       <option value="INACTIVE">{STATUS_LABELS.INACTIVE}</option>
                     </select>
                   </td>
@@ -802,13 +809,6 @@ function OrdersTab() {
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Root
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// Reviews Tab
-// ─────────────────────────────────────────────────────────────────────────────
-
 const REVIEW_STATUS_LABELS: Record<string, string> = {
   PENDING: 'На проверке',
   APPROVED: 'Опубликован',
@@ -956,7 +956,6 @@ function ReviewsTab() {
                   {/* Current image */}
                   {editReview.image && (
                     <div className={`${styles.reviewImgCard} ${deleteImage ? styles.reviewImgDeleted : ''}`}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={editReview.image} alt="текущее фото" />
                       <button
                         type="button"
@@ -973,7 +972,6 @@ function ReviewsTab() {
                   {/* New image previews */}
                   {editImages.map((img, i) => (
                     <div key={i} className={styles.reviewImgCard}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={URL.createObjectURL(img)} alt="новое фото" />
                       <button type="button" className={styles.reviewImgAction}
                         onClick={() => setEditImages(prev => prev.filter((_, j) => j !== i))}>✕</button>
@@ -1004,6 +1002,437 @@ function ReviewsTab() {
               <button className={styles.cancelBtn} onClick={() => setEditReview(null)}>Отмена</button>
               <button className={styles.saveBtn} onClick={handleUpdate} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? 'Сохраняем...' : 'Сохранить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stone Categories Tab
+// ─────────────────────────────────────────────────────────────────────────────
+
+const EMPTY_STONE: StoneCategoryBody = { id: 0, label: '', slug: '', imagesMeta: [] }
+
+function StoneCategoriesTab() {
+  const { data: stones = [], isLoading } = useStoneCategories()
+  const upsertMutation = useUpsertStoneCategory()
+  const deleteMutation = useDeleteStoneCategory()
+
+  const [editStone, setEditStone] = useState<(StoneCategoryBody & { existingImages?: StoneCategory['images'] }) | null>(null)
+  const [deleteStone, setDeleteStone] = useState<StoneCategory | null>(null)
+  const [newImages, setNewImages] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const openCreate = () => {
+    setEditStone({ ...EMPTY_STONE, existingImages: [] })
+    setNewImages([])
+    setImagePreviews([])
+  }
+
+  const openEdit = (s: StoneCategory) => {
+    setEditStone({
+      id: s.id,
+      label: s.label,
+      slug: s.slug,
+      imagesMeta: (s.images ?? []).map(img => ({ id: img.id, displayOrder: img.displayOrder, delete: false })),
+      existingImages: s.images ?? [],
+    })
+    setNewImages([])
+    setImagePreviews([])
+  }
+
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return
+    const arr = Array.from(files)
+    setNewImages(prev => [...prev, ...arr])
+    arr.forEach(f => {
+      const reader = new FileReader()
+      reader.onload = e => setImagePreviews(prev => [...prev, e.target?.result as string])
+      reader.readAsDataURL(f)
+    })
+  }
+
+  const removeExistingImage = (imgId: string) => {
+    if (!editStone) return
+    setEditStone(s => s && ({
+      ...s,
+      imagesMeta: s.imagesMeta.map(m => m.id === imgId ? { ...m, delete: true } : m),
+    }))
+  }
+
+  const removeNewImage = (idx: number) => {
+    setNewImages(prev => prev.filter((_, i) => i !== idx))
+    setImagePreviews(prev => prev.filter((_, i) => i !== idx))
+  }
+
+  const handleSave = async () => {
+    if (!editStone) return
+    try {
+      const existingMeta = editStone.imagesMeta // existing images with delete flags
+      const nextOrder = existingMeta.length + 1
+      const newImagesMeta = newImages.map((_, i) => ({
+        id: null,
+        displayOrder: nextOrder + i,
+        delete: null,
+      }))
+      const fullImagesMeta = [...existingMeta, ...newImagesMeta]
+
+      await upsertMutation.mutateAsync({
+        category: { id: editStone.id, label: editStone.label, slug: editStone.slug, imagesMeta: fullImagesMeta },
+        images: newImages,
+      })
+      toast.success(editStone.id === 0 ? 'Категория создана' : 'Категория обновлена')
+      setEditStone(null)
+      setNewImages([])
+      setImagePreviews([])
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Ошибка')
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteStone) return
+    try {
+      await deleteMutation.mutateAsync(deleteStone.id)
+      toast.success('Удалено')
+      setDeleteStone(null)
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Ошибка')
+    }
+  }
+
+  return (
+    <>
+      <div className={styles.tabHeader}>
+        <span className={styles.count}>{stones.length} категорий</span>
+        <button className={styles.createBtn} onClick={openCreate}>+ Добавить</button>
+      </div>
+
+      {isLoading && <p className={styles.loading}>Загрузка...</p>}
+
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Название</th>
+              <th>Slug</th>
+              <th>Превью</th>
+              <th>Изображений</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stones.map(s => (
+              <tr key={s.id}>
+                <td>{s.id}</td>
+                <td>{s.label}</td>
+                <td>{s.slug}</td>
+                <td>
+                  {s.preview && (
+                    <img src={s.preview} alt={s.label} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 4 }} />
+                  )}
+                </td>
+                <td>{s.images?.length ?? 0}</td>
+                <td>
+                  <div className={styles.actions}>
+                    <button className={styles.editBtn} onClick={() => openEdit(s)}>Изменить</button>
+                    <button className={styles.deleteBtn} onClick={() => setDeleteStone(s)}>Удалить</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Edit / Create Modal */}
+      {editStone && (
+        <div className={styles.overlay} onClick={() => setEditStone(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setEditStone(null)}><span /><span /></button>
+            <h2 className={styles.modalTitle}>
+              {editStone.id === 0 ? 'Новая категория камня' : `Редактировать: ${editStone.label}`}
+            </h2>
+
+            <div className={styles.formGrid}>
+              <label className={styles.formLabel}>
+                Название
+                <input className={styles.formInput} value={editStone.label}
+                  onChange={e => setEditStone(s => s && ({ ...s, label: e.target.value }))} />
+              </label>
+              <label className={styles.formLabel}>
+                Slug (для URL)
+                <input className={styles.formInput} value={editStone.slug}
+                  onChange={e => setEditStone(s => s && ({ ...s, slug: e.target.value }))} />
+              </label>
+
+              {/* Existing images */}
+              {(editStone.existingImages?.length ?? 0) > 0 && (
+                <div className={styles.formLabel}>
+                  Текущие изображения
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+                    {editStone.existingImages!.map(img => {
+                      const meta = editStone.imagesMeta.find(m => m.id === img.id)
+                      const deleted = meta?.delete ?? false
+                      return (
+                        <div key={img.id} style={{ position: 'relative', opacity: deleted ? 0.3 : 1 }}>
+                          <img src={img.url} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 4 }} />
+                          <button type="button" onClick={() => removeExistingImage(img.id)}
+                            style={{ position: 'absolute', top: -6, right: -6, background: '#af0e0e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 12, lineHeight: 1 }}>
+                            {deleted ? '↩' : '×'}
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* New images */}
+              <div className={styles.formLabel}>
+                {editStone.id === 0 ? 'Изображения' : 'Добавить изображения'}
+                <div className={styles.imageUpload}>
+                  {imagePreviews.map((src, i) => (
+                    <div key={i} style={{ position: 'relative', display: 'inline-block', margin: '4px 4px 0 0' }}>
+                      <img src={src} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 4 }} />
+                      <button type="button" onClick={() => removeNewImage(i)}
+                        style={{ position: 'absolute', top: -6, right: -6, background: '#af0e0e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 12 }}>
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <input ref={fileRef} type="file" accept="image/*" multiple className={styles.fileInput}
+                    onChange={e => { handleFiles(e.target.files); e.target.value = '' }} />
+                  <button className={styles.fileBtn} type="button" onClick={() => fileRef.current?.click()}>
+                    Выбрать файлы
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button className={styles.cancelBtn} onClick={() => setEditStone(null)}>Отмена</button>
+              <button className={styles.saveBtn} onClick={handleSave} disabled={upsertMutation.isPending}>
+                {upsertMutation.isPending ? 'Сохраняем...' : 'Сохранить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm */}
+      {deleteStone && (
+        <div className={styles.overlay} onClick={() => setDeleteStone(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setDeleteStone(null)}><span /><span /></button>
+            <h2 className={styles.modalTitle}>Удалить категорию?</h2>
+            <p className={styles.deleteText}>
+              Вы уверены, что хотите удалить <strong>{deleteStone.label}</strong>? Это действие необратимо.
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.cancelBtn} onClick={() => setDeleteStone(null)}>Отмена</button>
+              <button className={styles.dangerBtn} onClick={handleDelete} disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? 'Удаляем...' : 'Удалить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Gift Certificates Tab
+// ─────────────────────────────────────────────────────────────────────────────
+
+const EMPTY_CERT: GiftCertificateBody = { id: 0, name: '', description: '', price: 0, gradient: '', textColor: '' }
+
+function GiftCertificatesTab() {
+  const { data: certs = [], isLoading } = useGiftCertificates()
+  const upsertMutation = useUpsertGiftCertificate()
+  const deleteMutation = useDeleteGiftCertificate()
+
+  const [editCert, setEditCert] = useState<GiftCertificateBody | null>(null)
+  const [deleteCert, setDeleteCert] = useState<GiftCertificate | null>(null)
+  const [image, setImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const openCreate = () => {
+    setEditCert({ ...EMPTY_CERT })
+    setImage(null)
+    setImagePreview('')
+  }
+
+  const openEdit = (c: GiftCertificate) => {
+    setEditCert({ id: c.id, name: c.name, description: c.description, price: c.price, gradient: c.gradient ?? '', textColor: c.textColor ?? '' })
+    setImage(null)
+    setImagePreview(c.imageUrl ?? '')
+  }
+
+  const handleFile = (f: File | null) => {
+    setImage(f)
+    if (f) {
+      const reader = new FileReader()
+      reader.onload = e => setImagePreview(e.target?.result as string)
+      reader.readAsDataURL(f)
+    }
+  }
+
+  const handleSave = async () => {
+    if (!editCert) return
+    try {
+      await upsertMutation.mutateAsync({ certificate: editCert, image })
+      toast.success('Сохранено')
+      setEditCert(null)
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Ошибка')
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteCert) return
+    try {
+      await deleteMutation.mutateAsync(deleteCert.id)
+      toast.success('Удалено')
+      setDeleteCert(null)
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Ошибка')
+    }
+  }
+
+  return (
+    <>
+      <div className={styles.tabHeader}>
+        <span className={styles.count}>{certs.length} сертификатов</span>
+        <button className={styles.createBtn} onClick={openCreate}>+ Добавить</button>
+      </div>
+
+      {isLoading && <p className={styles.loading}>Загрузка...</p>}
+
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Название</th>
+              <th>Цена</th>
+              <th>Превью</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {certs.map(c => (
+              <tr key={c.id}>
+                <td>{c.id}</td>
+                <td>{c.name}</td>
+                <td>{c.price} {c.currency}</td>
+                <td>
+                  {c.imageUrl ? (
+                    <img src={c.imageUrl} alt={c.name} style={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                  ) : c.gradient ? (
+                    <div style={{ width: 64, height: 40, background: c.gradient, borderRadius: 4 }} />
+                  ) : null}
+                </td>
+                <td>
+                  <div className={styles.actions}>
+                    <button className={styles.editBtn} onClick={() => openEdit(c)}>Изменить</button>
+                    <button className={styles.deleteBtn} onClick={() => setDeleteCert(c)}>Удалить</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Edit / Create Modal */}
+      {editCert && (
+        <div className={styles.overlay} onClick={() => setEditCert(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setEditCert(null)}><span /><span /></button>
+            <h2 className={styles.modalTitle}>
+              {editCert.id === 0 ? 'Новый сертификат' : `Редактировать: ${editCert.name}`}
+            </h2>
+
+            <div className={styles.formGrid}>
+              <label className={styles.formLabel}>
+                Название
+                <input className={styles.formInput} value={editCert.name}
+                  onChange={e => setEditCert(s => s && ({ ...s, name: e.target.value }))} />
+              </label>
+              <label className={styles.formLabel}>
+                Цена (BYN)
+                <input className={styles.formInput} type="number" value={editCert.price}
+                  onChange={e => setEditCert(s => s && ({ ...s, price: Number(e.target.value) }))} />
+              </label>
+              <label className={styles.formLabel} style={{ gridColumn: '1 / -1' }}>
+                Описание
+                <input className={styles.formInput} value={editCert.description}
+                  onChange={e => setEditCert(s => s && ({ ...s, description: e.target.value }))} />
+              </label>
+              <label className={styles.formLabel}>
+                Gradient CSS (если нет фото)
+                <input className={styles.formInput} placeholder="linear-gradient(...)" value={editCert.gradient ?? ''}
+                  onChange={e => setEditCert(s => s && ({ ...s, gradient: e.target.value }))} />
+              </label>
+              <label className={styles.formLabel}>
+                Цвет текста
+                <input className={styles.formInput} placeholder="#072761" value={editCert.textColor ?? ''}
+                  onChange={e => setEditCert(s => s && ({ ...s, textColor: e.target.value }))} />
+              </label>
+
+              <div className={styles.formLabel} style={{ gridColumn: '1 / -1' }}>
+                Изображение
+                <div className={styles.imageUpload}>
+                  {imagePreview && (
+                    <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
+                      <img src={imagePreview} alt="" style={{ height: 60, width: 96, objectFit: 'cover', borderRadius: 4, display: 'block' }} />
+                      <button type="button" onClick={() => { setImage(null); setImagePreview('') }}
+                        style={{ position: 'absolute', top: -6, right: -6, background: '#af0e0e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 12 }}>
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input ref={fileRef} type="file" accept="image/*" className={styles.fileInput}
+                    onChange={e => { handleFile(e.target.files?.[0] ?? null); e.target.value = '' }} />
+                  <button className={styles.fileBtn} type="button" onClick={() => fileRef.current?.click()}>
+                    {imagePreview ? 'Заменить фото' : 'Выбрать фото'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button className={styles.cancelBtn} onClick={() => setEditCert(null)}>Отмена</button>
+              <button className={styles.saveBtn} onClick={handleSave} disabled={upsertMutation.isPending}>
+                {upsertMutation.isPending ? 'Сохраняем...' : 'Сохранить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm */}
+      {deleteCert && (
+        <div className={styles.overlay} onClick={() => setDeleteCert(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setDeleteCert(null)}><span /><span /></button>
+            <h2 className={styles.modalTitle}>Удалить сертификат?</h2>
+            <p className={styles.deleteText}>
+              Вы уверены, что хотите удалить <strong>{deleteCert.name}</strong>?
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.cancelBtn} onClick={() => setDeleteCert(null)}>Отмена</button>
+              <button className={styles.dangerBtn} onClick={handleDelete} disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? 'Удаляем...' : 'Удалить'}
               </button>
             </div>
           </div>
@@ -1053,6 +1482,18 @@ export default function AdminPage() {
         >
           Отзывы
         </button>
+        <button
+          className={`${styles.tab} ${tab === 'stones' ? styles.tabActive : ''}`}
+          onClick={() => setTab('stones')}
+        >
+          Камни
+        </button>
+        <button
+          className={`${styles.tab} ${tab === 'certificates' ? styles.tabActive : ''}`}
+          onClick={() => setTab('certificates')}
+        >
+          Сертификаты
+        </button>
       </div>
 
       {tab === 'users' && <UsersTab />}
@@ -1060,6 +1501,8 @@ export default function AdminPage() {
       {tab === 'products' && <ProductsTab />}
       {tab === 'orders' && <OrdersTab />}
       {tab === 'reviews' && <ReviewsTab />}
+      {tab === 'stones' && <StoneCategoriesTab />}
+      {tab === 'certificates' && <GiftCertificatesTab />}
     </div>
   )
 }

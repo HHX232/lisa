@@ -30,6 +30,12 @@ interface ProductsResponse {
   }
 }
 
+interface StoneCategory {
+  id: number
+  label: string
+  slug: string
+}
+
 interface Filters {
   isAdvertisement?: boolean
   isComplect?: boolean
@@ -41,6 +47,7 @@ interface Filters {
   sort?: SortField
   direction?: SortDir
   category?: string
+  stone?: string
   page: number
   size: number
 }
@@ -64,6 +71,7 @@ const fetchProducts = async (filters: Filters): Promise<ProductsResponse> => {
   if (filters.category) {
     filters.category.split(',').filter(Boolean).forEach(c => sp.append('category', c))
   }
+  if (filters.stone) sp.set('stone', filters.stone)
 
   const { data } = await axiosClassic.get(`/products?${sp.toString()}`)
   return data
@@ -89,6 +97,7 @@ function useFilters() {
     sort: (searchParams.get('sort') as SortField) ?? undefined,
     direction: (searchParams.get('direction') as SortDir) ?? undefined,
     category: searchParams.get('category') ?? undefined,
+    stone: searchParams.get('stone') ?? undefined,
   }
 
   const setFilters = useCallback((updates: Partial<Filters>) => {
@@ -190,6 +199,70 @@ function CategorySelect({
               </div>
             )
           })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── StoneSelect ─────────────────────────────────────────────────────────────
+
+function StoneSelect({
+  value,
+  onChange,
+  stones,
+}: {
+  value: string
+  onChange: (v: string | undefined) => void
+  stones: StoneCategory[]
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const selected = stones.find(s => s.slug === value)
+  const triggerLabel = selected ? selected.label : 'Все камни'
+
+  return (
+    <div className={styles.categorySelect} ref={ref}>
+      <button
+        className={`${styles.categorySelectTrigger} ${value ? styles.categorySelectActive : ''}`}
+        onClick={() => setOpen(o => !o)}
+        type="button"
+      >
+        <span>{triggerLabel}</span>
+        <span className={styles.categorySelectArrow}>{open ? '▲' : '▼'}</span>
+      </button>
+
+      {open && (
+        <div className={styles.categorySelectDropdown}>
+          <label
+            className={`${styles.categorySelectOption} ${!value ? styles.categorySelectOptionChecked : ''}`}
+            onClick={() => { onChange(undefined); setOpen(false) }}
+          >
+            <span className={`${styles.categoryCheckbox} ${!value ? styles.categoryCheckboxChecked : ''}`} />
+            Все камни
+          </label>
+          {stones.map(({ slug, label }) => (
+            <label
+              key={slug}
+              className={`${styles.categorySelectOption} ${value === slug ? styles.categorySelectOptionChecked : ''}`}
+              onClick={() => { onChange(slug); setOpen(false) }}
+            >
+              <span className={`${styles.categoryCheckbox} ${value === slug ? styles.categoryCheckboxChecked : ''}`} />
+              {label}
+            </label>
+          ))}
+          {stones.length === 0 && (
+            <span className={styles.categorySelectOption}>Загрузка...</span>
+          )}
         </div>
       )}
     </div>
@@ -298,6 +371,15 @@ const currency = useCurrency()
     staleTime: Infinity,
   })
 
+  const { data: stoneCategories = [] } = useQuery<StoneCategory[]>({
+    queryKey: ['stone-categories'],
+    queryFn: async () => {
+      const res = await axiosClassic.get<StoneCategory[]>('/stone-categories')
+      return res.data
+    },
+    staleTime: Infinity,
+  })
+
   const handleTitleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setFilters({ title: titleInput || undefined })
@@ -325,6 +407,7 @@ const currency = useCurrency()
       sort: undefined,
       direction: undefined,
       category: undefined,
+      stone: undefined,
     })
   }
 
@@ -336,6 +419,7 @@ const currency = useCurrency()
     filters.title,
     filters.advertisementType,
     filters.category,
+    filters.stone,
   ].filter((v) => v !== undefined && v !== '').length
 
   const pageInfo = data?.page
@@ -384,6 +468,15 @@ const currency = useCurrency()
               value={filters.category?.split(',').filter(Boolean) ?? []}
               onChange={(v) => setFilters({ category: v.length > 0 ? v.join(',') : undefined })}
               categories={categories}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
+            <p className={styles.filterLabel}>Камень</p>
+            <StoneSelect
+              value={filters.stone ?? ''}
+              onChange={(v) => setFilters({ stone: v })}
+              stones={stoneCategories}
             />
           </div>
 

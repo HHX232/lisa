@@ -9,17 +9,20 @@ import SliderBigGrid from "@/components/UI/SliderBigGrid/SliderBigGrid";
 import SliderLittleGrid from "@/components/UI/SliderLittleGrid/SliderLittleGrid";
 import { Advertisement } from "@/types/Advertisement.types";
 import { Product } from "@/types/Product.types";
+import { StoneCategory } from "@/types/StoneCategory.types";
 
 function HomePage({
   addSlides,
   products,
   complect = [],
   souvenirs = [],
+  stoneCategories = [],
 }: {
   addSlides: Advertisement[];
   products: Product[];
   complect: Product[];
   souvenirs: Product[];
+  stoneCategories: StoneCategory[];
 }) {
   return (
     <>
@@ -38,9 +41,14 @@ function HomePage({
       {/* Фильтры камушков */}
       <SliderLittleGrid
         title="Каталог камней"
-        slides={(products || []).map((slide) => ({
-          image: slide.imageUrl,
-          title: slide.title,
+        subtitle={[
+          'Натуральные камни, каждый — со своим характером',
+          'Выберите камень и посмотрите все доступные украшения с этим камнем.',
+        ]}
+        slides={stoneCategories.map((stone) => ({
+          image: stone.preview,
+          title: stone.label,
+          href: `/catalog?stone=${stone.slug}`,
         }))}
       />
 
@@ -48,6 +56,11 @@ function HomePage({
       {/* Супер крутые украшения */}
       <SliderLittleGrid
         title="Эксклюзив для безупречного вкуса"
+        subtitle={[
+          'Украшения с нестандартным дизайном и крупными формами —',
+          'для тех, кто выбирает выразительные и смелые решения.',
+        ]}
+        imageSize={158}
         slides={(products || []).map((slide) => ({
           image: slide.imageUrl,
           title: slide.title,

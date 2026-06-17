@@ -46,6 +46,7 @@ interface FormState {
   inShops: string[]
   characteristics: Characteristic[]
   isSouvenir: boolean
+  isNaturalStone: boolean
   categoryId: string
   isAdvertisement: boolean
   advertisementType: string
@@ -67,6 +68,7 @@ const EMPTY: FormState = {
   inShops: [],
   characteristics: [],
   isSouvenir: false,
+  isNaturalStone: true,
   categoryId: '',
   isAdvertisement: false,
   advertisementType: '',
@@ -126,6 +128,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         inShops: p.inShops ?? [],
         characteristics: p.characteristics ?? [],
         isSouvenir: p.isSouvenir,
+        isNaturalStone: true,
         categoryId: String(categories.find(c => c.label === p.category)?.id ?? ''),
         isAdvertisement: p.isAdvertisement ?? false,
         advertisementType: p.advertisementType ?? '',
@@ -335,6 +338,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                   ['isComplect', 'Комплект'],
                   ['useFillImage', 'Заливка фото'],
                   ['isSouvenir', 'Сувенир'],
+                  ['isNaturalStone', 'Натуральный камень'],
                   ['isAdvertisement', 'Реклама'],
                 ] as [keyof FormState, string][]).map(([key, label]) => (
                   <label key={String(key)} className={styles.toggle}>

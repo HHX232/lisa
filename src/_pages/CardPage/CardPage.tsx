@@ -6,9 +6,13 @@ import AddToCartButton from "@/components/UI/AddToCartButton/AddToCartButton";
 import CharacterUI from "@/components/UI/CharacterUI/CharacterUI";
 import ComplectModal from "@/components/UI/ComplectModal/ComplectModal";
 import FavoriteButton from "@/components/UI/FavoriteButton/FavoriteButton";
-import SliderBigGrid, { mockCards } from "@/components/UI/SliderBigGrid/SliderBigGrid";
+import HintButton from "@/components/UI/HintButton/HintButton";
+import SliderLittleGrid from "@/components/UI/SliderLittleGrid/SliderLittleGrid";
+import RecentlyViewedTracker from "@/components/Pages/RecentlyViewed/RecentlyViewedTracker";
+import RecentlyViewedSlider from "@/components/Pages/RecentlyViewed/RecentlyViewedSlider";
 import { Characteristic, Product } from "@/types/Product.types";
 import style from "./CardPage.module.scss";
+
 
 interface BreadcrumbItem {
   label: string;
@@ -32,6 +36,7 @@ interface CardPageComponentProps {
   stockCount?: number;
   complectItems?: Product[];
   currentProduct?: Product;
+  similarProducts?: Product[];
 }
 
 function CardPageComponent({
@@ -54,18 +59,26 @@ function CardPageComponent({
   stockCount,
   complectItems = [],
   currentProduct,
+  similarProducts = [],
 }: CardPageComponentProps) {
   return (
     <div className={`${style.margins} container`}>
       <Breadcrumbs extraClass={style.bred_extra} items={breadcrumbs} />
       <div className={style.top_container}>
-        <MainCardSlider extraClass={style.extraSlider} isComplect={isComplect} images={images} />
+        <MainCardSlider
+          extraClass={style.extraSlider}
+          isComplect={isComplect}
+          images={images}
+          hintSlot={<HintButton productId={id} />}
+          currentProduct={currentProduct}
+          complectItems={complectItems}
+        />
         <div className={style.right}>
           <p className={style.title}>{title}</p>
 
           <div className={style.prices_box}>
-            <p className={style.current_price}>{currentPrice}<CurrencySymbol size={28} /></p>
-            {originalPrice && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={20} /></p>}
+            <p className={style.current_price}>{currentPrice}<CurrencySymbol size={20} /></p>
+            {originalPrice && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={18} /></p>}
             {sale && <p className={style.sale}>{sale}</p>}
           </div>
 
@@ -116,13 +129,30 @@ function CardPageComponent({
 
       {description && <p className={style.description}>{description}</p>}
       {fullDescription && <p className={style.description}>{fullDescription}</p>}
+      <p className={style.stone_note}>Внутренние трещинки, природные неровности и мелкие сколы натурального камня, являются особенностями его природного происхождения, что подтверждают натуральность камня и не считаются браком</p>
+
+      <RecentlyViewedTracker
+        id={Number(id)}
+        title={title}
+        imageUrl={currentProduct?.imageUrl ?? images[0] ?? ''}
+      />
 
       <ProductReviews productId={id} />
 
-      <h2 className={style.second_title}>Возможно вам понравится</h2>
-      <SliderBigGrid isCardSlider slides={[]} cards={mockCards} />
-      <h2 className={style.second_title}>Вы недавно смотрели</h2>
-      <SliderBigGrid isCardSlider slides={[]} cards={mockCards} />
+      {similarProducts.length > 0 && (
+        <>
+          <h2 className={style.second_title}>Возможно вам понравится</h2>
+          <SliderLittleGrid
+            slides={similarProducts.map(p => ({
+              image: p.imageUrl,
+              title: p.title,
+              href: `/card/${p.id}`,
+            }))}
+            imageSize={180}
+          />
+        </>
+      )}
+      <RecentlyViewedSlider excludeId={Number(id)} />
     </div>
   );
 }

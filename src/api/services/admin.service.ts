@@ -3,6 +3,8 @@ import { UserRole } from '@/types/user.types'
 import { Advertisement } from '@/types/Advertisement.types'
 import { ProductFull, ProductStatus } from '@/types/Product.types'
 import { AdminOrdersParams, AdminOrdersResponse, OrderStatus } from '@/types/Order.types'
+import { StoneCategory, StoneCategoryBody } from '@/types/StoneCategory.types'
+import { GiftCertificate, GiftCertificateBody } from '@/types/GiftCertificate.types'
 
 export interface ProductRequestBody {
   id: number
@@ -166,6 +168,46 @@ const adminService = {
 
   async changeReviewStatus(id: number, status: string) {
     await axiosClassic.patch(`/admin/product-reviews/${id}/status`, { status })
+  },
+
+  // ─── Stone Categories ──────────────────────────────────────────────────────
+
+  async upsertStoneCategory(category: StoneCategoryBody, images: File[]) {
+    const payload = { ...category, id: category.id === 0 ? null : category.id }
+    const fd = new FormData()
+    fd.append('category', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
+    images.forEach(img => fd.append('images', img))
+    const res = await fetch(`/api/proxy/admin/stone-categories`, {
+      method: 'PUT',
+      body: fd,
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error(await res.text())
+    return res.json() as Promise<StoneCategory>
+  },
+
+  async deleteStoneCategory(id: number) {
+    await axiosClassic.delete(`/admin/stone-categories/${id}`)
+  },
+
+  // ─── Gift Certificates ────────────────────────────────────────────────────
+
+  async upsertGiftCertificate(certificate: GiftCertificateBody, image?: File | null) {
+    const payload = { ...certificate, id: certificate.id === 0 ? null : certificate.id }
+    const fd = new FormData()
+    fd.append('certificate', new Blob([JSON.stringify(payload)], { type: 'application/json' }))
+    if (image) fd.append('image', image)
+    const res = await fetch(`/api/proxy/admin/gift-certificates`, {
+      method: 'PUT',
+      body: fd,
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error(await res.text())
+    return res.json() as Promise<GiftCertificate>
+  },
+
+  async deleteGiftCertificate(id: number) {
+    await axiosClassic.delete(`/admin/gift-certificates/${id}`)
   },
 
   async updateAdminReview(productId: number, data: { text: string; stars: number; deleteImage?: boolean }, images?: File[]) {

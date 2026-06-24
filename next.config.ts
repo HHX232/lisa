@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         hostname: "s3.septaria.by",
         pathname: "/**",
       },
+      {
+        protocol: 'https',
+        hostname: 'septaria-api.up.railway.app',
+      }
     ],
   },
 };

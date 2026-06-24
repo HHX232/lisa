@@ -17,9 +17,14 @@ import {
 } from '../validators/validate.params'
 
 const productService = {
+  getComplectItems: async (id: string | number) => {
+  const { data } = await axiosClassic.get<Product[]>(`/products/${id}/complect-items`)
+  return data ?? []
+},
   async getProducts(params: ProductsRequestParams = {}, currentLang?: string) {
     const page = validatePage(params?.page)
     const size = validateSize(params?.size)
+    const isNaturalStone = validateBoolean(params?.isNaturalStone)
     const sort = validateSortField(params?.sort)
     const direction = validateDirection(params?.direction)
     const isAdvertisement = validateBoolean(params?.isAdvertisement)
@@ -39,6 +44,8 @@ const productService = {
     if (isComplect !== undefined) query.set('isComplect', String(isComplect))
     if (isSouvenir !== undefined) query.set('isSouvenir', String(isSouvenir))
     if (minPrice !== undefined) query.set('minPrice', String(minPrice))
+      if (isNaturalStone !== undefined) query.set('isNaturalStone', String(isNaturalStone))
+
     if (maxPrice !== undefined) query.set('maxPrice', String(maxPrice))
     if (title) query.set('title', title)
     if (advertisementType) query.set('advertisementType', advertisementType)

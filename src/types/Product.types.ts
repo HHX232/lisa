@@ -44,6 +44,7 @@ export interface ProductFull {
   originalPrice: number
   currency?: string
   sale: number
+  isNaturalStone: boolean
   description: string
   imageUrl: string
   useFillImage: boolean
@@ -82,6 +83,7 @@ export interface ProductsRequestParams {
   page?: number
   size?: number
   sort?: SortField
+  isNaturalStone?: boolean
   direction?: SortDirection
   isAdvertisement?: boolean
   isComplect?: boolean

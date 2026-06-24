@@ -17,12 +17,14 @@ function HomePage({
   complect = [],
   souvenirs = [],
   stoneCategories = [],
+  naturalProducts = []
 }: {
   addSlides: Advertisement[];
   products: Product[];
   complect: Product[];
   souvenirs: Product[];
   stoneCategories: StoneCategory[];
+  naturalProducts:Product[]
 }) {
   return (
     <>
@@ -73,12 +75,12 @@ function HomePage({
         title="Бижутерия с натуральными камнями"
         useFillImage
         isCardSlider
-        slides={complect.map((el) => ({
+        slides={naturalProducts.map((el) => ({
           image: el.imageUrl,
           title: el.title,
         }))}
         showCardTitle={false}
-        cards={(complect || []).map((el) => ({ ...el, useFillImage: true }))}
+        cards={(naturalProducts || []).map((el) => ({ ...el, useFillImage: true }))}
       />
 
       <SliderBigGrid

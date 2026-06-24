@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
 import CardPageComponent from "@/_pages/CardPage/CardPage";
 import { axiosClassic } from "@/api/helpers/api.interceptor";
 import productService from "@/api/services/productService.service";
 import Footer from "@/components/Main/Footer/Footer";
 import Header from "@/components/Main/Header/Header";
 import { Product } from "@/types/Product.types";
+import type { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://septaria.by'
 const SITE_NAME = 'Septaria'
@@ -84,6 +84,17 @@ async function CardPage({ params }: Props) {
         }
       }
     } catch {}
+  }
+
+  let complectItems: Product[] | null = null
+ try {
+    const res = await axiosClassic.get<Product[]>(`/products/${data.id}/complect-items`)
+    complectItems = res.data ?? []
+    console.log('complectItems',complectItems)
+  } catch {
+    complectItems = data.complectItems ?? []
+        console.log('complectItems catch',complectItems)
+
   }
 
   // 3. Random (middle page)
@@ -169,7 +180,7 @@ async function CardPage({ params }: Props) {
         stores={data.inShops}
         characteristics={data.characteristics}
         stockCount={data.quantityInStock ?? data.count ?? 1}
-        complectItems={data.complectItems ?? []}
+        complectItems={complectItems}
         similarProducts={similarProducts ?? []}
         currentProduct={{
           id: data.id,

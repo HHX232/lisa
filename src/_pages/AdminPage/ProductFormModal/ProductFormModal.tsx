@@ -1,15 +1,15 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
 import productService from '@/api/services/productService.service'
 import { useUpsertProduct } from '@/hooks/admin.hooks'
 import { Characteristic, ProductFull } from '@/types/Product.types'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import ComplectPickerModal from './ComplectPickerModal'
-import ProductReviewsAdmin from './ProductReviewsAdmin'
 import styles from './ProductFormModal.module.scss'
+import ProductReviewsAdmin from './ProductReviewsAdmin'
 
 interface PickedProduct {
   id: number
@@ -68,7 +68,7 @@ const EMPTY: FormState = {
   inShops: [],
   characteristics: [],
   isSouvenir: false,
-  isNaturalStone: true,
+  isNaturalStone: false,
   categoryId: '',
   isAdvertisement: false,
   advertisementType: '',
@@ -109,6 +109,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
   // Load product for edit mode
   useEffect(() => {
     if (!isEdit) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
     productService.getProductById(productId!).then(res => {
       if (res.isError || !res.data) { setIsLoading(false); return }
@@ -128,7 +129,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         inShops: p.inShops ?? [],
         characteristics: p.characteristics ?? [],
         isSouvenir: p.isSouvenir,
-        isNaturalStone: true,
+        isNaturalStone: p.isNaturalStone ?? true,
         categoryId: String(categories.find(c => c.label === p.category)?.id ?? ''),
         isAdvertisement: p.isAdvertisement ?? false,
         advertisementType: p.advertisementType ?? '',
@@ -197,6 +198,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       description: form.description,
       fullDescription: form.fullDescription,
       isComplect: form.isComplect,
+      isNaturalStone: form.isNaturalStone,
       quantityInStock: Number(form.quantityInStock),
       complectItems: form.complectItems,
       sale: Number(form.sale),

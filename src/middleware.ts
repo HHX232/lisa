@@ -53,7 +53,8 @@ export async function middleware(request: NextRequest) {
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-    if (user?.role !== 'ADMIN') {
+    console.log('user?.role', user?.role)
+    if (user?.role !== 'ADMIN' ) {
       return NextResponse.redirect(new URL('/', request.url))
     }
     return NextResponse.next()

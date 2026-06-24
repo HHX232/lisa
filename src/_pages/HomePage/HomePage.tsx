@@ -34,6 +34,7 @@ function HomePage({
         slides={(products || []).map((slide) => ({
           image: slide.imageUrl,
           title: slide.title,
+          href: `/card/${slide.id}`
         }))}
       />
 
@@ -64,6 +65,7 @@ function HomePage({
         slides={(products || []).map((slide) => ({
           image: slide.imageUrl,
           title: slide.title,
+          href:`/card/${slide.id}`
         }))}
       />
 

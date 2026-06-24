@@ -11,26 +11,32 @@ interface Props {
 
 export default function HintButton({ productId }: Props) {
   const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState('')
-  // const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async () => {
-    if (!email.trim()) {
-      toast.error('Введите email')
+    if (!phone.trim()) {
+      toast.error('Введите номер телефона')
       return
     }
+    const body = {
+      productIds: [Number(productId)],
+      phoneNumber: phone.trim(),
+    }
+    console.log('[gift-hint] payload:', body)
     setLoading(true)
     try {
-      await axiosClassic.post('/gift-hint', {
-        productIds: [Number(productId)],
-        email: email.trim(),
-      })
+      await axiosClassic.post('/gift-hint', body)
       toast.success('Намёк отправлен!')
       setOpen(false)
-      setEmail('')
-    } catch {
-      toast.error('Не удалось отправить намёк')
+      setPhone('')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch(e : any) {
+     if (e?.response?.status === 401) {
+        toast.error('Войдите в аккаунт для отправки намека')
+      } else {
+        toast.error('Не удалось отправить намёк')
+      }
     } finally {
       setLoading(false)
     }
@@ -62,24 +68,11 @@ export default function HintButton({ productId }: Props) {
 
             <h2 className={styles.title}>Намекните о подарке</h2>
             <p className={styles.desc}>
-              Этому человеку придёт письмо с ненавязчивым намёком на подарок — возможно,
+              Этому человеку придёт сообщение с ненавязчивым намёком на подарок — возможно,
               именно этот товар станет поводом сделать вам что-то приятное.
             </p>
 
             <div className={styles.fields}>
-              <label className={styles.label}>
-                Email получателя
-                <input
-                  className={styles.input}
-                  type="email"
-                  placeholder="example@mail.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-                />
-              </label>
-
-              {/* Phone — будет вместо email
               <label className={styles.label}>
                 Номер телефона получателя
                 <input
@@ -88,9 +81,9 @@ export default function HintButton({ productId }: Props) {
                   placeholder="+375 __ ___ __ __"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
                 />
               </label>
-              */}
             </div>
 
             <div className={styles.footer}>

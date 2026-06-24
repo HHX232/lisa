@@ -4,13 +4,13 @@ import { loginAction } from '@/actions/auth.actions'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TextInputUI from '../../UI/inputs/TextInputUI/TextInputUI'
 import InputOtp from '../../UI/inputs/inputOTP/inputOTP'
 import styles from './RegisterPage.module.scss'
 
 type Tab = 'email' | 'phone'
-type Step = 'form' | 'telegram' | 'otp'
+type Step = 'form' | 'otp'
 
 function RegisterPage() {
   const [tab, setTab] = useState<Tab>('email')
@@ -39,11 +39,9 @@ function RegisterPage() {
 
       if (tab === 'email') {
         await axiosClassic.post(`/auth/send-verify-email/${email}`)
-        setStep('otp')
-      } else {
-        // Для телефона — сначала показываем кнопку Telegram
-        setStep('telegram')
       }
+
+      setStep('otp')
     } catch (e: any) {
       setError(e?.response?.data?.message || 'Ошибка регистрации')
     } finally {
@@ -51,50 +49,33 @@ function RegisterPage() {
     }
   }
 
-  
-  useEffect(() => {
-    if (step === 'telegram') {
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('tg_confirmed') === '1') {
-        setStep('otp')
-      }
-    }
-  }, [step])
-
-
-
-const handleTelegramClick = () => {
-  window.open(`https://t.me/septariabot?start=${encodeURIComponent(phone)}`, '_blank')
-  setStep('otp')
-}
-
   const handleOtpComplete = async (code: string) => {
-  setError(null)
-  setLoading(true)
+    setError(null)
+    setLoading(true)
 
-  try {
-    if (tab === 'email') {
-      await axiosClassic.post(`/auth/verify-email/${email}`, { code })
-    } else {
-      await axiosClassic.post(`/auth/verify-phone-number/${encodeURIComponent(phone)}`, { code })
+    try {
+      if (tab === 'email') {
+        await axiosClassic.post(`/auth/verify-email/${email}`, { code })
+      } else {
+        await axiosClassic.post(`/auth/verify-phone-number/${encodeURIComponent(phone)}`, { code })
+      }
+
+      const loginResult = await loginAction(
+        tab === 'email' ? email : phone,
+        password
+      )
+      if (loginResult.error) {
+        setError(loginResult.error)
+        return
+      }
+
+      router.push('/profile')
+    } catch (e: any) {
+      setError(e?.response?.data?.message || 'Ошибка')
+    } finally {
+      setLoading(false)
     }
-
-    const loginResult = await loginAction(
-      tab === 'email' ? email : phone,
-      password
-    )
-    if (loginResult.error) {
-      setError(loginResult.error)
-      return
-    }
-
-    router.push('/profile')
-  } catch (e: any) {
-    setError(e?.response?.data?.message || 'Ошибка')
-  } finally {
-    setLoading(false)
   }
-}
 
   return (
     <div className={styles.registerPage}>
@@ -163,34 +144,6 @@ const handleTelegramClick = () => {
           </>
         )}
 
-        {/* Шаг для телефона: подтверждение через Telegram */}
-        {step === 'telegram' && (
-          <>
-            <p className={styles.otpHint}>
-              Подтвердите номер телефона{' '}
-              <span className={styles.otpTarget}>{phone}</span>{' '}
-              через Telegram
-            </p>
-
-            <button
-              className={styles.submitButton}
-              onClick={handleTelegramClick}
-            >
-              Подтвердить номер телефона
-            </button>
-
-            {error && <p className={styles.error}>{error}</p>}
-
-            <button
-              className={styles.backButton}
-              onClick={() => { setStep('form'); setError(null) }}
-            >
-              ← Назад
-            </button>
-          </>
-        )}
-
-        {/* Шаг OTP — одинаков для email и phone */}
         {step === 'otp' && (
           <>
             <p className={styles.otpHint}>
@@ -207,7 +160,7 @@ const handleTelegramClick = () => {
 
             <button
               className={styles.backButton}
-              onClick={() => { setStep(tab === 'phone' ? 'telegram' : 'form'); setError(null) }}
+              onClick={() => { setStep('form'); setError(null) }}
             >
               ← Назад
             </button>

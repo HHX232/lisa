@@ -172,7 +172,7 @@ export default function MainCardSlider({
             <div className={styles.complectGrid}>
               {[
                 currentProduct,
-                ...complectItems.filter((i) => i.status === "ACTIVE"),
+                ...complectItems.filter((i) => i.status === "APPROVED"),
               ].map((item) => (
                 <Card
                   key={item.id}

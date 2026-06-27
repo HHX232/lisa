@@ -17,14 +17,19 @@ function HomePage({
   complect = [],
   souvenirs = [],
   stoneCategories = [],
-  naturalProducts = []
+  naturalProducts = [],
+  advertisementProducts = [],
+  categories = [],
 }: {
   addSlides: Advertisement[];
   products: Product[];
   complect: Product[];
   souvenirs: Product[];
   stoneCategories: StoneCategory[];
-  naturalProducts:Product[]
+  naturalProducts: Product[];
+  advertisementProducts: Product[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  categories: any[];
 }) {
   return (
     <>
@@ -33,10 +38,10 @@ function HomePage({
       {/* Фильтры */}
       <SliderLittleGrid
         title="Каталог украшений"
-        slides={(products || []).map((slide) => ({
-          image: slide.imageUrl,
-          title: slide.title,
-          href: `/card/${slide.id}`
+        slides={categories.map((cat) => ({
+          image: cat.preview,
+          title: cat.label,
+          href: `/catalog?category=${cat.slug}`,
         }))}
       />
 
@@ -45,8 +50,8 @@ function HomePage({
       <SliderLittleGrid
         title="Каталог камней"
         subtitle={[
-          'Натуральные камни, каждый — со своим характером',
-          'Выберите камень и посмотрите все доступные украшения с этим камнем.',
+          "Натуральные камни, каждый — со своим характером",
+          "Выберите камень и посмотрите все доступные украшения с этим камнем.",
         ]}
         slides={stoneCategories.map((stone) => ({
           image: stone.preview,
@@ -60,14 +65,14 @@ function HomePage({
       <SliderLittleGrid
         title="Эксклюзив для безупречного вкуса"
         subtitle={[
-          'Украшения с нестандартным дизайном и крупными формами —',
-          'для тех, кто выбирает выразительные и смелые решения.',
+          "Украшения с нестандартным дизайном и крупными формами —",
+          "для тех, кто выбирает выразительные и смелые решения.",
         ]}
         imageSize={158}
-        slides={(products || []).map((slide) => ({
+        slides={advertisementProducts.map((slide) => ({
           image: slide.imageUrl,
           title: slide.title,
-          href:`/card/${slide.id}`
+          href: `/card/${slide.id}`,
         }))}
       />
 
@@ -80,21 +85,27 @@ function HomePage({
           title: el.title,
         }))}
         showCardTitle={false}
-        cards={(naturalProducts || []).map((el) => ({ ...el, useFillImage: true }))}
+        cards={(naturalProducts || []).map((el) => ({
+          ...el,
+          useFillImage: true,
+        }))}
       />
 
       <SliderBigGrid
         title="Сувениры"
         useFillImage
         isCardSlider
-        slides={souvenirs.map((el) => ({ image: el.imageUrl, title: el.title }))}
+        slides={souvenirs.map((el) => ({
+          image: el.imageUrl,
+          title: el.title,
+        }))}
         showCardTitle={false}
         cards={souvenirs.map((el) => ({ ...el, useFillImage: true }))}
         viewAllHref="/catalog?isSouvenir=true"
       />
 
       <GiftInfoBlock />
-      <PaymentCardSlider/>
+      <PaymentCardSlider />
       <Footer />
     </>
   );

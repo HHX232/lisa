@@ -1,14 +1,14 @@
 'use client'
 
-import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import adminService, { AdminUsersParams, AdminReviewsParams, AdvertisementBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
-import advertisementService from '@/api/services/add.service'
-import productService from '@/api/services/productService.service'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
-import { ProductStatus, ProductsRequestParams } from '@/types/Product.types'
-import { AdminOrdersParams, OrderStatus } from '@/types/Order.types'
-import { StoneCategory, StoneCategoryBody } from '@/types/StoneCategory.types'
+import advertisementService from '@/api/services/add.service'
+import adminService, { AdminReviewsParams, AdminSettingsBody, AdminUsersParams, AdvertisementBody, InstallmentCardBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
+import productService from '@/api/services/productService.service'
 import { GiftCertificate, GiftCertificateBody } from '@/types/GiftCertificate.types'
+import { AdminOrdersParams, OrderStatus } from '@/types/Order.types'
+import { ProductStatus, ProductsRequestParams } from '@/types/Product.types'
+import { StoneCategory, StoneCategoryBody } from '@/types/StoneCategory.types'
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const ADMIN_USERS_KEY = ['admin', 'users']
 export const STONE_CATEGORIES_KEY = ['stone-categories']
@@ -26,7 +26,28 @@ export function useAdminUsers(params: AdminUsersParams = {}) {
     queryFn: () => adminService.getUsers(params)
   })
 }
+export const useInstallmentCards = () =>
+  useQuery({
+    queryKey: ['admin', 'installment-cards'],
+    queryFn: () => adminService.getInstallmentCards(),
+  })
 
+export const useUpsertInstallmentCard = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ card, image }: { card: InstallmentCardBody; image?: File | null }) =>
+      adminService.upsertInstallmentCard(card, image),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'installment-cards'] }),
+  })
+}
+
+export const useDeleteInstallmentCard = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteInstallmentCard(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'installment-cards'] }),
+  })
+}
 export function useUpdateAdminUser() {
   const qc = useQueryClient()
   return useMutation({
@@ -85,10 +106,11 @@ export function useAdminProducts(params: Omit<ProductsRequestParams, 'page'> = {
       return allPages.length
     },
     placeholderData: keepPreviousData,
-    select: (res) => ({
-      content: res.pages.flatMap(p => p.data?.content ?? []),
-      totalElements: res.pages[0]?.data?.totalElements ?? 0,
-    }),
+   select: (res) => ({
+  content: res.pages.flatMap(p => p.data?.content ?? []),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  totalElements: (res as any).pages[0]?.data?.page?.totalElements ?? 0,
+}),
   })
 }
 
@@ -181,6 +203,19 @@ export function useStoneCategories() {
       return res.data
     },
     staleTime: Infinity,
+  })
+}
+export const useAdminSettings = () =>
+  useQuery({
+    queryKey: ['admin', 'settings'],
+    queryFn: () => adminService.getAdminSettings(),
+  })
+
+export const useUpdateAdminSettings = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (body: AdminSettingsBody) => adminService.updateAdminSettings(body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'settings'] }),
   })
 }
 

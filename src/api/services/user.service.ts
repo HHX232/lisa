@@ -28,12 +28,12 @@ const userService = {
   },
 
   async verifyEmail(email: string, otp: string) {
-    const res = await axiosClassic.post(`/auth/verify-email/${email}`, { otp })
+    const res = await axiosClassic.post(`/auth/verify-email/${email}`, { code: otp })
     return res.data
   },
 
   async verifyPhone(phoneNumber: string, otp: string) {
-    const res = await axiosClassic.post(`/auth/verify-phone-number/${phoneNumber}`, { otp })
+    const res = await axiosClassic.post(`/auth/verify-phone-number/${phoneNumber}`, { code: otp })
     return res.data
   },
 

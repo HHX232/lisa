@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { axiosClassic } from '@/api/helpers/api.interceptor'
@@ -44,10 +45,11 @@ export default function AllReviews() {
       return res.data
     },
     initialPageParam: 0,
-    getNextPageParam: (last) => {
-      const { number, totalPages } = last.page
-      return number + 1 < totalPages ? number + 1 : undefined
-    },
+   getNextPageParam: (lastPage, allPages) => {
+  const data = (lastPage as any).data
+  if (!data || data.page.number >= data.page.totalPages - 1 || data.content.length === 0) return undefined
+  return allPages.length
+},
   })
 
   useEffect(() => {

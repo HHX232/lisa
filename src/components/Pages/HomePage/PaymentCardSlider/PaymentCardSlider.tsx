@@ -1,138 +1,47 @@
 'use client'
 
 import ModalWindowDefault from '@/components/UI/Modal/ModalWindowDefault/ModalWindowDefault'
+import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import 'swiper/css'
 import { FreeMode } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import styles from './PaymentCardSlider.module.scss'
+import { axiosClassic } from '@/api/helpers/api.interceptor'
 
-interface StoreInfo {
-  name: string
-  address: string
-  metro: string
-  months: number
-}
-
-interface Card {
+interface InstallmentCard {
   id: number
-  src: string
-  alt: string
-  cardName: string
-  stores: StoreInfo[]
+  image: string
+  address: string
+  period: string
 }
 
-const CARDS: Card[] = [
-  {
-    id: 1,
-    src: '/info/card-1.png',
-    alt: 'Халва',
-    cardName: 'Халва',
-    stores: [
-      {
-        name: 'Золото',
-        address: 'ул. Сурганова, 16',
-        metro: 'Академия наук',
-        months: 2,
-      },
-    ],
-  },
-  {
-    id: 2,
-    src: '/info/card-2.png',
-    alt: 'Карта покупок',
-    cardName: 'Карта покупок',
-    stores: [
-      {
-        name: 'Золото',
-        address: 'ул. Сурганова, 16',
-        metro: 'Академия наук',
-        months: 2,
-      },
-      {
-        name: 'Серебро',
-        address: 'ул. Козлова, 6',
-        metro: 'Площадь Победы',
-        months: 3,
-      },
-    ],
-  },
-  {
-    id: 3,
-    src: '/info/card-3.png',
-    alt: 'Магнит',
-    cardName: 'Магнит',
-    stores: [
-      {
-        name: 'Серебро',
-        address: 'ул. Козлова, 6',
-        metro: 'Площадь Победы',
-        months: 4,
-      },
-    ],
-  },
-  {
-    id: 4,
-    src: '/info/card-4.png',
-    alt: 'КартаFUN',
-    cardName: 'КартаFUN',
-    stores: [
-      {
-        name: 'Золото',
-        address: 'ул. Сурганова, 16',
-        metro: 'Академия наук',
-        months: 3,
-      },
-      {
-        name: 'Серебро',
-        address: 'ул. Козлова, 6',
-        metro: 'Площадь Победы',
-        months: 6,
-      },
-    ],
-  },
-  {
-    id: 5,
-    src: '/info/card-5.png',
-    alt: 'Черепаха (ВТБ)',
-    cardName: 'Черепаха',
-    stores: [
-      {
-        name: 'Серебро',
-        address: 'ул. Козлова, 6',
-        metro: 'Площадь Победы',
-        months: 8,
-      },
-    ],
-  },
-  {
-    id: 6,
-    src: '/info/card-6.png',
-    alt: 'SMART',
-    cardName: 'SMART',
-    stores: [
-      {
-        name: 'Серебро',
-        address: 'ул. Козлова, 6',
-        metro: 'Площадь Победы',
-        months: 4,
-      },
-    ],
-  },
-]
+const getInstallmentCards = async (): Promise<InstallmentCard[]> => {
+  const res = await axiosClassic.get<InstallmentCard[]>('/installment-cards')
+  return res.data
+}
 
 function PaymentCardSlider() {
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+  const { data: cards = [], isLoading } = useQuery({
+    queryKey: ['installment-cards'],
+    queryFn: getInstallmentCards,
+  })
+
+  const [selectedCard, setSelectedCard] = useState<InstallmentCard | null>(null)
+
   useEffect(() => {
     if (selectedCard !== null) {
       document.body.style.setProperty('overflowY', 'hidden', 'important')
     } else {
-       document.body.style.setProperty('overflowY', 'auto', 'important')
+      document.body.style.setProperty('overflowY', 'auto', 'important')
     }
-    return ()=>{         document.body.style.setProperty('overflowY', 'auto', 'important')
-}
+    return () => {
+      document.body.style.setProperty('overflowY', 'auto', 'important')
+    }
   }, [selectedCard])
+
+  if (isLoading) return null
 
   return (
     <div className={`${styles.main} container`}>
@@ -144,7 +53,7 @@ function PaymentCardSlider() {
         spaceBetween={50}
         className={styles.swiper}
       >
-        {CARDS.map((card) => (
+        {cards.map((card) => (
           <SwiperSlide key={card.id} className={styles.slide}>
             <div
               className={styles.card}
@@ -154,8 +63,8 @@ function PaymentCardSlider() {
               onKeyDown={(e) => e.key === 'Enter' && setSelectedCard(card)}
             >
               <Image
-                src={card.src}
-                alt={card.alt}
+                src={card.image}
+                alt={card.address}
                 className={styles.cardImage}
                 draggable={false}
                 width={200}
@@ -171,34 +80,27 @@ function PaymentCardSlider() {
           isOpen={!!selectedCard}
           onClose={() => setSelectedCard(null)}
           additionalTitle={
-            <p className={styles.modalTitle}>{selectedCard.cardName}</p>
+            <p className={styles.modalTitle}>{selectedCard.address}</p>
           }
         >
           <div className={styles.modalContent}>
             <div className={styles.modalPreview}>
               <Image
-                src={selectedCard.src}
-                alt={selectedCard.alt}
+                src={selectedCard.image}
+                alt={selectedCard.address}
                 width={260}
                 height={160}
                 className={styles.modalCardImage}
                 draggable={false}
               />
             </div>
-
             <div className={styles.storeList}>
-              {selectedCard.stores.map((store) => (
-                <div key={store.name} className={styles.storeItem}>
-                  <p className={styles.storeName}>Салон «{store.name}»</p>
-                  <p className={styles.storeAddress}>
-                    📍 {store.address}, метро «{store.metro}»
-                  </p>
-                  <p className={styles.storeMonths}>
-                    Рассрочка:{' '}
-                    <span>{store.months} мес.</span>
-                  </p>
-                </div>
-              ))}
+              <div className={styles.storeItem}>
+                <p className={styles.storeAddress}>📍 {selectedCard.address}</p>
+                <p className={styles.storeMonths}>
+                  Рассрочка: <span>{selectedCard.period}</span>
+                </p>
+              </div>
             </div>
           </div>
         </ModalWindowDefault>

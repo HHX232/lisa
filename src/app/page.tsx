@@ -1,4 +1,5 @@
 import HomePage from "@/_pages/HomePage/HomePage";
+import { axiosClassic } from "@/api/helpers/api.interceptor";
 import advertisementService from "@/api/services/add.service";
 import productService from "@/api/services/productService.service";
 import stoneCategoryService from "@/api/services/stoneCategory.service";
@@ -35,10 +36,13 @@ export default async function Home() {
   const productsNaturalRes = await productService.getProducts({
     isNaturalStone: true,
   });
-
+const advertisementRes = await productService.getProducts({ isAdvertisement: true, size: 100 });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const categoriesRes = await axiosClassic.get<any[]>('/categories').catch(() => null);
+const categories = categoriesRes?.data ?? [];
   const souvenirsRes = await productService.getProducts({
     isSouvenir: true,
-    size: 10,
+    size: 100,
   });
   const { data: souvenirs } = souvenirsRes;
 
@@ -55,6 +59,8 @@ export default async function Home() {
       products={products?.content || []}
       stoneCategories={stoneCategories}
       naturalProducts={productsNaturalRes.data?.content || []}
+       advertisementProducts={advertisementRes.data?.content || []}
+    categories={categories}
     />
   );
 }

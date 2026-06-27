@@ -33,6 +33,7 @@ const productService = {
     const minPrice = validatePrice(params?.minPrice)
     const maxPrice = validatePrice(params?.maxPrice)
     const title = validateTitle(params?.title)
+    const status = params?.status || ''
     const advertisementType = validateAdvertisementType(params?.advertisementType)
 
     const query = new URLSearchParams()
@@ -44,6 +45,7 @@ const productService = {
     if (isComplect !== undefined) query.set('isComplect', String(isComplect))
     if (isSouvenir !== undefined) query.set('isSouvenir', String(isSouvenir))
     if (minPrice !== undefined) query.set('minPrice', String(minPrice))
+    if (status !== undefined) query.set('status', String(status))
       if (isNaturalStone !== undefined) query.set('isNaturalStone', String(isNaturalStone))
 
     if (maxPrice !== undefined) query.set('maxPrice', String(maxPrice))

@@ -14,7 +14,7 @@ export interface ProductPageable {
   sort: ProductSort
 }
 
-export type ProductStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'APPROVED'
+export type ProductStatus = 'PENDING' | 'APPROVED'
 
 export interface Product {
   id: number
@@ -39,6 +39,7 @@ export interface Characteristic {
 export interface ProductFull {
   id: number
   title: string
+  article:string
   isComplect: boolean
   currentPrice: number
   originalPrice: number
@@ -49,12 +50,16 @@ export interface ProductFull {
   imageUrl: string
   useFillImage: boolean
   isSouvenir: boolean
+  stoneCategory?: string
+
   isAdvertisement?: boolean
   advertisementType?: string
   status?: ProductStatus
   images: { id: string; url: string; displayOrder: number }[]
   inShops: string[]
   characteristics: Characteristic[]
+    stoneCategoryId: number | null
+
   fullDescription: string
   category: string
   complectItems: Product[]
@@ -84,6 +89,7 @@ export interface ProductsRequestParams {
   size?: number
   sort?: SortField
   isNaturalStone?: boolean
+  status?: string
   direction?: SortDirection
   isAdvertisement?: boolean
   isComplect?: boolean

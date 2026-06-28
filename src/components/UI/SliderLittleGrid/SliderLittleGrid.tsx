@@ -12,6 +12,7 @@ type Props = {
   title?: string
   subtitle?: string[]
   imageSize?: number
+  extraClass?:string
   slides: {
     image?: string | null
     title: string
@@ -19,7 +20,7 @@ type Props = {
   }[]
 }
 
-function SliderLittleGrid({ title, subtitle, imageSize, slides }: Props) {
+function SliderLittleGrid({ title, subtitle, imageSize, slides, extraClass}: Props) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null)
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null)
   const swiperRef = useRef<SwiperType | null>(null)
@@ -28,7 +29,7 @@ function SliderLittleGrid({ title, subtitle, imageSize, slides }: Props) {
 
   return (
     <div
-      className={styles.sliderContainer}
+      className={`${styles.sliderContainer} ${extraClass}`}
       style={{ '--slider-img-size': `${imgSize}px` } as React.CSSProperties}
     >
       {title && (

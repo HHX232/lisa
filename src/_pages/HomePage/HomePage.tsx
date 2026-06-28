@@ -10,7 +10,7 @@ import SliderLittleGrid from "@/components/UI/SliderLittleGrid/SliderLittleGrid"
 import { Advertisement } from "@/types/Advertisement.types";
 import { Product } from "@/types/Product.types";
 import { StoneCategory } from "@/types/StoneCategory.types";
-
+import styles from './HomePage.module.scss'
 function HomePage({
   addSlides,
   products,
@@ -37,6 +37,7 @@ function HomePage({
       <MainSlider slides={addSlides || []} />
       {/* Фильтры */}
       <SliderLittleGrid
+      extraClass={styles.extra_style_grid}
         title="Каталог украшений"
         slides={categories.map((cat) => ({
           image: cat.preview,

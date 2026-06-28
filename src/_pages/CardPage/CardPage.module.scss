@@ -34,9 +34,9 @@
    gap: 40px;
     padding: 0 120px;
    align-items: flex-start;
-
   @media (max-width: 1190px) {
     padding: 0 30px;
+
   }
 
   @media (max-width: 1050px) {
@@ -51,6 +51,11 @@
    flex-direction: column;
    gap: 20px;
    flex: 1;
+   max-width: 550px;
+    @media (max-width: 1050px) {
+   max-width: none;
+  }
+
 }
 
 .extra__char__box {

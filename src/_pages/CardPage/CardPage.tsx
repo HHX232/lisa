@@ -124,6 +124,8 @@ function CardPageComponent({
               />
             </div>
           )}
+                <p className={style.mini_text}>Вся информация предоставлена справочно и не является договором оферты</p>
+
         </div>
       </div>
 

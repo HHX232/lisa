@@ -1,6 +1,7 @@
 import orderService, { CreateOrderBody } from '@/api/services/order.service'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CART_KEY } from './cart.hooks'
+import { toast } from 'sonner'
 
 export const ORDERS_KEY = 'orders'
 
@@ -11,7 +12,11 @@ export const useOrders = () => {
   })
 }
 
-export const useCreateOrder = () => {
+export const useCreateOrder = (callbacks?: {
+  onSuccess?: () => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onError?: (error: any) => void
+}) => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -19,6 +24,10 @@ export const useCreateOrder = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ORDERS_KEY] })
       queryClient.invalidateQueries({ queryKey: [CART_KEY] })
+      callbacks?.onSuccess?.()
+    },
+    onError: (error) => {
+      callbacks?.onError?.(error)
     },
   })
 }

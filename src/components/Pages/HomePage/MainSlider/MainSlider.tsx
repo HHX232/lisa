@@ -3,7 +3,7 @@ import cn from 'clsx'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
-import { EffectFade } from 'swiper/modules'
+import { Autoplay, EffectFade } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import styles from './MainSlider.module.scss'
 
@@ -32,7 +32,7 @@ function MainSlider({ slides }: TMainSliderProps) {
   }, [slides])
 
   const handleSlideChange = (swiper: SwiperType) => {
-    setActiveIndex(swiper.activeIndex)
+    setActiveIndex(swiper.realIndex)
   }
 
   const goToPrev = () => swiperRef.current?.slidePrev()
@@ -42,12 +42,14 @@ function MainSlider({ slides }: TMainSliderProps) {
   return (
     <div className={styles.mainSliderContainer}>
       <Swiper
-        modules={[EffectFade]}
+        modules={[EffectFade, Autoplay]}
         effect="fade"
         fadeEffect={{ crossFade: true }}
         speed={800}
         spaceBetween={0}
         slidesPerView={1}
+        loop
+        autoplay={{ delay: 10000, disableOnInteraction: false }}
         onSwiper={(swiper) => { swiperRef.current = swiper }}
         onSlideChange={handleSlideChange}
         className={styles.mainSlider}
@@ -57,46 +59,64 @@ function MainSlider({ slides }: TMainSliderProps) {
             ? 'transparent'
             : extractedColors[index]
 
-          const slideInner = (
-            <div className={styles.slideWrapper}>
-              <div
-                className={styles.slideBackground}
-                style={{ backgroundColor: bgColor }}
-              />
-              <div className={cn(styles.slideImageContainer, 'container')}>
-                <div
-                  className={styles.slideImage}
-                  style={{ backgroundImage: `url(${slide.image})` }}
-                />
-              </div>
-              <div
-                className={`${styles.slideOverlay} ${extractedColors[index] === 'transparent' ? 'container' : ''}`}
-              />
-              <div className={cn(styles.slideContent, 'container')}>
-                <h2
-                  dangerouslySetInnerHTML={{ __html: slide.title }}
-                  className={styles.slideTitle}
-                />
-                {slide.description && (
-                  <p
-                    dangerouslySetInnerHTML={{ __html: slide.description }}
-                    className={styles.slideDescription}
-                  />
-                )}
-                {slide.specialLabel && (
-                  slide.buttonUrl ? (
-                    <Link href={slide.buttonUrl} className={styles.slideLabel}>
-                      {slide.specialLabel}
-                    </Link>
-                  ) : (
-                    <span className={styles.slideLabel}>
-                      {slide.specialLabel}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
-          )
+         const slideInner = (
+  <div className={styles.slideWrapper}>
+    <div
+      className={styles.slideBackground}
+      style={{ backgroundColor: bgColor }}
+    />
+    <div className={cn(styles.slideImageContainer, 'container')}>
+      <div
+        className={styles.slideImage}
+        style={{ backgroundImage: `url(${slide.image})` }}
+      />
+      <button
+        className={cn(styles.sideArrow, styles.sideArrowPrev)}
+       onClick={(e) => { e.preventDefault(); e.stopPropagation(); goToPrev() }}
+        aria-label="Previous slide"
+      >
+        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+      <button
+        className={cn(styles.sideArrow, styles.sideArrowNext)}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); goToNext() }}
+        aria-label="Next slide"
+      >
+        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L6 6L1 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div
+      className={`${styles.slideOverlay} ${extractedColors[index] === 'transparent' ? 'container' : ''}`}
+    />
+    <div className={cn(styles.slideContent, 'container')}>
+      <h2
+        dangerouslySetInnerHTML={{ __html: slide.title }}
+        className={styles.slideTitle}
+      />
+      {slide.description && (
+        <p
+          dangerouslySetInnerHTML={{ __html: slide.description }}
+          className={styles.slideDescription}
+        />
+      )}
+      {slide.specialLabel && (
+        slide.buttonUrl ? (
+          <Link href={slide.buttonUrl} className={styles.slideLabel}>
+            {slide.specialLabel}
+          </Link>
+        ) : (
+          <span className={styles.slideLabel}>
+            {slide.specialLabel}
+          </span>
+        )
+      )}
+    </div>
+  </div>
+)
 
           return (
             <SwiperSlide key={index}>
@@ -112,21 +132,12 @@ function MainSlider({ slides }: TMainSliderProps) {
         })}
       </Swiper>
 
-      <div className={cn(styles.navigation, 'container')}>
-        {/* Стрелка назад */}
-        <button
-          className={cn(styles.navArrow, styles.navArrowPrev, {
-            [styles.navArrowDisabled]: activeIndex === 0,
-          })}
-          onClick={goToPrev}
-          aria-label="Previous slide"
-        >
-          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+  
 
-        {/* Линии */}
+
+
+      {/* Точки навигации */}
+      <div className={cn(styles.navigation, 'container')}>
         {(slides || []).map((_, index) => (
           <button
             key={index}
@@ -137,19 +148,6 @@ function MainSlider({ slides }: TMainSliderProps) {
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
-
-        {/* Стрелка вперёд */}
-        <button
-          className={cn(styles.navArrow, styles.navArrowNext, {
-            [styles.navArrowDisabled]: activeIndex === slides.length - 1,
-          })}
-          onClick={goToNext}
-          aria-label="Next slide"
-        >
-          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L6 6L1 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
       </div>
     </div>
   )

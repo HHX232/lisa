@@ -4,7 +4,8 @@
   height: calc(80vh - 120px);
   max-height: calc(90vh - 120px);
   overflow: hidden;
-  margin-top: 27px;
+  margin-top: 15px;
+   min-height: 390px; 
 }
 .arrowAccent{
   position: absolute;
@@ -12,7 +13,68 @@
   top: 80%;
   z-index: 10000;
 }
+.sideArrow {
+  position: absolute;
+  top: 50%;
+    pointer-events: all !important;  
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(7, 39, 97, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.2s;
 
+  &:hover {
+    background: rgba(7, 39, 97, 0.45);
+  }
+
+  svg {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+  }
+
+  path {
+    stroke: #ffffff;
+    stroke-width: 2px;
+  }
+  @media (max-width: 480px) {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.sideArrowPrev {
+  left: 16px;
+}
+
+.sideArrowNext {
+  right: 16px;
+}
+
+.sideArrowPrev {
+  left: 20px;
+
+  @media (max-width: 480px) {
+    left: 10px;
+  }
+}
+
+.sideArrowNext {
+  right: 20px;
+
+  @media (max-width: 480px) {
+    right: 10px;
+  }
+}
 .loading {
   width: 100%;
   height: 100%;
@@ -239,11 +301,11 @@ animation: float 2s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
-  .mainSliderContainer {
-    height: 80dvh;
-    max-height: 600px;
+.mainSliderContainer {
+    height: 55dvh;
+    max-height: 450px;
+    min-height: 300px;
   }
-
   .slideTitle {
     font-size: 36px;
   }

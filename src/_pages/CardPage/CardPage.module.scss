@@ -1,15 +1,49 @@
 .margins {
-   margin-top: 60px;
+   margin-top: 30px;
+   padding: 0;       // ← ваш паддинг
+
+  @media (max-width: 1190px) {
+    padding:0 30px;
+  }
+
+  @media (max-width: 650px) {
+    padding:0 10px;
+  }
 }
 
 .bred_extra {
    margin-bottom: 30px;
-}
+   padding: 0 70px;
 
+  @media (max-width: 1190px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 650px) {
+    padding: 0 10px;
+  }
+}
+.mini_text{
+   font-size: 12px !important;
+   white-space: normal;
+   color: #000;
+   opacity: .5;
+}
 .top_container {
    display: flex;
    gap: 40px;
+    padding: 0 120px;
    align-items: flex-start;
+
+  @media (max-width: 1190px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 1050px) {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 10px;
+  }
 }
 
 .right {
@@ -176,6 +210,15 @@
    font-size: 18px;
    margin-top: 40px;
    line-height: 1.6;
+     padding: 0 70px;
+
+  @media (max-width: 1190px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 650px) {
+    padding: 0 10px;
+  }
 }
 
 .stone_note {
@@ -184,6 +227,15 @@
    margin-top: 20px;
    margin-bottom: 26px;
    line-height: 1.6;
+    padding: 0 70px;
+
+  @media (max-width: 1190px) {
+    padding: 0 30px;
+  }
+
+  @media (max-width: 650px) {
+    padding: 0 10px;
+  }
 }
 
 .have_title_box {

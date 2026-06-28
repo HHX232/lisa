@@ -1,8 +1,10 @@
-$thumb-size: 150px;
-$thumb-size-mobile: 119px;
-$thumb-gap: 30px;
-$thumb-gap-mobile: 20px;
+$thumb-size: 85px;          // ← было 150px
+$thumb-size-mobile: 80px;    // ← было 119px
+$thumb-gap: 15px;            // ← было 30px
+$thumb-gap-mobile: 12px;     // ← было 20px
 $thumbs-visible: 3;
+$slider-max-height: calc(100vh - 120px);
+
 
 $thumb-column-height: calc(
   #{$thumbs-visible} * #{$thumb-size} + #{$thumbs-visible - 1} * #{$thumb-gap} +
@@ -12,18 +14,17 @@ $thumb-column-height: calc(
 /* ─── Wrapper ──────────────────────────────────────────────── */
 
 .mainCardSlider {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: $thumb-size 350px;
   gap: $thumb-gap;
-  max-width: 700px;
-  width: 100%;
+  width: fit-content;
 }
 
 /* ─── Мобильный layout ─────────────────────────────────────── */
 
 .layoutMobile {
-  flex-direction: column;
+  grid-template-columns: 1fr;
+
   max-width: 100%;
   gap: $thumb-gap-mobile;
 
@@ -35,6 +36,7 @@ $thumb-column-height: calc(
   .mainColumn {
     order: 1;
     width: 100%;
+    margin: 0 auto;
   }
 
   .mainSwiper {
@@ -62,17 +64,16 @@ $thumb-column-height: calc(
 }
 
 /* ─── Thumb swiper (десктоп) ───────────────────────────────── */
-
 .thumbSwiper {
   flex-shrink: 0;
-  width: $thumb-size;
-  height: $thumb-column-height;
+  flex-grow: 0;             // ← не растягивается
+  width: $thumb-size;       // ← строго по размеру превью
+  height: min(#{$thumb-column-height}, #{$slider-max-height});
 
   :global(.swiper-slide-thumb-active) .thumb {
     border-color: rgba(7, 39, 97, 0.3);
   }
 }
-
 .thumbSlide {
   cursor: pointer;
   background-color: #fff;
@@ -92,21 +93,25 @@ $thumb-column-height: calc(
 
 /* ─── Main swiper ──────────────────────────────────────────── */
 
+
 .mainColumn {
-  flex: 1;
+  flex: 1;                  // ← занимает оставшееся место
   min-width: 0;
   display: flex;
   flex-direction: column;
+  max-width: min(#{$thumb-column-height}, #{$slider-max-height});
 }
-
 .mainWrap {
   position: relative;
   width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(#{$thumb-column-height}, #{$slider-max-height});
 }
 
 .mainSwiper {
   width: 100%;
-  height: $thumb-column-height;
+  // height: min(#{$thumb-column-height}, #{$slider-max-height});
+    height: 100%;   
 }
 
 .mainSlide {
@@ -118,7 +123,7 @@ $thumb-column-height: calc(
 .mainSlideInner {
   width: 100%;
   height: 100%;
-  background-size: contain;
+ background-size: cover;     
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -233,5 +238,18 @@ $thumb-column-height: calc(
   .complectGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .extraSlider {
+    margin: 0 auto !important;
+    width: 450px !important;    // ← чуть шире на планшете
+  }
+}
+
+@media (max-width: 600px) {
+  .extraSlider {
+    width: 100% !important;     // ← 100% на мобилке
   }
 }

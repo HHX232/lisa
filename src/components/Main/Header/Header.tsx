@@ -10,10 +10,10 @@ import {
 } from "@/constants/header.constants";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PriceCurrencyTab from "../money/PriceCurrencyTab";
-import SearchModal from "./SearchModal/SearchModal";
 import styles from "./Header.module.scss";
+import SearchModal from "./SearchModal/SearchModal";
 
 const placeUrl = "/header-svg/place.svg";
 const searchUrl = "/header-svg/search.svg";
@@ -24,11 +24,30 @@ const personUrl = "/header-svg/person.svg";
 function Header({ staticPos }: { staticPos?: boolean } = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isCategorySticky, setIsCategorySticky] = useState(false);
 
+ useEffect(() => {
+    const handleScroll = () => {
+      setIsCategorySticky(window.scrollY > 120);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+useEffect(() => {
+  if (isMenuOpen) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
 
+  return () => {
+    document.body.style.overflow = ''
+  }
+}, [isMenuOpen])
   return (
     <header className={`${styles.header} ${staticPos ? styles.headerStatic : ''}`}>
       
@@ -75,7 +94,7 @@ function Header({ staticPos }: { staticPos?: boolean } = {}) {
             <div className={styles.desktopSearchIcon} onClick={() => setIsSearchOpen(true)}>
               <Image className={styles.cursorPointer} src={searchUrl} width={24} height={24} alt="search" />
             </div>
-            <Image className={styles.cursorPointer} src={heartUrl} width={24} height={24} alt="heart" />
+           <Link href={'/favorites'}> <Image className={styles.cursorPointer} src={heartUrl} width={24} height={24} alt="heart" /></Link>
             <Link href="/basket">
               <Image className={styles.cursorPointer} src={bagUrl} width={24} height={24} alt="bag" />
             </Link>
@@ -96,17 +115,35 @@ function Header({ staticPos }: { staticPos?: boolean } = {}) {
       </div>
 
       <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.open : ''} container`}>
-        <div className={styles.mobileMenuContent}>
-          {categories.map((item, index) => (
-            <Link 
-              href={categoriesLinks[index]} 
-              key={`mobile-${item}-${index}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className={styles.mobileMenuItem}>{item}</div>
-            </Link>
-          ))}
-        </div>
+     <div className={styles.mobileMenuContent}>
+  {/* Основная навигация */}
+  <div className={styles.mobileMenuSection}>
+    {mainNav.map((item, index) => (
+      <Link
+        href={mainNavLinks[index]}
+        key={`mobile-nav-${index}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        <div className={styles.mobileMenuItem}>{item}</div>
+      </Link>
+    ))}
+  </div>
+
+  <div className={styles.mobileMenuDivider} />
+
+  {/* Категории */}
+  <div className={styles.mobileMenuSection}>
+    {categories.map((item, index) => (
+      <Link
+        href={categoriesLinks[index]}
+        key={`mobile-cat-${item}-${index}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        <div className={styles.mobileMenuItem}>{item}</div>
+      </Link>
+    ))}
+  </div>
+</div>
       </div>
 
       {isMenuOpen && (
@@ -117,6 +154,17 @@ function Header({ staticPos }: { staticPos?: boolean } = {}) {
       )}
 
       {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
+         {isCategorySticky && (
+        <div className={styles.categories_box_sticky}>
+          <div className={`${styles.sticky_inner}`}>
+          {categories.map((item, index) => (
+            <Link href={categoriesLinks[index]} key={`sticky-${item}-${index}`}>
+              <div className={styles.categories_box_item}>{item}</div>
+            </Link>
+          ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

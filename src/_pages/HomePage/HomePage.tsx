@@ -85,7 +85,8 @@ function HomePage({
           image: el.imageUrl,
           title: el.title,
         }))}
-        showCardTitle={false}
+        showCardTitle
+        showTitleAfterPrice
         cards={(naturalProducts || []).map((el) => ({
           ...el,
           useFillImage: true,
@@ -100,7 +101,8 @@ function HomePage({
           image: el.imageUrl,
           title: el.title,
         }))}
-        showCardTitle={false}
+        showCardTitle
+        showTitleAfterPrice
         cards={souvenirs.map((el) => ({ ...el, useFillImage: true }))}
         viewAllHref="/catalog?isSouvenir=true"
       />

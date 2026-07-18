@@ -4,7 +4,7 @@
   justify-content: center;
   border: 2px solid #072761;
   background: transparent;
-  padding: 20px;
+  padding: 14px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 
@@ -20,6 +20,25 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+.favoriteCompact {
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    background: #072761;
   }
 }
 

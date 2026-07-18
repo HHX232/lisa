@@ -110,7 +110,7 @@ function Footer() {
             <Link href="/locations" className={styles.info_link}>Наши магазины</Link>
             <Link href="/payment-delivery" className={styles.info_link}>Оплата и доставка</Link>
             <Link href="/care" className={styles.info_link}>Уход за изделиями</Link>
-            <Link href="/reviews" className={styles.info_link}>Отзывы</Link>
+            <Link href="/reviews" className={styles.info_link}>Отзывы о нас</Link>
             <Link href="/certificates" className={styles.info_link}>Подарочные сертификаты</Link>
             <Link href="/warranty" className={styles.info_link}>Гарантия качества</Link>
             <Link href="/returns" className={styles.info_link}>Возврат товара</Link>

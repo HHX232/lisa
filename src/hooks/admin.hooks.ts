@@ -2,7 +2,7 @@
 
 import { axiosClassic } from '@/api/helpers/api.interceptor'
 import advertisementService from '@/api/services/add.service'
-import adminService, { AdminReviewsParams, AdminSettingsBody, AdminUsersParams, AdvertisementBody, InstallmentCardBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
+import adminService, { AdminSettingsBody, AdminSiteReviewsParams, AdminUsersParams, AdvertisementBody, InstallmentCardBody, ProductRequestBody, UpdateAdminUserBody } from '@/api/services/admin.service'
 import productService from '@/api/services/productService.service'
 import { GiftCertificate, GiftCertificateBody } from '@/types/GiftCertificate.types'
 import { AdminOrdersParams, OrderStatus } from '@/types/Order.types'
@@ -16,7 +16,7 @@ export const GIFT_CERTIFICATES_KEY = ['gift-certificates']
 export const ADMIN_ADS_KEY = ['admin', 'advertisements']
 export const ADMIN_ORDERS_KEY = ['admin', 'orders']
 export const ADMIN_PRODUCTS_KEY = ['admin', 'products']
-export const ADMIN_REVIEWS_KEY = ['admin', 'reviews']
+export const ADMIN_SITE_REVIEWS_KEY = ['admin', 'site-reviews']
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 
@@ -166,30 +166,30 @@ export function useChangeAdminOrderStatus() {
   })
 }
 
-// ─── Reviews ──────────────────────────────────────────────────────────────────
+// ─── Site Reviews ─────────────────────────────────────────────────────────────
 
-export function useAdminReviews(params: AdminReviewsParams = {}) {
+export function useAdminSiteReviews(params: AdminSiteReviewsParams = {}) {
   return useQuery({
-    queryKey: [...ADMIN_REVIEWS_KEY, params],
-    queryFn: () => adminService.getAdminReviews(params),
+    queryKey: [...ADMIN_SITE_REVIEWS_KEY, params],
+    queryFn: () => adminService.getAdminSiteReviews(params),
     placeholderData: keepPreviousData,
   })
 }
 
-export function useDeleteAdminReview() {
+export function useDeleteAdminSiteReview() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => adminService.deleteAdminReview(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+    mutationFn: (id: number) => adminService.deleteAdminSiteReview(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_SITE_REVIEWS_KEY })
   })
 }
 
-export function useChangeReviewStatus() {
+export function useChangeSiteReviewStatus() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, status }: { id: number; status: string }) =>
-      adminService.changeReviewStatus(id, status),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+      adminService.changeSiteReviewStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_SITE_REVIEWS_KEY })
   })
 }
 
@@ -266,11 +266,11 @@ export function useDeleteGiftCertificate() {
   })
 }
 
-export function useUpdateAdminReview() {
+export function useUpdateAdminSiteReview() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ productId, data, images }: { productId: number; data: { text: string; stars: number; deleteImage?: boolean }; images?: File[] }) =>
-      adminService.updateAdminReview(productId, data, images),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_REVIEWS_KEY })
+    mutationFn: ({ id, data, images }: { id: number; data: { text: string; stars: number; deleteImageUrls?: string[] }; images?: File[] }) =>
+      adminService.updateAdminSiteReview(id, data, images),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ADMIN_SITE_REVIEWS_KEY })
   })
 }

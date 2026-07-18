@@ -156,12 +156,12 @@ useEffect(() => {
       {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
          {isCategorySticky && (
         <div className={styles.categories_box_sticky}>
-          <div className={`${styles.sticky_inner}`}>
-          {categories.map((item, index) => (
-            <Link href={categoriesLinks[index]} key={`sticky-${item}-${index}`}>
-              <div className={styles.categories_box_item}>{item}</div>
-            </Link>
-          ))}
+          <div className={`${styles.categories_box} container`}>
+            {categories.map((item, index) => (
+              <Link href={categoriesLinks[index]} key={`sticky-${item}-${index}`}>
+                <div className={styles.categories_box_item}>{item}</div>
+              </Link>
+            ))}
           </div>
         </div>
       )}

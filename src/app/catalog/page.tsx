@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import Footer from '@/components/Main/Footer/Footer'
 import Header from '@/components/Main/Header/Header'
 import CatalogPage from '@/components/Pages/CatalogPage/CatalogPage'
 import type { Metadata } from 'next'
@@ -15,6 +16,7 @@ function CatalogPageServer() {
       <Suspense>
         <CatalogPage />
       </Suspense>
+      <Footer />
     </>
   )
 }

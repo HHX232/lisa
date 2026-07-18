@@ -147,10 +147,10 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1440px;
+  max-width: 1400px;
   height: 100%;
-  z-index: 10000;
-  pointer-events: none; 
+  z-index: 50;
+  pointer-events: none;
 }
 
 .arrowAccent {
@@ -218,7 +218,7 @@ animation: float 2s ease-in-out infinite;
 }
 
 .slideTitle {
-  font-size: 64px;
+  font-size: 45px;
   font-weight: 700;
   color: #ffffff;
   margin: 0 0 16px 0;
@@ -226,7 +226,7 @@ animation: float 2s ease-in-out infinite;
 }
 
 .slideDescription {
-  font-size: 24px;
+  font-size: 22px;
   color: #ffffff;
   margin: 0 0 24px 0;
   line-height: 1.5;
@@ -287,11 +287,11 @@ animation: float 2s ease-in-out infinite;
 
 @media (max-width: 1024px) {
   .slideTitle {
-    font-size: 48px;
+    font-size: 38px;
   }
 
   .slideDescription {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .slideLabel {
@@ -307,11 +307,11 @@ animation: float 2s ease-in-out infinite;
     min-height: 300px;
   }
   .slideTitle {
-    font-size: 36px;
+    font-size: 30px;
   }
 
   .slideDescription {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .slideLabel {

@@ -1,21 +1,25 @@
 'use client'
 
 import { useFavoriteProducts, useToggleFavorite } from '@/hooks/User.queries'
+import type { MouseEvent } from 'react'
 import { toast } from 'sonner'
 import styles from './FavoriteButton.module.scss'
 
 interface Props {
   productId: number | string
   extraClass?: string
+  compact?: boolean
 }
 
-export default function FavoriteButton({ productId, extraClass }: Props) {
+export default function FavoriteButton({ productId, extraClass, compact }: Props) {
   const { data: favorites } = useFavoriteProducts()
   const toggle = useToggleFavorite()
 
   const isFavorite = favorites?.some((p) => String(p.id) === String(productId)) ?? false
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
     const willAdd = !isFavorite
     toggle.mutate(productId, {
       onSuccess: () => toast.success(willAdd ? 'Добавлено в избранное' : 'Убрано из избранного'),
@@ -28,7 +32,7 @@ export default function FavoriteButton({ productId, extraClass }: Props) {
 
   return (
     <button
-      className={`${styles.favorite} ${isFavorite ? styles.favoriteActive : ''} ${extraClass ?? ''}`}
+      className={`${styles.favorite} ${compact ? styles.favoriteCompact : ''} ${isFavorite ? styles.favoriteActive : ''} ${extraClass ?? ''}`}
       onClick={handleClick}
       disabled={toggle.isPending}
       aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}

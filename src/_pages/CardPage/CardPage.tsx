@@ -1,6 +1,6 @@
 import CurrencySymbol from "@/components/UI/BynIcon/CurrencySymbol";
 import MainCardSlider from "@/components/Pages/MainCardSlider/MainCardSlider";
-import ProductReviews from "@/components/Pages/ProductReviews/ProductReviews";
+// import ProductReviews from "@/components/Pages/ProductReviews/ProductReviews";
 import Breadcrumbs from "@/components/UI/Bread/Bread";
 import AddToCartButton from "@/components/UI/AddToCartButton/AddToCartButton";
 import CharacterUI from "@/components/UI/CharacterUI/CharacterUI";
@@ -52,7 +52,7 @@ function CardPageComponent({
   images = [],
   characteristics = [],
   breadcrumbs = [
-    { label: "Дом", href: "/" },
+    { label: "Главная", href: "/" },
     { label: "Каталог", href: "/catalog" },
   ],
   id,
@@ -121,6 +121,7 @@ function CardPageComponent({
               <CharacterUI
                 extraClass={style.extra__char__box}
                 items={characteristics.map(c => ({ label: c.name, value: c.value }))}
+                initialView={3}
               />
             </div>
           )}
@@ -139,7 +140,7 @@ function CardPageComponent({
         imageUrl={currentProduct?.imageUrl ?? images[0] ?? ''}
       />
 
-      <ProductReviews productId={id} />
+      {/* <ProductReviews productId={id} /> */}
 
       {similarProducts.length > 0 && (
         <>

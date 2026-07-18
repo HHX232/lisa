@@ -49,11 +49,13 @@
 .right {
    display: flex;
    flex-direction: column;
-   gap: 20px;
+   gap: 12px;
    flex: 1;
    max-width: 550px;
     @media (max-width: 1050px) {
-   max-width: none;
+   max-width: none
+   
+   ;
   }
 
 }
@@ -140,8 +142,8 @@
 .favorite {
    border: 2px solid #072761;
    background: transparent;
-   padding: 9px;
-   font-size: 18px;
+   padding: 7px;
+   font-size: 16px;
    cursor: pointer;
    color: #072761;
    transition: background 0.2s, color 0.2s;

@@ -29,6 +29,7 @@ export interface Product {
   currency?: string
   isSouvenir?: boolean
   showCardTitle?: boolean
+  showTitleAfterPrice?: boolean
   status?: ProductStatus
 }
 export interface Characteristic {
@@ -50,7 +51,7 @@ export interface ProductFull {
   imageUrl: string
   useFillImage: boolean
   isSouvenir: boolean
-  stoneCategory?: string
+  stoneCategories?: string[]
 
   isAdvertisement?: boolean
   advertisementType?: string
@@ -58,7 +59,7 @@ export interface ProductFull {
   images: { id: string; url: string; displayOrder: number }[]
   inShops: string[]
   characteristics: Characteristic[]
-    stoneCategoryId: number | null
+    stoneCategoryIds: number[]
 
   fullDescription: string
   category: string

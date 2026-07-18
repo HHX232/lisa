@@ -1,5 +1,5 @@
-export const mainNav = ["Главная", "О нас", "Доставка", "Контакты"];
-export const mainNavLinks = ["/", "/about", "/delivery", "/locations"];
+export const mainNav = ["Главная", "Отзывы о нас", "Доставка", "Контакты"];
+export const mainNavLinks = ["/", "/reviews", "/delivery", "/locations"];
 
 export const categories = [
   "Кольца",
@@ -14,7 +14,7 @@ export const categories = [
 ];
 
 export const categoriesLinks = [
-  "/catalog?category=koltsa",
+  "/catalog?category=koltso",
   "/catalog?category=sergi",
   "/catalog?category=komplekty",
   "/catalog?category=braslety",

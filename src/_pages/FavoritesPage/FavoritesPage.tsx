@@ -1,6 +1,7 @@
 'use client'
 
 import Card from '@/components/Products/Card/Card'
+import FavoriteButton from '@/components/UI/FavoriteButton/FavoriteButton'
 import styles from './FavoritesPage.module.scss'
 import { useFavoriteProducts } from '@/hooks/User.queries'
 
@@ -52,12 +53,18 @@ export default function FavoritesPage() {
         {!isLoading && products && products.length > 0 && (
           <div className={styles.grid}>
             {products.map((product) => (
-              <Card
-                key={product.id}
-                {...product}
-                showCardTitle={true}
-                useFillImage={product.useFillImage}
-              />
+              <div key={product.id} className={styles.cardWrapper}>
+                <FavoriteButton
+                  productId={product.id}
+                  compact
+                  extraClass={styles.removeHeart}
+                />
+                <Card
+                  {...product}
+                  showCardTitle={true}
+                  useFillImage={product.useFillImage}
+                />
+              </div>
             ))}
           </div>
         )}

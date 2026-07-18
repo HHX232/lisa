@@ -2,6 +2,7 @@
 
 import { axiosClassic } from '@/api/helpers/api.interceptor'
 import Card from '@/components/Products/Card/Card'
+import CurrencySymbol from '@/components/UI/BynIcon/CurrencySymbol'
 import { useCurrency } from '@/hooks/useCurrency'
 import { Product } from '@/types/Product.types'
 import { useQuery } from '@tanstack/react-query'
@@ -71,7 +72,9 @@ const fetchProducts = async (filters: Filters): Promise<ProductsResponse> => {
   if (filters.category) {
     filters.category.split(',').filter(Boolean).forEach(c => sp.append('category', c))
   }
-  if (filters.stone) sp.set('stone', filters.stone)
+  if (filters.stone) {
+    filters.stone.split(',').filter(Boolean).forEach(s => sp.append('stone', s))
+  }
 
   const { data } = await axiosClassic.get(`/products?${sp.toString()}`)
   return data
@@ -212,8 +215,8 @@ function StoneSelect({
   onChange,
   stones,
 }: {
-  value: string
-  onChange: (v: string | undefined) => void
+  value: string[]
+  onChange: (v: string[]) => void
   stones: StoneCategory[]
 }) {
   const [open, setOpen] = useState(false)
@@ -227,13 +230,24 @@ function StoneSelect({
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  const selected = stones.find(s => s.slug === value)
-  const triggerLabel = selected ? selected.label : 'Все камни'
+  const toggle = (slug: string) => {
+    const next = value.includes(slug) ? value.filter(s => s !== slug) : [...value, slug]
+    onChange(next)
+  }
+
+  const labelBySlug = (slug: string) =>
+    stones.find(s => s.slug === slug)?.label ?? slug
+
+  const triggerLabel = value.length === 0
+    ? 'Все камни'
+    : value.length === 1
+      ? labelBySlug(value[0])
+      : `Выбрано: ${value.length}`
 
   return (
     <div className={styles.categorySelect} ref={ref}>
       <button
-        className={`${styles.categorySelectTrigger} ${value ? styles.categorySelectActive : ''}`}
+        className={`${styles.categorySelectTrigger} ${value.length > 0 ? styles.categorySelectActive : ''}`}
         onClick={() => setOpen(o => !o)}
         type="button"
       >
@@ -243,60 +257,40 @@ function StoneSelect({
 
       {open && (
         <div className={styles.categorySelectDropdown}>
-          <label
-            className={`${styles.categorySelectOption} ${!value ? styles.categorySelectOptionChecked : ''}`}
-            onClick={() => { onChange(undefined); setOpen(false) }}
-          >
-            <span className={`${styles.categoryCheckbox} ${!value ? styles.categoryCheckboxChecked : ''}`} />
-            Все камни
-          </label>
-          {stones.map(({ slug, label }) => (
-            <label
-              key={slug}
-              className={`${styles.categorySelectOption} ${value === slug ? styles.categorySelectOptionChecked : ''}`}
-              onClick={() => { onChange(slug); setOpen(false) }}
-            >
-              <span className={`${styles.categoryCheckbox} ${value === slug ? styles.categoryCheckboxChecked : ''}`} />
-              {label}
-            </label>
-          ))}
+          {stones.map(({ slug, label }) => {
+            const checked = value.includes(slug)
+            return (
+              <label
+                key={slug}
+                className={`${styles.categorySelectOption} ${checked ? styles.categorySelectOptionChecked : ''}`}
+              >
+                <span className={`${styles.categoryCheckbox} ${checked ? styles.categoryCheckboxChecked : ''}`} />
+                {label}
+                <input type="checkbox" checked={checked} onChange={() => toggle(slug)} hidden />
+              </label>
+            )
+          })}
           {stones.length === 0 && (
             <span className={styles.categorySelectOption}>Загрузка...</span>
           )}
         </div>
       )}
-    </div>
-  )
-}
 
-// ─── FilterToggle ─────────────────────────────────────────────────────────────
-
-function FilterToggle({
-  label,
-  value,
-  onChange,
-}: {
-  label: string
-  value: boolean | undefined
-  onChange: (v: boolean | undefined) => void
-}) {
-  const cycle = () => {
-    if (value === undefined) onChange(true)
-    else if (value === true) onChange(false)
-    else onChange(undefined)
-  }
-
-  return (
-    <button
-      className={`${styles.filterToggle} ${value === true ? styles.filterToggleOn : value === false ? styles.filterToggleOff : ''}`}
-      onClick={cycle}
-      type="button"
-    >
-      {label}
-      {value !== undefined && (
-        <span className={styles.filterToggleBadge}>{value ? 'Да' : 'Нет'}</span>
+      {value.length > 0 && stones.length > 0 && (
+        <div className={styles.categoryChips}>
+          {value.map(slug => {
+            const label = stones.find(s => s.slug === slug)?.label
+            if (!label) return null
+            return (
+              <div key={slug} className={styles.categoryChip}>
+                <span>{label}</span>
+                <button className={styles.categoryChipRemove} onClick={() => toggle(slug)} type="button">×</button>
+              </div>
+            )
+          })}
+        </div>
       )}
-    </button>
+    </div>
   )
 }
 
@@ -474,14 +468,15 @@ const currency = useCurrency()
           <div className={styles.filterGroup}>
             <p className={styles.filterLabel}>Камень</p>
             <StoneSelect
-              value={filters.stone ?? ''}
-              onChange={(v) => setFilters({ stone: v })}
+              value={filters.stone?.split(',').filter(Boolean) ?? []}
+              onChange={(v) => setFilters({ stone: v.length > 0 ? v.join(',') : undefined })}
               stones={stoneCategories}
             />
           </div>
 
+
           <div className={styles.filterGroup}>
-            <p className={styles.filterLabel}>Цена, ₽</p>
+            <p className={styles.filterLabel}>Цена, <CurrencySymbol size={11} /></p>
             <div className={styles.priceRow}>
               <input
                 className={styles.priceInput}
@@ -506,11 +501,16 @@ const currency = useCurrency()
           </div>
 
           <div className={styles.filterGroup}>
-            <p className={styles.filterLabel}>Тип товара</p>
-            <div className={styles.toggles}>
-              <FilterToggle label="Комплект" value={filters.isComplect} onChange={(v) => setFilters({ isComplect: v })} />
-              <FilterToggle label="Сувенир" value={filters.isSouvenir} onChange={(v) => setFilters({ isSouvenir: v })} />
-            </div>
+            <label className={styles.complectCheckboxRow}>
+              <span className={`${styles.categoryCheckbox} ${filters.isComplect ? styles.categoryCheckboxChecked : ''}`} />
+              Есть комплект
+              <input
+                type="checkbox"
+                checked={!!filters.isComplect}
+                onChange={(e) => setFilters({ isComplect: e.target.checked ? true : undefined })}
+                hidden
+              />
+            </label>
           </div>
 
           <div className={styles.filterGroup}>

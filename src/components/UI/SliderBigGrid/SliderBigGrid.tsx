@@ -12,6 +12,7 @@ import styles from "./SliderBigGrid.module.scss";
 
 type Props = {
   showCardTitle?: boolean;
+  showTitleAfterPrice?: boolean;
   title?: string;
   viewAllHref?: string;
   slides: {
@@ -31,6 +32,7 @@ function SliderBigGrid({
   isCardSlider = false,
   cards,
   showCardTitle = false,
+  showTitleAfterPrice = false,
 }: Props) {
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
@@ -104,6 +106,7 @@ function SliderBigGrid({
                     <Card
                       {...card}
                       showCardTitle={showCardTitle}
+                      showTitleAfterPrice={showTitleAfterPrice}
                       isSouvenir={false}
                       useFillImage={useFillImage}
                     />

@@ -2,7 +2,7 @@
 "use client";
 
 import {
-  AdminReview,
+  AdminSiteReview,
   AdminUser,
   AdvertisementBody,
   InstallmentCard,
@@ -21,14 +21,14 @@ import {
   useAdminAdvertisements,
   useAdminOrders,
   useAdminProducts,
-  useAdminReviews,
   useAdminSettings,
+  useAdminSiteReviews,
   useAdminUsers,
   useChangeAdminOrderStatus,
   useChangeProductStatus,
-  useChangeReviewStatus,
+  useChangeSiteReviewStatus,
   useDeleteAdminProduct,
-  useDeleteAdminReview,
+  useDeleteAdminSiteReview,
   useDeleteAdminUser,
   useDeleteAdvertisement,
   useDeleteGiftCertificate,
@@ -38,8 +38,8 @@ import {
   useImportProductsExcel,
   useInstallmentCards,
   useStoneCategories,
-  useUpdateAdminReview,
   useUpdateAdminSettings,
+  useUpdateAdminSiteReview,
   useUpdateAdminUser,
   useUpsertAdvertisement,
   useUpsertGiftCertificate,
@@ -2019,39 +2019,45 @@ function ReviewsTab() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(0);
-  const [editReview, setEditReview] = useState<AdminReview | null>(null);
+  const [editReview, setEditReview] = useState<AdminSiteReview | null>(null);
   const [editText, setEditText] = useState("");
   const [editStars, setEditStars] = useState(5);
-  const [deleteImage, setDeleteImage] = useState(false);
+  const [deleteImageUrls, setDeleteImageUrls] = useState<string[]>([]);
   const [editImages, setEditImages] = useState<File[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const { data, isLoading } = useAdminReviews({
+  const { data, isLoading } = useAdminSiteReviews({
     search: search || undefined,
     status: statusFilter || undefined,
     page,
     size: PAGE_SIZE,
   });
-  const deleteMutation = useDeleteAdminReview();
-  const statusMutation = useChangeReviewStatus();
-  const updateMutation = useUpdateAdminReview();
+  const deleteMutation = useDeleteAdminSiteReview();
+  const statusMutation = useChangeSiteReviewStatus();
+  const updateMutation = useUpdateAdminSiteReview();
 
   const reviews = data?.content ?? [];
   const totalPages = data?.page.totalPages ?? 0;
 
-  const openEdit = (r: AdminReview) => {
+  const openEdit = (r: AdminSiteReview) => {
     setEditReview(r);
     setEditText(r.text);
     setEditStars(r.stars);
-    setDeleteImage(false);
+    setDeleteImageUrls([]);
     setEditImages([]);
+  };
+
+  const toggleDeleteImageUrl = (url: string) => {
+    setDeleteImageUrls((prev) =>
+      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url],
+    );
   };
 
   const handleUpdate = async () => {
     if (!editReview) return;
     await updateMutation.mutateAsync({
-      productId: editReview.id,
-      data: { text: editText, stars: editStars, deleteImage },
+      id: editReview.id,
+      data: { text: editText, stars: editStars, deleteImageUrls },
       images: editImages.length > 0 ? editImages : undefined,
     });
     toast.success("Отзыв обновлён");
@@ -2233,25 +2239,29 @@ function ReviewsTab() {
               <div className={styles.reviewEditField}>
                 <label className={styles.reviewEditLabel}>Фото</label>
                 <div className={styles.reviewImgRow}>
-                  {/* Current image */}
-                  {editReview.image && (
-                    <div
-                      className={`${styles.reviewImgCard} ${deleteImage ? styles.reviewImgDeleted : ""}`}
-                    >
-                      <img src={editReview.image} alt="текущее фото" />
-                      <button
-                        type="button"
-                        className={styles.reviewImgAction}
-                        onClick={() => setDeleteImage((d) => !d)}
-                        title={deleteImage ? "Восстановить" : "Удалить"}
+                  {/* Current images */}
+                  {(editReview.images ?? []).map((url) => {
+                    const marked = deleteImageUrls.includes(url);
+                    return (
+                      <div
+                        key={url}
+                        className={`${styles.reviewImgCard} ${marked ? styles.reviewImgDeleted : ""}`}
                       >
-                        {deleteImage ? "↩" : "✕"}
-                      </button>
-                      {deleteImage && (
-                        <div className={styles.reviewImgBadge}>Удалить</div>
-                      )}
-                    </div>
-                  )}
+                        <img src={url} alt="текущее фото" />
+                        <button
+                          type="button"
+                          className={styles.reviewImgAction}
+                          onClick={() => toggleDeleteImageUrl(url)}
+                          title={marked ? "Восстановить" : "Удалить"}
+                        >
+                          {marked ? "↩" : "✕"}
+                        </button>
+                        {marked && (
+                          <div className={styles.reviewImgBadge}>Удалить</div>
+                        )}
+                      </div>
+                    );
+                  })}
 
                   {/* New image previews */}
                   {editImages.map((img, i) => (
@@ -3141,7 +3151,7 @@ export default function AdminPage() {
           className={`${styles.tab} ${tab === "reviews" ? styles.tabActive : ""}`}
           onClick={() => setTab("reviews")}
         >
-          Отзывы
+          Отзывы о сайте
         </button>
         <button
           className={`${styles.tab} ${tab === "stones" ? styles.tabActive : ""}`}

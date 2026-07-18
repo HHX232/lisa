@@ -31,7 +31,7 @@ export interface ProductRequestBody {
   isSouvenir: boolean;
   categoryId: number;
   isAdvertisement: boolean;
-   stoneCategoryId: number | null
+   stoneCategoryIds: number[]
   advertisementType: string;
   imagesMeta: { id: string | null; displayOrder: number; delete: boolean }[];
 }
@@ -243,22 +243,22 @@ async updateAdminSettings(body: AdminSettingsBody) {
     await axiosClassic.patch(`/admin/orders/${id}/status`, { status });
   },
 
-  // ─── Reviews ──────────────────────────────────────────────────────────────
+  // ─── Site Reviews ─────────────────────────────────────────────────────────
 
-  async getAdminReviews(params: AdminReviewsParams = {}) {
-    const res = await axiosClassic.get<AdminReviewsResponse>(
-      "/admin/product-reviews",
+  async getAdminSiteReviews(params: AdminSiteReviewsParams = {}) {
+    const res = await axiosClassic.get<AdminSiteReviewsResponse>(
+      "/admin/site-reviews",
       { params },
     );
     return res.data;
   },
 
-  async deleteAdminReview(id: number) {
-    await axiosClassic.delete(`/admin/product-reviews/${id}`);
+  async deleteAdminSiteReview(id: number) {
+    await axiosClassic.delete(`/admin/site-reviews/${id}`);
   },
 
-  async changeReviewStatus(id: number, status: string) {
-    await axiosClassic.patch(`/admin/product-reviews/${id}/status`, { status });
+  async changeSiteReviewStatus(id: number, status: string) {
+    await axiosClassic.patch(`/admin/site-reviews/${id}/status`, { status });
   },
 
   // ─── Stone Categories ──────────────────────────────────────────────────────
@@ -313,9 +313,9 @@ async updateAdminSettings(body: AdminSettingsBody) {
     await axiosClassic.delete(`/admin/gift-certificates/${id}`);
   },
 
-  async updateAdminReview(
-    productId: number,
-    data: { text: string; stars: number; deleteImage?: boolean },
+  async updateAdminSiteReview(
+    id: number,
+    data: { text: string; stars: number; deleteImageUrls?: string[] },
     images?: File[],
   ) {
     const fd = new FormData();
@@ -323,8 +323,8 @@ async updateAdminSettings(body: AdminSettingsBody) {
       "data",
       new Blob([JSON.stringify(data)], { type: "application/json" }),
     );
-    images?.forEach((img) => fd.append("image", img));
-    const res = await fetch(`/api/proxy/admin/product-reviews/${productId}`, {
+    images?.forEach((img) => fd.append("images", img));
+    const res = await fetch(`/api/proxy/admin/site-reviews/${id}`, {
       method: "PUT",
       body: fd,
       credentials: "include",
@@ -340,26 +340,25 @@ export default adminService;
 
 export type ReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
 
-export interface AdminReview {
+export interface AdminSiteReview {
   id: number;
   author: string;
   status: ReviewStatus;
   text: string;
-  image?: string;
+  images: string[];
   stars: number;
   createdAt: string;
 }
 
-export interface AdminReviewsParams {
-  productId?: number;
+export interface AdminSiteReviewsParams {
   status?: string;
   search?: string;
   page?: number;
   size?: number;
 }
 
-export interface AdminReviewsResponse {
-  content: AdminReview[];
+export interface AdminSiteReviewsResponse {
+  content: AdminSiteReview[];
   page: {
     size: number;
     number: number;

@@ -70,24 +70,6 @@ function MainSlider({ slides }: TMainSliderProps) {
         className={styles.slideImage}
         style={{ backgroundImage: `url(${slide.image})` }}
       />
-      <button
-        className={cn(styles.sideArrow, styles.sideArrowPrev)}
-       onClick={(e) => { e.preventDefault(); e.stopPropagation(); goToPrev() }}
-        aria-label="Previous slide"
-      >
-        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </button>
-      <button
-        className={cn(styles.sideArrow, styles.sideArrowNext)}
-        onClick={(e) => { e.preventDefault(); e.stopPropagation(); goToNext() }}
-        aria-label="Next slide"
-      >
-        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 1L6 6L1 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </button>
     </div>
     <div
       className={`${styles.slideOverlay} ${extractedColors[index] === 'transparent' ? 'container' : ''}`}
@@ -132,8 +114,26 @@ function MainSlider({ slides }: TMainSliderProps) {
         })}
       </Swiper>
 
-  
-
+      <div className={styles.arrowContainer}>
+        <button
+          className={cn(styles.sideArrow, styles.sideArrowPrev)}
+          onClick={goToPrev}
+          aria-label="Previous slide"
+        >
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <button
+          className={cn(styles.sideArrow, styles.sideArrowNext)}
+          onClick={goToNext}
+          aria-label="Next slide"
+        >
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6 6L1 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
 
 
       {/* Точки навигации */}

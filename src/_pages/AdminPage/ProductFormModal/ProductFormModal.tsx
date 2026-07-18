@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ComplectPickerModal from "./ComplectPickerModal";
 import styles from "./ProductFormModal.module.scss";
-import ProductReviewsAdmin from "./ProductReviewsAdmin";
 
 interface PickedProduct {
   id: number;
@@ -32,7 +31,7 @@ interface ImageMeta {
 }
 
 interface FormState {
-  stoneCategoryId: number | null;
+  stoneCategoryIds: number[];
   id: number | null;
   title: string;
   description: string;
@@ -66,7 +65,7 @@ const EMPTY: FormState = {
   quantityInStock: 0,
   complectItems: [],
   sale: 0,
-  stoneCategoryId: null,
+  stoneCategoryIds: [],
   currency: "BYN",
   useFillImage: false,
   originalPrice: 0,
@@ -121,6 +120,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
   useEffect(() => {
     if (!isEdit) return;
     if (stoneCategories.length === 0) return;
+    if (categories.length === 0) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     productService.getProductById(productId!).then((res) => {
@@ -145,8 +145,9 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         characteristics: p.characteristics ?? [],
         isSouvenir: p.isSouvenir,
         isNaturalStone: p.isNaturalStone ?? true,
-        stoneCategoryId:
-          stoneCategories.find((s) => s.label === p.stoneCategory)?.id ?? null,
+        stoneCategoryIds: (p.stoneCategories ?? [])
+          .map((label) => stoneCategories.find((s) => s.label === label)?.id)
+          .filter((id): id is number => id != null),
         categoryId: String(
           categories.find((c) => c.label === p.category)?.id ?? "",
         ),
@@ -170,7 +171,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       );
       setIsLoading(false);
     });
-  }, [productId, stoneCategories]);
+  }, [productId, stoneCategories, categories]);
 
   // ── Image handlers ───────────────────────────────────────────────────────
 
@@ -242,7 +243,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       complectItems: form.complectItems,
       sale: Number(form.sale),
       currency: form.currency,
-      stoneCategoryId: form.stoneCategoryId,
+      stoneCategoryIds: form.stoneCategoryIds,
       useFillImage: form.useFillImage,
       originalPrice: Number(form.originalPrice),
       inShops: form.inShops,
@@ -260,7 +261,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         })),
       ],
     };
-    console.log("stoneCategoryId отправляем:", form.stoneCategoryId);
+    console.log("stoneCategoryIds отправляем:", form.stoneCategoryIds);
     console.log("полный объект:", product);
     try {
       await upsertMutation.mutateAsync({ product, images: newImages });
@@ -369,9 +370,12 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                     className={styles.input}
                     type="number"
                     min={0}
-                    value={form.originalPrice}
+                    value={form.originalPrice === 0 ? "" : form.originalPrice}
                     onChange={(e) =>
-                      set("originalPrice", Number(e.target.value))
+                      set(
+                        "originalPrice",
+                        e.target.value === "" ? 0 : Number(e.target.value),
+                      )
                     }
                   />
                 </div>
@@ -396,8 +400,13 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                     type="number"
                     min={0}
                     max={100}
-                    value={form.sale}
-                    onChange={(e) => set("sale", Number(e.target.value))}
+                    value={form.sale === 0 ? "" : form.sale}
+                    onChange={(e) =>
+                      set(
+                        "sale",
+                        e.target.value === "" ? 0 : Number(e.target.value),
+                      )
+                    }
                   />
                 </div>
 
@@ -407,9 +416,12 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                     className={styles.input}
                     type="number"
                     min={0}
-                    value={form.quantityInStock}
+                    value={form.quantityInStock === 0 ? "" : form.quantityInStock}
                     onChange={(e) =>
-                      set("quantityInStock", Number(e.target.value))
+                      set(
+                        "quantityInStock",
+                        e.target.value === "" ? 0 : Number(e.target.value),
+                      )
                     }
                   />
                 </div>
@@ -460,29 +472,48 @@ export default function ProductFormModal({ productId, onClose }: Props) {
               </div>
               {/* Stone category picker */}
               <div className={styles.fieldFull} style={{ marginTop: 16 }}>
-                <label className={styles.label}>Категория камня</label>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <button
-                    type="button"
-                    className={styles.addLineBtn}
-                    onClick={() => setIsStonePickerOpen(true)}
-                  >
-                    {form.stoneCategoryId
-                      ? (stoneCategories.find(
-                          (s) => s.id === form.stoneCategoryId,
-                        )?.label ?? "Выбрать камень")
-                      : "+ Выбрать камень"}
-                  </button>
-                  {form.stoneCategoryId && (
-                    <button
-                      type="button"
-                      className={styles.removeBtn}
-                      onClick={() => set("stoneCategoryId", null)}
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
+                <label className={styles.label}>Категории камня</label>
+                <button
+                  type="button"
+                  className={styles.addLineBtn}
+                  onClick={() => setIsStonePickerOpen(true)}
+                >
+                  + Выбрать камни
+                </button>
+                {form.stoneCategoryIds.length > 0 && (
+                  <div className={styles.complectChips}>
+                    {form.stoneCategoryIds.map((id) => {
+                      const stone = stoneCategories.find((s) => s.id === id);
+                      return (
+                        <div key={id} className={styles.complectChip}>
+                          {stone?.preview && (
+                            <img
+                              src={stone.preview}
+                              alt={stone.label}
+                              className={styles.chipImg}
+                            />
+                          )}
+                          <span className={styles.chipTitle}>
+                            {stone?.label ?? id}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              set(
+                                "stoneCategoryIds",
+                                form.stoneCategoryIds.filter(
+                                  (sId) => sId !== id,
+                                ),
+                              )
+                            }
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Stone Picker Modal */}
@@ -498,7 +529,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                   >
                     <div className={styles.modalHeader}>
                       <h2 className={styles.modalTitle}>
-                        Выбрать категорию камня
+                        Выбрать категории камня
                       </h2>
                       <button
                         className={styles.closeBtn}
@@ -520,14 +551,22 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                       }}
                     >
                       {stoneCategories.map((stone) => {
-                        const isActive = form.stoneCategoryId === stone.id;
+                        const isActive = form.stoneCategoryIds.includes(
+                          stone.id,
+                        );
                         return (
                           <div
                             key={stone.id}
-                            onClick={() => {
-                              set("stoneCategoryId", stone.id);
-                              setIsStonePickerOpen(false);
-                            }}
+                            onClick={() =>
+                              set(
+                                "stoneCategoryIds",
+                                isActive
+                                  ? form.stoneCategoryIds.filter(
+                                      (id) => id !== stone.id,
+                                    )
+                                  : [...form.stoneCategoryIds, stone.id],
+                              )
+                            }
                             style={{
                               border: isActive
                                 ? "2px solid #1B3C78"
@@ -900,9 +939,6 @@ export default function ProductFormModal({ productId, onClose }: Props) {
             </section>
           </div>
         )}
-
-        {/* Reviews section — only in edit mode */}
-        {isEdit && !isLoading && <ProductReviewsAdmin productId={productId!} />}
 
         {/* Footer */}
         <div className={styles.footer}>

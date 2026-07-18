@@ -3,8 +3,8 @@
    width: 100%;
    padding: 0 20px;
 
-   @media(max-width:1510px) {
-      padding: 0 20px;
+   @media(max-width:1550px) {
+      padding: 0 26px;
    }
 }
 
@@ -316,7 +316,7 @@
       transform: translate(calc(-100% - 20px), -50%) scale(0.95);
    }
 
-   @media (max-width: 1170px) {
+   @media (max-width: 1550px) {
       transform: translate(-50%, -50%);
 
       &:active {
@@ -333,7 +333,7 @@
       transform: translate(calc(100% + 20px), -50%) scale(0.95);
    }
 
-   @media (max-width: 1170px) {
+   @media (max-width: 1550px) {
       transform: translate(50%, -50%);
 
       &:active {

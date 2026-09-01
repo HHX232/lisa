@@ -1142,6 +1142,10 @@ function AdsTab() {
     const reordered = [...sortedAds];
     [reordered[idx], reordered[swapIdx]] = [reordered[swapIdx], reordered[idx]];
 
+    console.log(
+      `[handleMoveAd] move id=${ad.id} ${direction}: [${sortedAds.map((a) => a.id).join(", ")}] -> [${reordered.map((a) => a.id).join(", ")}]`,
+    );
+
     setReorderingAdId(ad.id);
     try {
       await Promise.all(
@@ -1152,7 +1156,11 @@ function AdsTab() {
           }),
         ),
       );
-    } catch {
+      console.log(
+        `[handleMoveAd] done, new order: ${reordered.map((a, i) => `${a.id}:${i}`).join(", ")}`,
+      );
+    } catch (e) {
+      console.error("[handleMoveAd] failed:", e);
       toast.error("Не удалось изменить порядок");
     } finally {
       setReorderingAdId(null);

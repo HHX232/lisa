@@ -209,13 +209,30 @@ async updateAdminSettings(body: AdminSettingsBody) {
       "advertisement",
       new Blob([JSON.stringify(payload)], { type: "application/json" }),
     );
+    console.log(
+      `[upsertAdvertisement] PUT /admin/advertisements id=${payload.id} displayOrder=${payload.displayOrder}`,
+    );
+    console.log("[upsertAdvertisement] payload:", payload);
     const res = await fetch(`/api/proxy/admin/advertisements`, {
       method: "PUT",
       body: formData,
       credentials: "include",
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json() as Promise<Advertisement>;
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error(
+        `[upsertAdvertisement] PUT /admin/advertisements id=${payload.id} failed:`,
+        res.status,
+        errText,
+      );
+      throw new Error(errText);
+    }
+    const data = (await res.json()) as Advertisement;
+    console.log(
+      `[upsertAdvertisement] response id=${data.id} displayOrder=${data.displayOrder}`,
+    );
+    console.log("[upsertAdvertisement] response:", data);
+    return data;
   },
 
   async deleteAdvertisement(id: number) {

@@ -58,6 +58,35 @@ async function CardPage({ params }: Props) {
 
   if (!data) return <div>Товар не найден</div>
 
+  type CategoryOption = { slug: string; label: string }
+  type StoneCategoryOption = { slug: string; label: string }
+
+  const [categoriesRes, stoneCategoriesRes] = await Promise.all([
+    axiosClassic.get<CategoryOption[]>('/categories').catch(() => null),
+    axiosClassic.get<StoneCategoryOption[]>('/stone-categories').catch(() => null),
+  ])
+  const categoryOptions = categoriesRes?.data ?? []
+  const stoneCategories = stoneCategoriesRes?.data ?? []
+
+  const categorySlug = categoryOptions.find(c => c.label === data.category)?.slug
+  const stoneChar = data.characteristics?.find(c =>
+    stoneCategories.some(s => s.label.toLowerCase() === c.value.toLowerCase())
+  )
+  const matchedStone = stoneChar
+    ? stoneCategories.find(s => s.label.toLowerCase() === stoneChar.value.toLowerCase())
+    : undefined
+
+  const catalogParams = new URLSearchParams()
+  if (categorySlug) catalogParams.set('category', categorySlug)
+  if (matchedStone) catalogParams.set('stone', matchedStone.slug)
+  const catalogHref = catalogParams.toString() ? `/catalog?${catalogParams.toString()}` : '/catalog'
+
+  const breadcrumbs = [
+    { label: 'Главная', href: '/' },
+    { label: 'Каталог', href: catalogHref },
+    { label: data.title, href: `/card/${id}` },
+  ]
+
   // 1. By category
   let similarProducts: Product[] = []
   if (data.category) {
@@ -65,25 +94,10 @@ async function CardPage({ params }: Props) {
     similarProducts = res.data ?? []
   }
 
-  // 2. By stone — match characteristics to stone-categories labels
-  if (!similarProducts.length) {
-    try {
-      type StoneCategory = { slug: string; label: string }
-      const stoneRes = await axiosClassic.get<StoneCategory[]>('/stone-categories')
-      const stoneCategories: StoneCategory[] = stoneRes.data ?? []
-      const stoneChar = data.characteristics?.find(c =>
-        stoneCategories.some((s: StoneCategory) => s.label.toLowerCase() === c.value.toLowerCase())
-      )
-      if (stoneChar) {
-        const matched = stoneCategories.find(
-          (s: StoneCategory) => s.label.toLowerCase() === stoneChar.value.toLowerCase()
-        )
-        if (matched) {
-          const res = await productService.getProductsByStone(matched.slug, data.id)
-          similarProducts = res.data ?? []
-        }
-      }
-    } catch {}
+  // 2. By stone — reuse the match already computed above for the breadcrumb
+  if (!similarProducts.length && matchedStone) {
+    const res = await productService.getProductsByStone(matchedStone.slug, data.id)
+    similarProducts = res.data ?? []
   }
 
   let complectItems: Product[] | null = null
@@ -170,6 +184,7 @@ async function CardPage({ params }: Props) {
       <CardPageComponent
         title={data.title}
         id={id}
+        breadcrumbs={breadcrumbs}
         currentPrice={`${data.currentPrice}`}
         originalPrice={data.originalPrice ? `${data.originalPrice}` : undefined}
         sale={data.sale ? `-${data.sale}%` : undefined}

@@ -61,6 +61,21 @@ function CardPageComponent({
   currentProduct,
   similarProducts = [],
 }: CardPageComponentProps) {
+  const displayCharacteristics = (() => {
+    const list = [...characteristics];
+    const countryIndex = list.findIndex(c => c.name === "Страна пр-ва");
+    const insertIndex = list.findIndex(c => c.name === "Вставка");
+    if (countryIndex !== -1 && insertIndex !== -1) {
+      [list[countryIndex], list[insertIndex]] = [list[insertIndex], list[countryIndex]];
+    }
+    const sizeIndex = list.findIndex(c => c.name === "Размер");
+    if (sizeIndex > 1) {
+      const [sizeItem] = list.splice(sizeIndex, 1);
+      list.splice(1, 0, sizeItem);
+    }
+    return list;
+  })();
+
   return (
     <div className={`${style.margins} container`}>
       <Breadcrumbs extraClass={style.bred_extra} items={breadcrumbs} />
@@ -120,7 +135,7 @@ function CardPageComponent({
               <p>Характеристики</p>
               <CharacterUI
                 extraClass={style.extra__char__box}
-                items={characteristics.map(c => ({ label: c.name, value: c.value }))}
+                items={displayCharacteristics.map(c => ({ label: c.name, value: c.value }))}
                 initialView={3}
               />
             </div>

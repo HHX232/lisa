@@ -31,6 +31,7 @@ export interface Product {
   showCardTitle?: boolean
   showTitleAfterPrice?: boolean
   status?: ProductStatus
+  displayOrder?: number
 }
 export interface Characteristic {
   name: string
@@ -66,6 +67,7 @@ export interface ProductFull {
   complectItems: Product[]
   count?: number
   quantityInStock?: number
+  displayOrder?: number
 }
 export interface PaginatedProducts {
   totalElements: number

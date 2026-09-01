@@ -53,6 +53,7 @@ interface FormState {
   isAdvertisement: boolean;
   advertisementType: string;
   imagesMeta: ImageMeta[];
+  displayOrder: number;
 }
 
 const EMPTY: FormState = {
@@ -62,7 +63,7 @@ const EMPTY: FormState = {
   description: "",
   fullDescription: "",
   isComplect: false,
-  quantityInStock: 0,
+  quantityInStock: 1,
   complectItems: [],
   sale: 0,
   stoneCategoryIds: [],
@@ -77,6 +78,7 @@ const EMPTY: FormState = {
   isAdvertisement: false,
   advertisementType: "",
   imagesMeta: [],
+  displayOrder: 0,
 };
 
 interface Props {
@@ -135,7 +137,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         description: p.description,
         fullDescription: p.fullDescription ?? "",
         isComplect: p.isComplect,
-        quantityInStock: 0,
+        quantityInStock: 1,
         complectItems: p.complectItems?.map((c) => c.id) ?? [],
         sale: p.sale,
         currency: p.currency ?? "BYN",
@@ -154,6 +156,7 @@ export default function ProductFormModal({ productId, onClose }: Props) {
         isAdvertisement: p.isAdvertisement ?? false,
         advertisementType: p.advertisementType ?? "",
         article: p.article ?? "",
+        displayOrder: p.displayOrder ?? 0,
         imagesMeta:
           p.images?.map((img, i) => ({
             id: img.id,
@@ -247,11 +250,14 @@ export default function ProductFormModal({ productId, onClose }: Props) {
       useFillImage: form.useFillImage,
       originalPrice: Number(form.originalPrice),
       inShops: form.inShops,
-      characteristics: form.characteristics.filter((c) => c.name.trim()),
+      characteristics: form.characteristics.filter(
+        (c) => c.name.trim() && c.value.trim(),
+      ),
       isSouvenir: form.isSouvenir,
       categoryId: Number(form.categoryId),
       isAdvertisement: form.isAdvertisement,
       advertisementType: form.advertisementType,
+      displayOrder: Number(form.displayOrder),
       imagesMeta: [
         ...form.imagesMeta,
         ...newImages.map((_, i) => ({
@@ -632,6 +638,23 @@ export default function ProductFormModal({ productId, onClose }: Props) {
                     value={form.advertisementType}
                     placeholder="Тип рекламы"
                     onChange={(e) => set("advertisementType", e.target.value)}
+                  />
+                </div>
+              )}
+              {form.isAdvertisement && (
+                <div className={styles.fieldNarrow}>
+                  <label className={styles.label}>Порядок показа в рекламе</label>
+                  <input
+                    className={styles.input}
+                    type="number"
+                    min={0}
+                    value={form.displayOrder}
+                    onChange={(e) =>
+                      set(
+                        "displayOrder",
+                        e.target.value === "" ? 0 : Number(e.target.value),
+                      )
+                    }
                   />
                 </div>
               )}

@@ -1,6 +1,7 @@
 'use client'
 
 import { axiosClassic } from '@/api/helpers/api.interceptor'
+import stoneCategoryService from '@/api/services/stoneCategory.service'
 import Card from '@/components/Products/Card/Card'
 import CurrencySymbol from '@/components/UI/BynIcon/CurrencySymbol'
 import { useCurrency } from '@/hooks/useCurrency'
@@ -214,10 +215,14 @@ function StoneSelect({
   value,
   onChange,
   stones,
+  isError = false,
+  onRetry,
 }: {
   value: string[]
   onChange: (v: string[]) => void
   stones: StoneCategory[]
+  isError?: boolean
+  onRetry?: () => void
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -270,7 +275,16 @@ function StoneSelect({
               </label>
             )
           })}
-          {stones.length === 0 && (
+          {stones.length === 0 && isError && (
+            <button
+              type="button"
+              className={styles.categorySelectOption}
+              onClick={onRetry}
+            >
+              Не удалось загрузить. Повторить
+            </button>
+          )}
+          {stones.length === 0 && !isError && (
             <span className={styles.categorySelectOption}>Загрузка...</span>
           )}
         </div>
@@ -355,7 +369,7 @@ const currency = useCurrency()
     placeholderData: (prev) => prev,
   })
 
-  const { data: categories = [] } = useQuery<Category[]>({
+  const { data: categoriesRaw = [] } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
       const res = await axiosClassic.get<Category[]>('/categories')
@@ -364,14 +378,22 @@ const currency = useCurrency()
     },
     staleTime: Infinity,
   })
+  // "Комплекты" is filtered via the separate "Есть комплект" checkbox
+  // (isComplect), not the category taxonomy — hide it from this picker.
+  const categories = categoriesRaw.filter((c) => c.slug !== 'komplekty')
 
-  const { data: stoneCategories = [] } = useQuery<StoneCategory[]>({
+  const {
+    data: stoneCategories = [],
+    isError: isStoneCategoriesError,
+    refetch: refetchStoneCategories,
+  } = useQuery<StoneCategory[]>({
     queryKey: ['stone-categories'],
     queryFn: async () => {
-      const res = await axiosClassic.get<StoneCategory[]>('/stone-categories')
+      const res = await stoneCategoryService.getStoneCategories()
       return res.data
     },
     staleTime: Infinity,
+    retry: 2,
   })
 
   const handleTitleSearch = (e: React.FormEvent) => {
@@ -471,6 +493,8 @@ const currency = useCurrency()
               value={filters.stone?.split(',').filter(Boolean) ?? []}
               onChange={(v) => setFilters({ stone: v.length > 0 ? v.join(',') : undefined })}
               stones={stoneCategories}
+              isError={isStoneCategoriesError}
+              onRetry={() => refetchStoneCategories()}
             />
           </div>
 

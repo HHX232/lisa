@@ -10,4 +10,5 @@ export interface Advertisement {
   url:string
   buttonUrl:string
   isActive:boolean
+  displayOrder?: number
 }

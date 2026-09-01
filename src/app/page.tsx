@@ -24,7 +24,10 @@ export const metadata: Metadata = {
 export default async function Home() {
   console.log("[Home] API URL:", process.env.NEXT_PUBLIC_API_URL);
 
-  const { data } = await advertisementService.getAdvertisements();
+  const { data: adsData } = await advertisementService.getAdvertisements();
+  const data = [...(adsData ?? [])].sort(
+    (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+  );
 
   const productsRes = await productService.getProducts();
   console.log("[Home] products response:", JSON.stringify(productsRes));
@@ -37,6 +40,9 @@ export default async function Home() {
     isNaturalStone: true,
   });
 const advertisementRes = await productService.getProducts({ isAdvertisement: true, size: 100 });
+const advertisementProducts = [...(advertisementRes.data?.content ?? [])].sort(
+  (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoriesRes = await axiosClassic.get<any[]>('/categories').catch(() => null);
 const categories = categoriesRes?.data ?? [];
@@ -59,7 +65,7 @@ const categories = categoriesRes?.data ?? [];
       products={products?.content || []}
       stoneCategories={stoneCategories}
       naturalProducts={productsNaturalRes.data?.content || []}
-       advertisementProducts={advertisementRes.data?.content || []}
+       advertisementProducts={advertisementProducts}
     categories={categories}
     />
   );

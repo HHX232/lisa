@@ -19,6 +19,7 @@ export interface ProductRequestBody {
   description: string;
   fullDescription: string;
   isComplect: boolean;
+  isNaturalStone: boolean;
   quantityInStock: number;
    article: string;
   complectItems: number[];
@@ -34,7 +35,9 @@ export interface ProductRequestBody {
    stoneCategoryIds: number[]
   advertisementType: string;
   imagesMeta: { id: string | null; displayOrder: number; delete: boolean }[];
+  displayOrder: number;
 }
+
 export interface AdminSettings {
   id: number
   phoneNumber: string
@@ -55,6 +58,30 @@ export interface AdvertisementBody {
   isActive: boolean;
   url: string;
   buttonUrl: string;
+  displayOrder: number;
+}
+
+/**
+ * Rebuilds the full update payload for an advertisement banner from its
+ * already-saved data. Used for background updates — e.g. reordering — where
+ * only one field changes and every other field must be resent unchanged.
+ */
+export function buildAdvertisementBody(
+  ad: Advertisement,
+  overrides: Partial<AdvertisementBody> = {},
+): AdvertisementBody {
+  return {
+    id: ad.id,
+    title: ad.title,
+    description: ad.description,
+    specialLabel: ad.specialLabel,
+    edgeColor: ad.edgeColor,
+    isActive: ad.isActive ?? true,
+    url: ad.url ?? "",
+    buttonUrl: ad.buttonUrl ?? "",
+    displayOrder: ad.displayOrder ?? 0,
+    ...overrides,
+  };
 }
 
 export interface InstallmentCard {
@@ -217,6 +244,7 @@ async updateAdminSettings(body: AdminSettingsBody) {
 
   async upsertProduct(product: ProductRequestBody, images: File[]) {
     const payload = { ...product, id: product.id === 0 ? null : product.id };
+    console.log("[upsertProduct] PUT /products payload:", payload);
     const formData = new FormData();
     formData.append(
       "product",
@@ -228,8 +256,14 @@ async updateAdminSettings(body: AdminSettingsBody) {
       body: formData,
       credentials: "include",
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json() as Promise<ProductFull>;
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("[upsertProduct] PUT /products failed:", res.status, errText);
+      throw new Error(errText);
+    }
+    const data = (await res.json()) as ProductFull;
+    console.log("[upsertProduct] PUT /products response:", data);
+    return data;
   },
 
   async getAdminOrders(params: AdminOrdersParams = {}) {

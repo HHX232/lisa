@@ -5,6 +5,7 @@ import {
   AdminSiteReview,
   AdminUser,
   AdvertisementBody,
+  buildAdvertisementBody,
   InstallmentCard,
   InstallmentCardBody,
   ReviewStatus,
@@ -1084,6 +1085,7 @@ const EMPTY_AD: AdvertisementBody = {
   isActive: true,
   url: "",
   buttonUrl: "",
+  displayOrder: 0,
 };
 
 function AdsTab() {
@@ -1096,10 +1098,15 @@ function AdsTab() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [deleteAd, setDeleteAd] = useState<Advertisement | null>(null);
+  const [reorderingAdId, setReorderingAdId] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const sortedAds = [...(ads ?? [])].sort(
+    (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
+  );
+
   const openCreate = () => {
-    setEditAd({ ...EMPTY_AD });
+    setEditAd({ ...EMPTY_AD, displayOrder: sortedAds.length });
     setCurrentImage(null);
     setImageFile(null);
     setImagePreview(null);
@@ -1115,10 +1122,39 @@ function AdsTab() {
       isActive: ad.isActive ?? true,
       url: ad.url ?? "",
       buttonUrl: ad.buttonUrl ?? "",
+      displayOrder: ad.displayOrder ?? 0,
     });
     setCurrentImage(ad.image);
     setImageFile(null);
     setImagePreview(null);
+  };
+
+  const handleMoveAd = async (ad: Advertisement, direction: "up" | "down") => {
+    const idx = sortedAds.findIndex((a) => a.id === ad.id);
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (idx === -1 || swapIdx < 0 || swapIdx >= sortedAds.length) return;
+    const other = sortedAds[swapIdx];
+    setReorderingAdId(ad.id);
+    try {
+      await Promise.all([
+        upsertMutation.mutateAsync({
+          advertisement: buildAdvertisementBody(ad, {
+            displayOrder: other.displayOrder ?? swapIdx,
+          }),
+          image: null,
+        }),
+        upsertMutation.mutateAsync({
+          advertisement: buildAdvertisementBody(other, {
+            displayOrder: ad.displayOrder ?? idx,
+          }),
+          image: null,
+        }),
+      ]);
+    } catch {
+      toast.error("Не удалось изменить порядок");
+    } finally {
+      setReorderingAdId(null);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1177,6 +1213,7 @@ function AdsTab() {
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>Порядок</th>
                 <th>ID</th>
                 <th>Изображение</th>
                 <th>Заголовок</th>
@@ -1189,15 +1226,37 @@ function AdsTab() {
               </tr>
             </thead>
             <tbody>
-              {!ads?.length && (
+              {!sortedAds.length && (
                 <tr>
-                  <td colSpan={7} className={styles.empty}>
+                  <td colSpan={10} className={styles.empty}>
                     Нет рекламных блоков
                   </td>
                 </tr>
               )}
-              {ads?.map((ad) => (
+              {sortedAds.map((ad, index) => (
                 <tr key={ad.id}>
+                  <td>
+                    <div className={styles.reorderCell}>
+                      <button
+                        type="button"
+                        className={styles.reorderBtn}
+                        onClick={() => handleMoveAd(ad, "up")}
+                        disabled={reorderingAdId !== null || index === 0}
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.reorderBtn}
+                        onClick={() => handleMoveAd(ad, "down")}
+                        disabled={
+                          reorderingAdId !== null || index === sortedAds.length - 1
+                        }
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </td>
                   <td className={styles.idCell}>{ad.id}</td>
                   <td>
                     {ad.image ? (
@@ -1495,7 +1554,7 @@ function AdsTab() {
 // Products Tab
 // ─────────────────────────────────────────────────────────────────────────────
 const STATUS_LABELS: Record<ProductStatus, string> = {
-  PENDING: "Ожидает",
+  PENDING: "Неактивен",
 
   APPROVED: "Активен",
 };
@@ -1633,9 +1692,9 @@ const products = data?.content ?? []
           onChange={(e) => setStatusFilter(e.target.value as any)}
         >
           <option value="">Статус: все</option>
-          <option value="PENDING">Ожидает</option>
+          <option value="PENDING">Неактивен</option>
 
-          <option value="APPROVED">Одобрен</option>
+          <option value="APPROVED">Активен</option>
         </select>
         {boolSelect(isAdvertisement, setIsAdvertisement, "Реклама")}
         {boolSelect(isNaturalStone, setIsNaturalStone, "Нат. камень")}

@@ -1133,23 +1133,25 @@ function AdsTab() {
     const idx = sortedAds.findIndex((a) => a.id === ad.id);
     const swapIdx = direction === "up" ? idx - 1 : idx + 1;
     if (idx === -1 || swapIdx < 0 || swapIdx >= sortedAds.length) return;
-    const other = sortedAds[swapIdx];
+
+    // Ads can share the same displayOrder (e.g. everything still at the
+    // default 0), so swapping just the two touched values can be a no-op
+    // and leave the final order up to the backend's own tie-breaking.
+    // Renumber the whole list sequentially instead, so every ad ends up
+    // with a distinct position.
+    const reordered = [...sortedAds];
+    [reordered[idx], reordered[swapIdx]] = [reordered[swapIdx], reordered[idx]];
+
     setReorderingAdId(ad.id);
     try {
-      await Promise.all([
-        upsertMutation.mutateAsync({
-          advertisement: buildAdvertisementBody(ad, {
-            displayOrder: other.displayOrder ?? swapIdx,
+      await Promise.all(
+        reordered.map((a, i) =>
+          upsertMutation.mutateAsync({
+            advertisement: buildAdvertisementBody(a, { displayOrder: i }),
+            image: null,
           }),
-          image: null,
-        }),
-        upsertMutation.mutateAsync({
-          advertisement: buildAdvertisementBody(other, {
-            displayOrder: ad.displayOrder ?? idx,
-          }),
-          image: null,
-        }),
-      ]);
+        ),
+      );
     } catch {
       toast.error("Не удалось изменить порядок");
     } finally {

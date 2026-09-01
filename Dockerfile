@@ -44,6 +44,19 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Copy application source code
 COPY . .
 
+# NEXT_PUBLIC_* variables are inlined into the bundle at build time (not at
+# container start), and .env is excluded from the build context by
+# .dockerignore — so they must be passed in explicitly here, e.g. via
+# `docker build --build-arg NEXT_PUBLIC_API_URL=... --build-arg NEXT_PUBLIC_SITE_URL=...`
+# or the equivalent build-arg setting on the hosting platform. Without this,
+# the server-side proxy route (/api/proxy/*) resolves to an invalid backend
+# URL and every proxied request (categories, stone-categories, products, ...)
+# fails.
+ARG NEXT_PUBLIC_API_URL=https://api.septaria.by
+ARG NEXT_PUBLIC_SITE_URL=https://septaria.by
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+
 ENV NODE_ENV=production
 
 # Next.js collects completely anonymous telemetry data about general usage.

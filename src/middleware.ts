@@ -10,11 +10,20 @@ async function getAuthUser(request: NextRequest): Promise<{ role?: string } | nu
   const cookieHeader = request.headers.get('cookie') ?? ''
   const sessionId = request.cookies.get('SEPTARIA_SESSION_ID')?.value
 
+  console.log('[middleware] pathname:', request.nextUrl.pathname)
+  console.log('[middleware] API_URL:', API_URL)
+  console.log('[middleware] request protocol/host:', request.nextUrl.protocol, request.headers.get('host'))
+  console.log('[middleware] x-forwarded-proto:', request.headers.get('x-forwarded-proto'))
   console.log('[middleware] cookieHeader:', cookieHeader)
   console.log('[middleware] SEPTARIA_SESSION_ID:', sessionId)
 
   if (!sessionId) {
     console.log('[middleware] no session cookie, skipping /me')
+    return null
+  }
+
+  if (!API_URL) {
+    console.error('[middleware] API_URL is not set — NEXT_PUBLIC_API_URL was not baked into this build')
     return null
   }
 
@@ -26,9 +35,18 @@ async function getAuthUser(request: NextRequest): Promise<{ role?: string } | nu
       cache: 'no-store',
     })
 
+    console.log('[middleware] /me url:', `${API_URL}/me`)
     console.log('[middleware] /me status:', response.status)
-    if (!response.ok) return null
-    return await response.json()
+    console.log('[middleware] /me response headers:', JSON.stringify(Object.fromEntries(response.headers.entries())))
+
+    if (!response.ok) {
+      const bodyText = await response.text().catch(() => '<failed to read body>')
+      console.log('[middleware] /me error body:', bodyText)
+      return null
+    }
+    const user = await response.json()
+    console.log('[middleware] /me user:', JSON.stringify(user))
+    return user
   } catch (err) {
     console.error('[middleware] /me fetch error:', err)
     return null

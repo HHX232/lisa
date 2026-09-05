@@ -11,7 +11,35 @@ import SliderLittleGrid from "@/components/UI/SliderLittleGrid/SliderLittleGrid"
 import RecentlyViewedTracker from "@/components/Pages/RecentlyViewed/RecentlyViewedTracker";
 import RecentlyViewedSlider from "@/components/Pages/RecentlyViewed/RecentlyViewedSlider";
 import { Characteristic, Product } from "@/types/Product.types";
+import Link from "next/link";
 import style from "./CardPage.module.scss";
+
+const CHARACTERISTIC_ORDER = [
+  "Артикул",
+  "Вставка",
+  "Металл",
+  "Размер",
+  "Вес",
+  "Страна пр-ва",
+];
+
+function sortCharacteristics(characteristics: Characteristic[]) {
+  return [...characteristics].sort((a, b) => {
+    const ai = CHARACTERISTIC_ORDER.indexOf(a.name);
+    const bi = CHARACTERISTIC_ORDER.indexOf(b.name);
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+}
+
+function storeHref(store: string) {
+  const normalized = store.toLowerCase();
+  if (normalized.includes("золото")) return "/locations#shop-gold";
+  if (normalized.includes("серебро")) return "/locations#shop-silver";
+  return "/locations";
+}
 
 
 interface BreadcrumbItem {
@@ -61,20 +89,10 @@ function CardPageComponent({
   currentProduct,
   similarProducts = [],
 }: CardPageComponentProps) {
-  const displayCharacteristics = (() => {
-    const list = [...characteristics];
-    const countryIndex = list.findIndex(c => c.name === "Страна пр-ва");
-    const insertIndex = list.findIndex(c => c.name === "Вставка");
-    if (countryIndex !== -1 && insertIndex !== -1) {
-      [list[countryIndex], list[insertIndex]] = [list[insertIndex], list[countryIndex]];
-    }
-    const sizeIndex = list.findIndex(c => c.name === "Размер");
-    if (sizeIndex > 1) {
-      const [sizeItem] = list.splice(sizeIndex, 1);
-      list.splice(1, 0, sizeItem);
-    }
-    return list;
-  })();
+  const displayCharacteristics = sortCharacteristics(characteristics);
+
+  const hasDiscount =
+    !!originalPrice && Number(originalPrice) > Number(currentPrice);
 
   return (
     <div className={`${style.margins} container`}>
@@ -93,8 +111,8 @@ function CardPageComponent({
 
           <div className={style.prices_box}>
             <p className={style.current_price}>{currentPrice}<CurrencySymbol size={20} /></p>
-            {originalPrice && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={18} /></p>}
-            {sale && <p className={style.sale}>{sale}</p>}
+            {hasDiscount && <p className={style.original_price}>{originalPrice}<CurrencySymbol size={18} /></p>}
+            {hasDiscount && sale && <p className={style.sale}>{sale}</p>}
           </div>
 
           <div className={style.button_box}>
@@ -125,7 +143,11 @@ function CardPageComponent({
             <div className={style.have_box}>
               <p className={style.have_title}>Наличие в магазинах</p>
               <ul className={style.stores_list}>
-                {stores.map((store, i) => <li key={i}>{store}</li>)}
+                {stores.map((store, i) => (
+                  <li key={i}>
+                    <Link href={storeHref(store)}>{store}</Link>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

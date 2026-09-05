@@ -23,19 +23,21 @@ function Card({
 }: Product) {
   const titleEl = showCardTitle && <h3 className={styles.title}>{title}</h3>
 
+  const hasDiscount = !!originalPrice && originalPrice > currentPrice
+
   const priceRowEl = (
     <div className={styles.priceRow}>
       <div className={styles.priceGroup}>
         <span className={cn(styles.currentPrice, showTitleAfterPrice && styles.currentPriceSmall)}>
           {currentPrice.toLocaleString('ru-RU')}<CurrencySymbol size={20} />
         </span>
-        {originalPrice && (
+        {hasDiscount && (
           <span className={styles.originalPrice}>
             {originalPrice.toLocaleString('ru-RU')}<CurrencySymbol size={16} />
           </span>
         )}
       </div>
-      {!!sale && <span className={styles.sale}>-{sale}%</span>}
+      {hasDiscount && !!sale && <span className={styles.sale}>-{sale}%</span>}
     </div>
   )
 

@@ -7,9 +7,15 @@ import "swiper/css/free-mode";
 import "swiper/css/thumbs";
 import { FreeMode, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Link from "next/link";
 import Card from "@/components/Products/Card/Card";
 import { Product } from "@/types/Product.types";
 import styles from "./MainCardSlider.module.scss";
+
+interface SlideItem {
+  src: string;
+  href?: string;
+}
 
 interface MainCardSliderProps {
   images?: string[];
@@ -57,6 +63,12 @@ export default function MainCardSlider({
 
   const isHorizontal = useDefaultAdaptive && isMobile;
 
+  const ownSlides: SlideItem[] = images.map((src) => ({ src }));
+  const complectSlides: SlideItem[] = complectItems
+    .filter((item) => item.status === "APPROVED")
+    .map((item) => ({ src: item.imageUrl, href: `/card/${item.id}` }));
+  const slides: SlideItem[] = [...ownSlides, ...complectSlides];
+
   const syncThumbs = (realIndex: number) => {
     if (!thumbsSwiper) return;
     const offset = Math.floor(3.5 / 2);
@@ -89,17 +101,28 @@ export default function MainCardSlider({
         onSwiper={setThumbsSwiper}
         className={styles.thumbSwiper}
       >
-        {images.map((src, i) => (
-          <SwiperSlide key={i} className={styles.thumbSlide}>
+        {slides.map((slide, i) => {
+          const thumbEl = (
             <div
               className={styles.thumb}
               style={{
-                backgroundImage: `url(${src})`,
+                backgroundImage: `url(${slide.src})`,
                 backgroundSize: "contain",
               }}
             />
-          </SwiperSlide>
-        ))}
+          );
+          return (
+            <SwiperSlide key={i} className={styles.thumbSlide}>
+              {slide.href ? (
+                <Link href={slide.href} className={styles.slideLink}>
+                  {thumbEl}
+                </Link>
+              ) : (
+                thumbEl
+              )}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
 
       <div className={styles.mainColumn}>
@@ -111,12 +134,12 @@ export default function MainCardSlider({
             onSlideChange={(swiper) => syncThumbs(swiper.realIndex)}
             className={styles.mainSwiper}
           >
-            {images.map((src, i) => (
+            {ownSlides.map((slide, i) => (
               <SwiperSlide key={i} className={styles.mainSlide}>
                 <div
                   className={styles.mainSlideInner}
                   style={{
-                    backgroundImage: `url(${src})`,
+                    backgroundImage: `url(${slide.src})`,
                     backgroundSize: "contain",
                   }}
                 />

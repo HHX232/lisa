@@ -1,0 +1,85 @@
+.banner {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  max-width: 360px;
+  width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid rgba(7, 39, 97, 0.12);
+  box-shadow: 0 8px 32px rgba(7, 39, 97, 0.16);
+  animation: slideIn 0.25s ease-out;
+
+  @media (max-width: 480px) {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+  }
+}
+
+.text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text, #2f2f2f);
+}
+
+.link {
+  color: var(--accent, #072761);
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 24px;
+  border: none;
+  background: var(--accent, #072761);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.declineButton {
+  padding: 10px 24px;
+  border: 1px solid rgba(7, 39, 97, 0.24);
+  background: transparent;
+  color: var(--accent, #072761);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(7, 39, 97, 0.06);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

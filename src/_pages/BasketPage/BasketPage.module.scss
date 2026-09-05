@@ -39,6 +39,28 @@ $border: rgba($dark, 0.12);
 
 // ─── List ─────────────────────────────────────────────────────────────────────
 
+.listColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.selectAllRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $text;
+  cursor: pointer;
+  width: fit-content;
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -231,10 +253,15 @@ $border: rgba($dark, 0.12);
   transition: all 0.2s;
   margin-top: 8px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: color-mix(in srgb, #{$dark} 90%, white);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba($dark, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 }
 

@@ -123,9 +123,15 @@ $thumb-column-height: calc(
 .mainSlideInner {
   width: 100%;
   height: 100%;
- background-size: cover;     
+ background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.slideLink {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ─── Hint slot ────────────────────────────────────────────── */

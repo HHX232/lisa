@@ -2,6 +2,7 @@
 'use client'
 import { loginAction } from '@/actions/auth.actions'
 import { axiosClassic } from '@/api/helpers/api.interceptor'
+import CookieGateModal from '@/components/UI/CookieConsent/CookieGateModal'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -79,6 +80,7 @@ function RegisterPage() {
 
   return (
     <div className={styles.registerPage}>
+      <CookieGateModal />
       <div className={styles.card}>
         <h1 className={styles.title}>Регистрация</h1>
 

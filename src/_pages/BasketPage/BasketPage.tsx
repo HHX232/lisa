@@ -106,8 +106,14 @@ const { mutate: createOrder, isPending: isOrdering } = useCreateOrder({
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [orderSuccess, setOrderSuccess] = useState(false);
 
-  const itemsToOrder =
-    items?.filter((item) => selected.size === 0 || selected.has(item.id)) ?? [];
+  const itemsToOrder = items?.filter((item) => selected.has(item.id)) ?? [];
+
+  const allSelected = !!items?.length && selected.size === items.length;
+
+  const toggleSelectAll = () => {
+    if (!items?.length) return;
+    setSelected(allSelected ? new Set() : new Set(items.map((item) => item.id)));
+  };
 
   const total = itemsToOrder.reduce(
     (sum, item) => sum + item.currentPrice * (item.count ?? 0),
@@ -161,15 +167,26 @@ const { mutate: createOrder, isPending: isOrdering } = useCreateOrder({
 
           {!isLoading && items && items.length > 0 && (
             <div className={styles.layout}>
-              <div className={styles.list}>
-                {items.map((item) => (
-                  <CartRow
-                    key={item.id}
-                    item={item}
-                    isSelected={selected.has(item.id)}
-                    onToggleSelect={() => toggleSelect(item.id)}
+              <div className={styles.listColumn}>
+                <label className={styles.selectAllRow}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkbox}
+                    checked={allSelected}
+                    onChange={toggleSelectAll}
                   />
-                ))}
+                  Выбрать все
+                </label>
+                <div className={styles.list}>
+                  {items.map((item) => (
+                    <CartRow
+                      key={item.id}
+                      item={item}
+                      isSelected={selected.has(item.id)}
+                      onToggleSelect={() => toggleSelect(item.id)}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className={styles.summary}>
@@ -178,12 +195,7 @@ const { mutate: createOrder, isPending: isOrdering } = useCreateOrder({
                   <span>Товаров</span>
                   <span>
                     {itemsToOrder.length}
-                    {selected.size > 0 && (
-                      <span className={styles.selectedHint}>
-                        {" "}
-                        из {items?.length}
-                      </span>
-                    )}
+                    <span className={styles.selectedHint}> из {items?.length}</span>
                   </span>
                 </div>
                 <div className={styles.summaryRow}>
@@ -201,7 +213,12 @@ const { mutate: createOrder, isPending: isOrdering } = useCreateOrder({
                 <button
                   className={styles.orderBtn}
                   onClick={handleOrder}
-                  disabled={isOrdering}
+                  disabled={isOrdering || itemsToOrder.length === 0}
+                  title={
+                    itemsToOrder.length === 0
+                      ? "Выберите товары для бронирования"
+                      : undefined
+                  }
                 >
                   {isOrdering ? "Бронируем..." : "Бронировать"}
                 </button>

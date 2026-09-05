@@ -1,5 +1,6 @@
 'use client'
 import { loginAction } from '@/actions/auth.actions'
+import CookieGateModal from '@/components/UI/CookieConsent/CookieGateModal'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import TextInputUI from '../../UI/inputs/TextInputUI/TextInputUI'
@@ -38,6 +39,7 @@ function LoginPage() {
 
   return (
     <div className={styles.loginPage}>
+      <CookieGateModal />
       <div className={styles.card}>
         <h1 className={styles.title}>Вход</h1>
 

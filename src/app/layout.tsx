@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import QueryProvider from '@/components/providers/QueryProvider';
+import CookieConsent from '@/components/UI/CookieConsent/CookieConsent';
 import { Toaster } from 'sonner';
 import { Montserrat, Philosopher } from 'next/font/google';
 
@@ -72,6 +73,7 @@ export default function RootLayout({
           {children}
         </QueryProvider>
         <Toaster richColors position="top-right" />
+        <CookieConsent />
         <div id='modal_portal'></div>
       </body>
     </html>

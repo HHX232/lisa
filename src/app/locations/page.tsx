@@ -60,6 +60,12 @@ const SHOPS = [
 ]
 
 export default function LocationsPage() {
+  useEffect(() => {
+    if (!window.location.hash) return
+    const target = document.querySelector(window.location.hash)
+    target?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [])
+
   return (
     <>
       <Header />
@@ -82,7 +88,11 @@ export default function LocationsPage() {
 
             <aside className={styles.aside}>
               {SHOPS.map(shop => (
-                <div key={shop.id} className={`${styles.shopCard} ${styles[`shopCard_${shop.id}`]}`}>
+                <div
+                  key={shop.id}
+                  id={`shop-${shop.id}`}
+                  className={`${styles.shopCard} ${styles[`shopCard_${shop.id}`]}`}
+                >
                   <div className={styles.shopIconWrap}>
                     {shop.id === 'silver' ? (
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
